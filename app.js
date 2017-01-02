@@ -2,7 +2,7 @@
 const http = require('http');
 const beacon_1 = require("./src/core/beacon");
 const hostname = '127.0.0.1';
-const port = 3000;
+const port = 3001;
 beacon_1.Beacon.init();
 beacon_1.Beacon.Route.loadRoute('admin');
 beacon_1.Beacon.Route.loadRoute('home');
