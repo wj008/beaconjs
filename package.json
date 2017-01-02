@@ -1,4 +1,7 @@
 {
   "name": "application-name",
-  "version": "0.0.1"
+  "version": "0.0.1",
+  "dependencies": {
+    "@types/node": "^6.0.55"
+  }
 }

@@ -3,7 +3,7 @@ const http = require('http');
 import {Beacon} from './src/core/beacon';
 
 const hostname = '127.0.0.1';
-const port = 3000;
+const port = 3001;
 
 Beacon.init();
 
