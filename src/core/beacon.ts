@@ -1,0 +1,90 @@
+import path =require('path');
+import {Beaconkit} from './beacon_kit';
+import {HttpContext} from "./http_context";
+import {Controller} from "../controllers/controller";
+import fs = require("fs");
+/**
+ * 核心框架类
+ */
+export class Beacon extends Beaconkit {
+
+    //库目录
+    public static BEACON_LIB_PATH = path.dirname(__dirname);
+
+    //项目目录
+    public static BEACON_PATH = path.dirname(Beacon.BEACON_LIB_PATH);
+    //运行时目录
+    public static RUNTIME_PATH = Beacon.BEACON_PATH;
+
+    public static ROUTE_PATH = path.join(Beacon.RUNTIME_PATH, 'route');
+
+    public static CONFIG_PATH = path.join(Beacon.RUNTIME_PATH, 'config');
+
+    //配置器
+    public static Config = null;
+    //路由器
+    public static Route = null;
+
+    public static Controller = Controller;
+
+    //框架版本号
+    public static version = (function () {
+        let packageFile = `${Beacon.BEACON_PATH}/package.json`;
+        let {version} = JSON.parse(fs.readFileSync(packageFile, 'utf-8'));
+        return version;
+    })();
+
+    //获取配置项
+    public static getConfig(key, def?) {
+        return Beacon.Config.get(key, def);
+    }
+
+    //设置配置项
+    public static setConfig(key, def?) {
+        Beacon.Config.set(key, def);
+    }
+
+    public static init(runpath?) {
+        Beacon.RUNTIME_PATH = runpath || Beacon.BEACON_PATH;
+        Beacon.ROUTE_PATH = path.join(Beacon.RUNTIME_PATH, 'route');
+        Beacon.CONFIG_PATH = path.join(Beacon.RUNTIME_PATH, 'config');
+        let {Config} = require('./config');
+        Beacon.Config = new Config(Beacon.CONFIG_PATH);
+        Beacon.Config.gload('Beacon');
+        let {Route} = require('./route');
+        Beacon.Route = Route;
+        return this;
+    }
+
+    //获取http对象
+    public static async run(req, res) {
+        let context = new HttpContext(req, res);
+        let Route = Beacon.Route;
+        let args = Route.parseUrl(context.url);
+        let ctlClass = Route.getController(args.app, args.ctl);
+        if (ctlClass == null) {
+            context.setStatus(404);
+            context.end('not foult.');
+            return;
+        }
+        try {
+            await context.parsePayload(Beacon.getConfig('default_encoding', 'utf-8'));
+            let ctlobj =await new ctlClass(context);
+            let act = Beacon.lowerFirst(Beacon.toCamel(args.act || 'index')) + 'Action';
+            if (ctlobj[act] && Beacon.isFunction(ctlobj[act])) {
+                await ctlobj[act]();
+                context.end();
+            } else {
+                context.setStatus(404);
+                context.end('not foult.');
+            }
+        } catch (e) {
+            context.setStatus(404);
+            context.end('not foult.');
+            return;
+        }
+    }
+
+}
+
+global['Beacon'] = Object.create(Beacon);
