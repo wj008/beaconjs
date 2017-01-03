@@ -66,9 +66,13 @@ export class Beacon extends Beaconkit {
         let context = new HttpContext(req, res);
         let Route = Beacon.Route;
         let args = Route.parseUrl(context.url);
+        if (args == null || args.ctl == '') {
+            Beacon.displayError(context, 404, 'then page url:"' + context.url + '" is not foult!');
+            return;
+        }
         let ctlClass = Route.getController(args.app, args.ctl);
         if (ctlClass == null) {
-            Beacon.displayError(context, 404, 'then page url:' + context.url + ' is not foult!');
+            Beacon.displayError(context, 404, 'then page url:"' + context.url + '" is not foult!');
             return;
         }
         try {
@@ -79,7 +83,7 @@ export class Beacon extends Beaconkit {
                 await ctlobj[act]();
                 context.end();
             } else {
-                Beacon.displayError(context, 404, 'then page url:' + context.url + ' is not foult!');
+                Beacon.displayError(context, 404, 'then page url:"' + context.url + '" is not foult!');
             }
         } catch (e) {
             Beacon.displayError(context, 500, e);

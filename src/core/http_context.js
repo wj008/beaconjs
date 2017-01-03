@@ -75,7 +75,7 @@ class HttpContext {
             }
             i++;
         }
-        return result.join('/');
+        return '/' + result.join('/');
     }
     hasPayload() {
         if ('transfer-encoding' in this.req.headers) {

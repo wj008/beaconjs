@@ -90,7 +90,7 @@ export class HttpContext {
             }
             i++;
         }
-        return result.join('/');
+        return '/'+result.join('/');
     }
 
     public  hasPayload() {

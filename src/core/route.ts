@@ -34,13 +34,16 @@ export class Route {
             return null;
         })();
         if (name.length == 0) {
-            return {app: 'home', ctl: 'index', act: 'index'};
+            return null;
         }
         let idata = Route.RouteData[name] || null;
         if (idata == null) {
-            return {app: name, ctl: 'index', act: 'index'};
+            return null;
         }
-        let arg = {app: '', ctl: 'index', act: 'index'};
+        let arg = {app: '', ctl: '', act: ''};
+        if (idata.default && Beacon.isObject(idata.default)) {
+            arg = Object.assign(arg, idata.default);
+        }
         let rules = idata.rules || [];
         for (let item of rules) {
             let m = baseurl.match(item.reg);
