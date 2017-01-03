@@ -65,7 +65,7 @@ export class Beacon extends Beaconkit {
     public static async run(req, res) {
         let context = new HttpContext(req, res);
         let Route = Beacon.Route;
-        let args = Route.parseUrl(context.url);
+        let args = Route.parseUrl(context.pathname);
         if (args == null || args.ctl == '') {
             Beacon.displayError(context, 404, 'then page url:"' + context.url + '" is not foult!');
             return;
