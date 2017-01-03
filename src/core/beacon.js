@@ -33,7 +33,7 @@ class Beacon extends beacon_kit_1.Beaconkit {
     static async run(req, res) {
         let context = new http_context_1.HttpContext(req, res);
         let Route = Beacon.Route;
-        let args = Route.parseUrl(context.url);
+        let args = Route.parseUrl(context.pathname);
         if (args == null || args.ctl == '') {
             Beacon.displayError(context, 404, 'then page url:"' + context.url + '" is not foult!');
             return;
@@ -79,6 +79,7 @@ class Beacon extends beacon_kit_1.Beaconkit {
         sdopx.assign('status', status);
         sdopx.assign('error', error);
         let content = sdopx.display('error');
+        context.setStatus(status);
         context.end(content);
         console.error(error);
     }

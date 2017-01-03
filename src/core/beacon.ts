@@ -99,6 +99,7 @@ export class Beacon extends Beaconkit {
         let sdopx = new Sdopx();
         sdopx.setTemplateDir(Beacon.VIEW_PATH);
         let title = '';
+
         if (status == 404) {
             title = 'NotFound.';
         } else if (status == 500) {
@@ -109,6 +110,7 @@ export class Beacon extends Beaconkit {
         sdopx.assign('status', status);
         sdopx.assign('error', error);
         let content = sdopx.display('error');
+        context.setStatus(status);
         context.end(content);
         console.error(error);
     }
