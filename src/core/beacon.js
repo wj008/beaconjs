@@ -3,6 +3,7 @@ const path = require("path");
 const beacon_kit_1 = require("./beacon_kit");
 const http_context_1 = require("./http_context");
 const controller_1 = require("../controllers/controller");
+const sdopx_1 = require("sdopx");
 const fs = require("fs");
 /**
  * 核心框架类
@@ -20,6 +21,7 @@ class Beacon extends beacon_kit_1.Beaconkit {
         Beacon.RUNTIME_PATH = runpath || Beacon.BEACON_PATH;
         Beacon.ROUTE_PATH = path.join(Beacon.RUNTIME_PATH, 'route');
         Beacon.CONFIG_PATH = path.join(Beacon.RUNTIME_PATH, 'config');
+        Beacon.VIEW_PATH = path.join(Beacon.RUNTIME_PATH, 'views');
         let { Config } = require('./config');
         Beacon.Config = new Config(Beacon.CONFIG_PATH);
         Beacon.Config.gload('Beacon');
@@ -34,8 +36,7 @@ class Beacon extends beacon_kit_1.Beaconkit {
         let args = Route.parseUrl(context.url);
         let ctlClass = Route.getController(args.app, args.ctl);
         if (ctlClass == null) {
-            context.setStatus(404);
-            context.end('not foult.');
+            Beacon.displayError(context, 404, 'then page url:' + context.url + ' is not foult!');
             return;
         }
         try {
@@ -47,15 +48,35 @@ class Beacon extends beacon_kit_1.Beaconkit {
                 context.end();
             }
             else {
-                context.setStatus(404);
-                context.end('not foult.');
+                Beacon.displayError(context, 404, 'then page url:' + context.url + ' is not foult!');
             }
         }
         catch (e) {
-            context.setStatus(404);
-            context.end('not foult.');
+            Beacon.displayError(context, 500, e);
             return;
         }
+    }
+    //显示错误
+    static displayError(context, status = 500, error) {
+        if (typeof error == 'string') {
+            error = new Error(error);
+        }
+        let sdopx = new sdopx_1.Sdopx();
+        sdopx.setTemplateDir(Beacon.VIEW_PATH);
+        let title = '';
+        if (status == 404) {
+            title = 'NotFound.';
+        }
+        else if (status == 500) {
+            title = 'Beacon Error.';
+        }
+        sdopx.assign('title', title);
+        sdopx.assign('message', error.message);
+        sdopx.assign('status', status);
+        sdopx.assign('error', error);
+        let content = sdopx.display('error');
+        context.end(content);
+        console.error(error);
     }
 }
 //库目录
@@ -66,6 +87,8 @@ Beacon.BEACON_PATH = path.dirname(Beacon.BEACON_LIB_PATH);
 Beacon.RUNTIME_PATH = Beacon.BEACON_PATH;
 Beacon.ROUTE_PATH = path.join(Beacon.RUNTIME_PATH, 'route');
 Beacon.CONFIG_PATH = path.join(Beacon.RUNTIME_PATH, 'config');
+//模板目录
+Beacon.VIEW_PATH = path.join(Beacon.RUNTIME_PATH, 'views');
 //配置器
 Beacon.Config = null;
 //路由器

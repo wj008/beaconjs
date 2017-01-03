@@ -2,9 +2,10 @@ import url = require('url');
 import mime = require('mime');
 import os = require('os');
 import multiparty = require('multiparty');
-import cookie from '../util/cookie';
+import cookie from "../util/cookie";
 import querystring =require('querystring');
 declare var Beacon: any;
+
 
 export class HttpContext {
 

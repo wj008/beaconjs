@@ -1,7 +1,8 @@
 import path =require('path');
-import {Beaconkit} from './beacon_kit';
+import {Beaconkit} from "./beacon_kit";
 import {HttpContext} from "./http_context";
 import {Controller} from "../controllers/controller";
+import {Sdopx} from "sdopx";
 import fs = require("fs");
 /**
  * 核心框架类
@@ -19,6 +20,8 @@ export class Beacon extends Beaconkit {
     public static ROUTE_PATH = path.join(Beacon.RUNTIME_PATH, 'route');
 
     public static CONFIG_PATH = path.join(Beacon.RUNTIME_PATH, 'config');
+    //模板目录
+    public static VIEW_PATH = path.join(Beacon.RUNTIME_PATH, 'views');
 
     //配置器
     public static Config = null;
@@ -48,6 +51,7 @@ export class Beacon extends Beaconkit {
         Beacon.RUNTIME_PATH = runpath || Beacon.BEACON_PATH;
         Beacon.ROUTE_PATH = path.join(Beacon.RUNTIME_PATH, 'route');
         Beacon.CONFIG_PATH = path.join(Beacon.RUNTIME_PATH, 'config');
+        Beacon.VIEW_PATH = path.join(Beacon.RUNTIME_PATH, 'views');
         let {Config} = require('./config');
         Beacon.Config = new Config(Beacon.CONFIG_PATH);
         Beacon.Config.gload('Beacon');
@@ -56,6 +60,7 @@ export class Beacon extends Beaconkit {
         return this;
     }
 
+
     //获取http对象
     public static async run(req, res) {
         let context = new HttpContext(req, res);
@@ -63,26 +68,45 @@ export class Beacon extends Beaconkit {
         let args = Route.parseUrl(context.url);
         let ctlClass = Route.getController(args.app, args.ctl);
         if (ctlClass == null) {
-            context.setStatus(404);
-            context.end('not foult.');
+            Beacon.displayError(context, 404, 'then page url:' + context.url + ' is not foult!');
             return;
         }
         try {
             await context.parsePayload(Beacon.getConfig('default_encoding', 'utf-8'));
-            let ctlobj =await new ctlClass(context);
+            let ctlobj = await new ctlClass(context);
             let act = Beacon.lowerFirst(Beacon.toCamel(args.act || 'index')) + 'Action';
             if (ctlobj[act] && Beacon.isFunction(ctlobj[act])) {
                 await ctlobj[act]();
                 context.end();
             } else {
-                context.setStatus(404);
-                context.end('not foult.');
+                Beacon.displayError(context, 404, 'then page url:' + context.url + ' is not foult!');
             }
         } catch (e) {
-            context.setStatus(404);
-            context.end('not foult.');
+            Beacon.displayError(context, 500, e);
             return;
         }
+    }
+
+    //显示错误
+    public static displayError(context, status = 500, error) {
+        if (typeof error == 'string') {
+            error = new Error(error);
+        }
+        let sdopx = new Sdopx();
+        sdopx.setTemplateDir(Beacon.VIEW_PATH);
+        let title = '';
+        if (status == 404) {
+            title = 'NotFound.';
+        } else if (status == 500) {
+            title = 'Beacon Error.';
+        }
+        sdopx.assign('title', title);
+        sdopx.assign('message', error.message);
+        sdopx.assign('status', status);
+        sdopx.assign('error', error);
+        let content = sdopx.display('error');
+        context.end(content);
+        console.error(error);
     }
 
 }

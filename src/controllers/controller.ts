@@ -1,13 +1,45 @@
 import path =require( 'path');
-import {HttpContext} from '../core/http_context';
-declare var beacon: any;
+import {HttpContext} from "../core/http_context";
+import {Sdopx} from "sdopx";
+declare var Beacon: any;
 export class Controller {
 
     public context: HttpContext = null;
+    public sdopx: Sdopx = new Sdopx();
+    public template_dirs = null;
 
     public constructor(context: HttpContext) {
         this.context = context;
     }
+
+    private initSdopx() {
+        if (this.sdopx === null) {
+            this.sdopx = new Sdopx();
+            this.sdopx.setTemplateDir(this.template_dirs || Beacon.VIEW_PATH);
+        }
+    }
+
+    public assign(key, value = null) {
+        this.initSdopx();
+        this.sdopx.assign(key, value);
+    }
+
+    public assignConfig(key, value = null) {
+        this.initSdopx();
+        this.sdopx.assignConfig(key, value);
+    }
+
+    public display(tplname: string) {
+        this.initSdopx();
+        let content = this.sdopx.display(tplname);
+        this.end(content);
+    }
+
+    public fetch(tplname: string) {
+        this.initSdopx();
+        return this.sdopx.fetch(tplname);
+    }
+
 
     public indexAction() {
         this.end('hello beaconjs.');
@@ -77,7 +109,7 @@ export class Controller {
 
     //获取配置项
     public  getConfig(key, def?) {
-        return beacon.getConfig(key, def);
+        return Beacon.getConfig(key, def);
     }
 
     //获取配置项
@@ -87,7 +119,7 @@ export class Controller {
 
     //获取配置项
     public  setConfig(key, def?) {
-        return beacon.getConfig(key, def);
+        return Beacon.getConfig(key, def);
     }
 
     public getCookie(name?: string) {

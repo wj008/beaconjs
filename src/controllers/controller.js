@@ -1,8 +1,34 @@
 "use strict";
+const sdopx_1 = require("sdopx");
 class Controller {
     constructor(context) {
         this.context = null;
+        this.sdopx = new sdopx_1.Sdopx();
+        this.template_dirs = null;
         this.context = context;
+    }
+    initSdopx() {
+        if (this.sdopx === null) {
+            this.sdopx = new sdopx_1.Sdopx();
+            this.sdopx.setTemplateDir(this.template_dirs || Beacon.VIEW_PATH);
+        }
+    }
+    assign(key, value = null) {
+        this.initSdopx();
+        this.sdopx.assign(key, value);
+    }
+    assignConfig(key, value = null) {
+        this.initSdopx();
+        this.sdopx.assignConfig(key, value);
+    }
+    display(tplname) {
+        this.initSdopx();
+        let content = this.sdopx.display(tplname);
+        this.end(content);
+    }
+    fetch(tplname) {
+        this.initSdopx();
+        return this.sdopx.fetch(tplname);
     }
     indexAction() {
         this.end('hello beaconjs.');
@@ -54,7 +80,7 @@ class Controller {
     }
     //获取配置项
     getConfig(key, def) {
-        return beacon.getConfig(key, def);
+        return Beacon.getConfig(key, def);
     }
     //获取配置项
     route(name, def) {
@@ -62,7 +88,7 @@ class Controller {
     }
     //获取配置项
     setConfig(key, def) {
-        return beacon.getConfig(key, def);
+        return Beacon.getConfig(key, def);
     }
     getCookie(name) {
         return this.context.getCookie(name);
