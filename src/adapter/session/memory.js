@@ -85,13 +85,15 @@ var MemorySession = (function () {
     };
     MemorySession.prototype.save = function () {
         return __awaiter(this, void 0, void 0, function () {
+            var store;
             return __generator(this, function (_a) {
+                store = MemorySession.store;
                 if (this._data == null) {
-                    MemorySession.store[this._cookie];
+                    delete store[this._cookie];
                     return [2 /*return*/];
                 }
                 // console.log('save',this._data,this._cookie);
-                MemorySession.store[this._cookie] = this._data;
+                store[this._cookie] = this._data;
                 return [2 /*return*/];
             });
         });

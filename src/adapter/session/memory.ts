@@ -56,12 +56,13 @@ export class MemorySession implements SessionBase {
     }
 
     public async save() {
+        let store = MemorySession.store;
         if (this._data == null) {
-            MemorySession.store[this._cookie];
+            delete store[this._cookie];
             return;
         }
         // console.log('save',this._data,this._cookie);
-        MemorySession.store[this._cookie] = this._data;
+        store[this._cookie] = this._data;
 
     }
 
