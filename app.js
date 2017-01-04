@@ -1,7 +1,7 @@
 "use strict";
-var http = require('http');
+var http = require("http");
 var beacon_1 = require("./src/core/beacon");
-var serveStatic = require('serve-static');
+var serveStatic = require("serve-static");
 var hostname = '127.0.0.1';
 var port = 3001;
 var serve = serveStatic('public', { 'index': ['index.html', 'index.htm'] });
@@ -20,4 +20,5 @@ var server = http.createServer(function (req, res) {
 server.listen(port, hostname, function () {
     console.log("Server running at http://" + hostname + ":" + port + "/");
 });
+beacon_1.Beacon.gc();
 //# sourceMappingURL=app.js.map
