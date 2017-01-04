@@ -2,6 +2,7 @@ import path =require('path');
 import {Beaconkit} from "./beacon_kit";
 import {HttpContext} from "./http_context";
 import {Controller} from "../controllers/controller";
+import {MemorySession} from "../adapter/session/memory";
 import {Sdopx} from "sdopx";
 import fs = require("fs");
 /**
@@ -29,6 +30,10 @@ export class Beacon extends Beaconkit {
     public static Route = null;
 
     public static Controller = Controller;
+
+    private static _sessionType = {};
+    private static _sessionUsed = {};
+    private static _gc_timer = null;
 
     //框架版本号
     public static version = (function () {
@@ -91,6 +96,18 @@ export class Beacon extends Beaconkit {
         }
     }
 
+    public static regSessionType(type, typeClass) {
+        Beacon._sessionType[type] = typeClass;
+    }
+
+    public static getSessionInstance(type = 'memory') {
+        let typeClass = Beacon._sessionType[type] || MemorySession;
+        if (!Beacon._sessionUsed[type]) {
+            Beacon._sessionUsed[type] = MemorySession;
+        }
+        return new typeClass();
+    }
+
     //显示错误
     public static displayError(context, status = 500, error) {
         if (typeof error == 'string') {
@@ -99,7 +116,6 @@ export class Beacon extends Beaconkit {
         let sdopx = new Sdopx();
         sdopx.setTemplateDir(Beacon.VIEW_PATH);
         let title = '';
-
         if (status == 404) {
             title = 'NotFound.';
         } else if (status == 500) {
@@ -115,6 +131,20 @@ export class Beacon extends Beaconkit {
         console.error(error);
     }
 
-}
+    public static gc() {
+        if (Beacon._gc_timer) {
+            clearInterval(Beacon._gc_timer);
+            Beacon._gc_timer = null;
+        }
+        Beacon._gc_timer = setInterval(function () {
+            //回收session
+            for (let key in Beacon._sessionUsed) {
+                Beacon._sessionUsed[key].gc();
+            }
+            // console.log('beacon gc...');
+        }, 10000);
+    }
 
+}
+Beacon.regSessionType('memory', MemorySession);
 global['Beacon'] = Object.create(Beacon);
