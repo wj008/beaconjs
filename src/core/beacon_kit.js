@@ -1,8 +1,8 @@
 "use strict";
-var net = require('net');
-var fs = require('fs');
-var path = require('path');
-var crypto = require('crypto');
+var net = require("net");
+var fs = require("fs");
+var path = require("path");
+var crypto = require("crypto");
 var Beaconkit = (function () {
     function Beaconkit() {
     }
@@ -324,14 +324,20 @@ var Beaconkit = (function () {
             return String($0).toLocaleUpperCase();
         });
     };
-    Beaconkit.toString = Object.prototype.toString;
-    Beaconkit.isArray = Array.isArray;
-    Beaconkit.isBuffer = Buffer.isBuffer;
-    Beaconkit.sep = path.sep;
-    Beaconkit.isIP = net.isIP;
-    Beaconkit.isIPv4 = net.isIPv4;
-    Beaconkit.isIPv6 = net.isIPv6;
+    Beaconkit.uuid = function (length) {
+        if (length === void 0) { length = 32; }
+        var str = crypto.randomBytes(Math.ceil(length * 0.75)).toString('base64').slice(0, length);
+        return str.replace(/[\+\/]/g, '_');
+    };
+    ;
     return Beaconkit;
 }());
+Beaconkit.toString = Object.prototype.toString;
+Beaconkit.isArray = Array.isArray;
+Beaconkit.isBuffer = Buffer.isBuffer;
+Beaconkit.sep = path.sep;
+Beaconkit.isIP = net.isIP;
+Beaconkit.isIPv4 = net.isIPv4;
+Beaconkit.isIPv6 = net.isIPv6;
 exports.Beaconkit = Beaconkit;
 //# sourceMappingURL=beacon_kit.js.map

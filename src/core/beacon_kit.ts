@@ -328,4 +328,8 @@ export class Beaconkit {
         });
     }
 
+    public static uuid(length = 32) {
+        let str = crypto.randomBytes(Math.ceil(length * 0.75)).toString('base64').slice(0, length);
+        return str.replace(/[\+\/]/g, '_');
+    };
 }
