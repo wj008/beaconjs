@@ -2,17 +2,44 @@
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments)).next());
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var url = require('url');
-var mime = require('mime');
-var os = require('os');
-var multiparty = require('multiparty');
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t;
+    return { next: verb(0), "throw": verb(1), "return": verb(2) };
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var url = require("url");
+var mime = require("mime");
+var os = require("os");
+var multiparty = require("multiparty");
 var cookie_1 = require("../util/cookie");
-var querystring = require('querystring');
+var querystring = require("querystring");
 var HttpContext = (function () {
     function HttpContext(req, res) {
         this.hostname = '';
@@ -23,6 +50,7 @@ var HttpContext = (function () {
         this._post = {};
         this._get = {};
         this._cookie = {};
+        this._session = null;
         this._route = {};
         this._sendCookie = null;
         this._isEnd = false;
@@ -93,75 +121,111 @@ var HttpContext = (function () {
         return (this.req.headers['content-length'] | 0) > 0;
     };
     HttpContext.prototype.getPayload = function (encoding) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (this.payload) {
-                return this.payload;
-            }
-            if (!this.req.readable) {
-                return new Buffer(0);
-            }
-            var that = this;
-            var _getPayload = function () {
-                var buffers = [];
-                var deferred = Beacon.defer();
-                that.req.on('data', function (chunk) {
-                    buffers.push(chunk);
-                });
-                that.req.on('end', function () {
-                    that.payload = Buffer.concat(buffers);
-                    deferred.resolve(that.payload);
-                });
-                that.req.on('error', function () {
-                    that.res.statusCode = 400;
-                    that.end();
-                    deferred.reject(new Error('client error'));
-                });
-                return deferred.promise;
-            };
-            var buffer = yield _getPayload();
-            if (encoding === true) {
-                return buffer;
-            }
-            encoding = encoding === void 0 ? 'utf-8' : encoding;
-            return buffer.toString(encoding);
+        return __awaiter(this, void 0, void 0, function () {
+            var that, _getPayload, buffer;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (this.payload) {
+                            return [2 /*return*/, this.payload];
+                        }
+                        if (!this.req.readable) {
+                            return [2 /*return*/, new Buffer(0)];
+                        }
+                        that = this;
+                        _getPayload = function () {
+                            var buffers = [];
+                            var deferred = Beacon.defer();
+                            that.req.on('data', function (chunk) {
+                                buffers.push(chunk);
+                            });
+                            that.req.on('end', function () {
+                                that.payload = Buffer.concat(buffers);
+                                deferred.resolve(that.payload);
+                            });
+                            that.req.on('error', function () {
+                                that.res.statusCode = 400;
+                                that.end();
+                                deferred.reject(new Error('client error'));
+                            });
+                            return deferred.promise;
+                        };
+                        return [4 /*yield*/, _getPayload()];
+                    case 1:
+                        buffer = _a.sent();
+                        if (encoding === true) {
+                            return [2 /*return*/, buffer];
+                        }
+                        encoding = encoding === void 0 ? 'utf-8' : encoding;
+                        return [2 /*return*/, buffer.toString(encoding)];
+                }
+            });
         });
     };
     HttpContext.prototype.parsePayload = function (encoding) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!this.req.readable) {
-                return;
-            }
-            if (['POST', 'PUT', 'PATCH'].indexOf(this.req.method) > -1) {
-                if (this.hasPayload()) {
-                    yield this.parseQuerystring(encoding);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.req.readable) {
+                            return [2 /*return*/];
+                        }
+                        if (!(['POST', 'PUT', 'PATCH'].indexOf(this.req.method) > -1)) return [3 /*break*/, 4];
+                        if (!this.hasPayload()) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.parseQuerystring(encoding)];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2: return [4 /*yield*/, this.parseForm()];
+                    case 3:
+                        _a.sent();
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
                 }
-                yield this.parseForm();
-            }
+            });
         });
     };
     HttpContext.prototype.parseQuerystring = function (encoding) {
-        return __awaiter(this, void 0, void 0, function* () {
-            var contentType = this.getContentType();
-            if (contentType && contentType.indexOf('application/x-www-form-urlencoded') === -1) {
-                return;
-            }
-            var buffer = yield this.getPayload(encoding);
-            this._post = Object.assign(this._post, querystring.parse(buffer));
+        return __awaiter(this, void 0, void 0, function () {
+            var contentType, buffer;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        contentType = this.getContentType();
+                        if (contentType && contentType.indexOf('application/x-www-form-urlencoded') === -1) {
+                            return [2 /*return*/];
+                        }
+                        return [4 /*yield*/, this.getPayload(encoding)];
+                    case 1:
+                        buffer = _a.sent();
+                        this._post = Object.assign(this._post, querystring.parse(buffer));
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     HttpContext.prototype.parseForm = function (encoding) {
-        return __awaiter(this, void 0, void 0, function* () {
-            var re = /^multipart\/(form-data|related);\s*boundary=(?:"([^"]+)"|([^;]+))$/i;
-            var contentType = this.getHeader('content-type');
-            if (!contentType || !re.test(contentType)) {
-                return;
-            }
-            var uploadDir = Beacon.getConfig('post:file_upload_path') || null;
-            if (!uploadDir) {
-                uploadDir = os.tmpdir() + Beacon.sep + 'Beacon' + Beacon.sep + 'upload';
-            }
-            Beacon.mkdir(uploadDir);
-            yield this.getFormData(uploadDir);
+        return __awaiter(this, void 0, void 0, function () {
+            var re, contentType, uploadDir;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        re = /^multipart\/(form-data|related);\s*boundary=(?:"([^"]+)"|([^;]+))$/i;
+                        contentType = this.getHeader('content-type');
+                        if (!contentType || !re.test(contentType)) {
+                            return [2 /*return*/];
+                        }
+                        uploadDir = Beacon.getConfig('post:file_upload_path') || null;
+                        if (!uploadDir) {
+                            uploadDir = os.tmpdir() + Beacon.sep + 'Beacon' + Beacon.sep + 'upload';
+                        }
+                        Beacon.mkdir(uploadDir);
+                        return [4 /*yield*/, this.getFormData(uploadDir)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     HttpContext.prototype.getFormData = function (uploadDir) {
@@ -492,7 +556,7 @@ var HttpContext = (function () {
         if (name === void 0) {
             return this._cookie;
         }
-        return this.headers[name.toLowerCase()] || '';
+        return this._cookie[name] || '';
     };
     HttpContext.prototype.setCookie = function (name, value, options) {
         if (options === void 0) {
@@ -501,6 +565,13 @@ var HttpContext = (function () {
         if (typeof options === 'number') {
             options = { timeout: options };
         }
+        options = Object.assign(Beacon.getConfig('cookie:*', {
+            domain: '',
+            path: '/',
+            httponly: false,
+            secure: false,
+            timeout: 0
+        }), options);
         if (value === null) {
             options.timeout = -1000;
         }
@@ -523,13 +594,45 @@ var HttpContext = (function () {
         }
         var values = [];
         for (var key in this._sendCookie) {
-            values.push[this._sendCookie[key]];
+            values.push(this._sendCookie[key]);
         }
         var cookies = values.map(function (item) {
             return cookie_1.default.stringify(item.name, item.value, item);
         });
         this.setHeader('Set-Cookie', cookies);
         this._sendCookie = null;
+    };
+    HttpContext.prototype.initSesion = function (type) {
+        if (type === void 0) { type = Beacon.getConfig('session:type', 'memory'); }
+        return __awaiter(this, void 0, void 0, function () {
+            var session_cookie_name, session_cookie_length, cookie_value;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        session_cookie_name = Beacon.getConfig('session:cookie_name', 'BEACONSSID');
+                        session_cookie_length = Beacon.getConfig('session:cookie_length', 24);
+                        cookie_value = this.getCookie(session_cookie_name);
+                        if (!cookie_value) {
+                            cookie_value = Beacon.uuid(session_cookie_length);
+                            this.setCookie(session_cookie_name, cookie_value);
+                        }
+                        this._session = Beacon.getSessionInstance(type);
+                        return [4 /*yield*/, this._session.init(cookie_value)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    HttpContext.prototype.getSession = function (name) {
+        return this._session.get(name);
+    };
+    HttpContext.prototype.setSession = function (name, value, timeout) {
+        this._session.set(name, value, timeout);
+    };
+    HttpContext.prototype.delSession = function (name) {
+        this._session.delete(name);
     };
     HttpContext.prototype.sendTime = function (name) {
         var time = Date.now() - this.startTime;
@@ -570,6 +673,16 @@ var HttpContext = (function () {
     HttpContext.prototype._end = function () {
         this.sendCookie();
         this.res.end();
+        if (this._session) {
+            if (Beacon.isPromise(this._session.save)) {
+                this._session.save().catch(function (e) {
+                    throw e;
+                });
+            }
+            else {
+                this._session.save();
+            }
+        }
     };
     HttpContext.prototype.end = function (obj, encoding) {
         if (obj === void 0) { obj = null; }

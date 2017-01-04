@@ -3,6 +3,7 @@ import mime = require('mime');
 import os = require('os');
 import multiparty = require('multiparty');
 import cookie from "../util/cookie";
+import {SessionBase} from "./session_base";
 import querystring =require('querystring');
 declare var Beacon: any;
 
@@ -24,6 +25,7 @@ export class HttpContext {
     private _post = {};
     private _get = {};
     private _cookie = {};
+    private _session: SessionBase = null;
     private _route = {};
     private _sendCookie: Object = null;
 
@@ -89,7 +91,7 @@ export class HttpContext {
             }
             i++;
         }
-        return '/'+result.join('/');
+        return '/' + result.join('/');
     }
 
     public  hasPayload() {
@@ -510,16 +512,24 @@ export class HttpContext {
         if (name === void 0) {
             return this._cookie;
         }
-        return this.headers[name.toLowerCase()] || '';
+        return this._cookie[name] || '';
     }
 
     public setCookie(name: string, value: string, options?) {
+
         if (options === void 0) {
             options = {timeout: 0};
         }
         if (typeof options === 'number') {
             options = {timeout: options};
         }
+        options = Object.assign(Beacon.getConfig('cookie:*', {
+            domain: '',
+            path: '/',
+            httponly: false,
+            secure: false,
+            timeout: 0
+        }), options);
         if (value === null) {
             options.timeout = -1000;
         }
@@ -543,13 +553,37 @@ export class HttpContext {
         }
         let values = [];
         for (let key in this._sendCookie) {
-            values.push[this._sendCookie[key]];
+            values.push(this._sendCookie[key]);
         }
         let cookies = values.map((item) => {
             return cookie.stringify(item.name, item.value, item);
         });
         this.setHeader('Set-Cookie', cookies);
         this._sendCookie = null;
+    }
+
+    public async initSesion(type: string = Beacon.getConfig('session:type', 'memory')) {
+        let session_cookie_name = Beacon.getConfig('session:cookie_name', 'BEACONSSID');
+        let session_cookie_length = Beacon.getConfig('session:cookie_length', 24);
+        let cookie_value = this.getCookie(session_cookie_name);
+        if (!cookie_value) {
+            cookie_value = Beacon.uuid(session_cookie_length);
+            this.setCookie(session_cookie_name, cookie_value);
+        }
+        this._session = Beacon.getSessionInstance(type);
+        await this._session.init(cookie_value);
+    }
+
+    public getSession(name?: string) {
+        return this._session.get(name);
+    }
+
+    public setSession(name: string, value: any, timeout?) {
+        this._session.set(name, value, timeout)
+    }
+
+    public delSession(name?: string) {
+        this._session.delete(name);
     }
 
     public sendTime(name?: string) {
@@ -593,6 +627,15 @@ export class HttpContext {
     private _end() {
         this.sendCookie();
         this.res.end();
+        if (this._session) {
+            if (Beacon.isPromise(this._session.save)) {
+                this._session.save().catch(function (e) {
+                    throw e;
+                });
+            } else {
+                this._session.save();
+            }
+        }
     }
 
     public end(obj = null, encoding = null) {
