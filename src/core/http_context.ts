@@ -6,7 +6,6 @@ import cookie from "../util/cookie";
 import querystring =require('querystring');
 declare var Beacon: any;
 
-
 export class HttpContext {
 
     public req;
@@ -26,7 +25,7 @@ export class HttpContext {
     private _get = {};
     private _cookie = {};
     private _route = {};
-    private _sendCookie = null;
+    private _sendCookie: Object = null;
 
     private _isEnd = false;
     private _timeoutTimer = null;
@@ -542,7 +541,11 @@ export class HttpContext {
         if (this._sendCookie == null || Object.keys(this._sendCookie).length == 0) {
             return;
         }
-        let cookies = Object.values(this._sendCookie).map((item) => {
+        let values = [];
+        for (let key in this._sendCookie) {
+            values.push[this._sendCookie[key]];
+        }
+        let cookies = values.map((item) => {
             return cookie.stringify(item.name, item.value, item);
         });
         this.setHeader('Set-Cookie', cookies);

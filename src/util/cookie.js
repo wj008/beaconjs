@@ -1,18 +1,20 @@
 "use strict";
-const crypto = require("crypto");
-class Cookie {
-    static parse(str) {
-        let data = {};
+var crypto = require('crypto');
+var Cookie = (function () {
+    function Cookie() {
+    }
+    Cookie.parse = function (str) {
+        var data = {};
         if (!str) {
             return data;
         }
-        str.split(/; */).forEach(item => {
-            let pos = item.indexOf('=');
+        str.split(/; */).forEach(function (item) {
+            var pos = item.indexOf('=');
             if (pos === -1) {
                 return;
             }
-            let key = item.substr(0, pos).trim();
-            let val = item.substr(pos + 1).trim();
+            var key = item.substr(0, pos).trim();
+            var val = item.substr(pos + 1).trim();
             if ('"' === val[0]) {
                 val = val.slice(1, -1);
             }
@@ -26,10 +28,10 @@ class Cookie {
             }
         });
         return data;
-    }
-    static stringify(name, value, options) {
+    };
+    Cookie.stringify = function (name, value, options) {
         options = options || {};
-        let item = [name + '=' + encodeURIComponent(value)];
+        var item = [name + '=' + encodeURIComponent(value)];
         if (options.maxage) {
             item.push('Max-Age=' + options.maxage);
         }
@@ -39,7 +41,7 @@ class Cookie {
         if (options.path) {
             item.push('Path=' + options.path);
         }
-        let expires = options.expires;
+        var expires = options.expires;
         if (expires) {
             if (expires instanceof Date == false) {
                 expires = new Date(expires);
@@ -53,17 +55,19 @@ class Cookie {
             item.push('Secure');
         }
         return item.join('; ');
-    }
-    static sign(val, secret = '') {
+    };
+    Cookie.sign = function (val, secret) {
+        if (secret === void 0) { secret = ''; }
         secret = crypto.createHmac('sha256', secret).update(val).digest('base64');
         secret = secret.replace(/\=+$/, '');
         return val + '.' + secret;
-    }
-    static unsign(val, secret) {
-        let str = val.slice(0, val.lastIndexOf('.'));
+    };
+    Cookie.unsign = function (val, secret) {
+        var str = val.slice(0, val.lastIndexOf('.'));
         return Cookie.sign(str, secret) === val ? str : '';
-    }
-}
+    };
+    return Cookie;
+}());
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Cookie;
 //# sourceMappingURL=cookie.js.map

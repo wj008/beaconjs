@@ -154,7 +154,6 @@ export class Controller {
         this.context.end(obj, encoding);
     }
 
-
     public getContentType() {
         return this.context.getContentType();
     }
