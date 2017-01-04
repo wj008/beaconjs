@@ -1,12 +1,14 @@
 import path =require( 'path');
 import {HttpContext} from "../core/http_context";
 import {Sdopx} from "sdopx";
+
 declare var Beacon: any;
 export class Controller {
 
     public context: HttpContext = null;
     public sdopx: Sdopx = new Sdopx();
     public template_dirs = null;
+
 
     public constructor(context: HttpContext) {
         this.context = context;
@@ -18,6 +20,7 @@ export class Controller {
             this.sdopx.setTemplateDir(this.template_dirs || Beacon.VIEW_PATH);
         }
     }
+
 
     public assign(key, value = null) {
         this.initSdopx();
@@ -130,10 +133,26 @@ export class Controller {
         return this.context.setCookie(name, value, options);
     }
 
+
+    public async initSesion(type?: string) {
+        return await this.context.initSesion(type);
+    }
+
+    public getSession(name?: string) {
+        return this.context.getSession(name);
+    }
+
+    public setSession(name: string, value: any, timeout?) {
+        return this.context.setSession(name, value, timeout);
+    }
+
+    public delSession(name?: string) {
+        return this.context.delSession(name);
+    }
+
     public redirect(url, code?: number) {
         this.context.redirect(url, code);
     }
-
 
     public setExpires(time) {
         this.context.setExpires(time);
