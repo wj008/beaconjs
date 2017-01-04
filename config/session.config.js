@@ -1,5 +1,5 @@
 'use strict';
 
 module.exports = {
-    timeout: 50
+    timeout: 1200 //20分钟失效时间
 };
