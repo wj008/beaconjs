@@ -13,8 +13,8 @@ export class FileSession implements SessionBase {
     public static store = {};
     private _data = null;
     private _isInit = false;
-    private _hash = null;
     private _cookie = null;
+    private _isUpdate = false;
     private static _save_path = null;
 
     public constructor() {
@@ -24,7 +24,6 @@ export class FileSession implements SessionBase {
         if (!save_path) {
             save_path = path.join(os.tmpdir(), 'beacon/session');
         }
-        this._hash = null;
         Beacon.mkdir(save_path);
         FileSession._save_path = save_path;
     }
@@ -34,6 +33,7 @@ export class FileSession implements SessionBase {
             return;
         }
         this._cookie = cookie;
+        this._isUpdate = false;
         let filepath = path.join(FileSession._save_path, this._cookie + '.json');
         let text = await new Promise(function (resolve, reject) {
             fs.access(filepath, fs.constants.R_OK | fs.constants.W_OK, (err) => {
@@ -50,8 +50,6 @@ export class FileSession implements SessionBase {
         });
         try {
             let json = JSON.parse(String(text));
-            let hash = Beacon.md5(text);
-            this._hash = hash || null;
             this._data = json || {data: {}, expire: 0};
             this._isInit = true;
         } catch (e) {
@@ -77,6 +75,15 @@ export class FileSession implements SessionBase {
         if (!this._isInit) {
             return;
         }
+        if (this._isUpdate === false) {
+            let oldtext= JSON.stringify(this._data.data[name] || null);
+            let newtext = JSON.stringify(value);
+            if (oldtext.length !== newtext.length) {
+                this._isUpdate = true;
+            } else if (oldtext != newtext) {
+                this._isUpdate = true;
+            }
+        }
         this._data = this._data || {data: {}, expire: 0};
         this._data.data[name] = value;
         this._data.expire = Date.now() + FileSession.timeout * 1000;
@@ -91,6 +98,7 @@ export class FileSession implements SessionBase {
     }
 
     public async flush() {
+
         let filepath = path.join(FileSession._save_path, this._cookie + '.json');
         let that = this;
         //如果为空删除
@@ -108,12 +116,12 @@ export class FileSession implements SessionBase {
                     });
                 });
             });
+            return;
         }
+        
         let now = Date.now() / 1000;
-        let text = JSON.stringify(that._data);
-        let hash = Beacon.md5(text);
         //如果没有更改仅修改时间即可
-        if (hash === that._hash) {
+        if (this._isUpdate) {
             await new Promise(function (resolve, reject) {
                 fs.utimes(filepath, now, now, (err) => {
                     //console.log('更新sesslin[' + that._cookie + ']的时间');
@@ -122,6 +130,8 @@ export class FileSession implements SessionBase {
             });
             return;
         }
+
+        let text = JSON.stringify(that._data);
         //如果修改了就写入内容
         await new Promise(function (resolve, reject) {
             fs.writeFile(filepath, text, 'utf8', (err) => {

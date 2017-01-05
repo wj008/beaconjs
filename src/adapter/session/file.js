@@ -14,15 +14,14 @@ var FileSession = (function () {
     function FileSession() {
         this._data = null;
         this._isInit = false;
-        this._hash = null;
         this._cookie = null;
+        this._isUpdate = false;
         var options = Beacon.getConfig('session:*');
         FileSession.timeout = options.timeout || 3600;
         var save_path = Beacon.getConfig('session:save_path') || null;
         if (!save_path) {
             save_path = path.join(os.tmpdir(), 'beacon/session');
         }
-        this._hash = null;
         Beacon.mkdir(save_path);
         FileSession._save_path = save_path;
     }
@@ -32,6 +31,7 @@ var FileSession = (function () {
                 return;
             }
             this._cookie = cookie;
+            this._isUpdate = false;
             var filepath = path.join(FileSession._save_path, this._cookie + '.json');
             var text = yield new Promise(function (resolve, reject) {
                 fs.access(filepath, fs.constants.R_OK | fs.constants.W_OK, function (err) {
@@ -48,8 +48,6 @@ var FileSession = (function () {
             });
             try {
                 var json = JSON.parse(String(text));
-                var hash = Beacon.md5(text);
-                this._hash = hash || null;
                 this._data = json || { data: {}, expire: 0 };
                 this._isInit = true;
             }
@@ -73,6 +71,16 @@ var FileSession = (function () {
     FileSession.prototype.set = function (name, value) {
         if (!this._isInit) {
             return;
+        }
+        if (this._isUpdate === false) {
+            var oldtext = JSON.stringify(this._data.data[name] || null);
+            var newtext = JSON.stringify(value);
+            if (oldtext.length !== newtext.length) {
+                this._isUpdate = true;
+            }
+            else if (oldtext != newtext) {
+                this._isUpdate = true;
+            }
         }
         this._data = this._data || { data: {}, expire: 0 };
         this._data.data[name] = value;
@@ -104,12 +112,11 @@ var FileSession = (function () {
                         });
                     });
                 });
+                return;
             }
             var now = Date.now() / 1000;
-            var text = JSON.stringify(that._data);
-            var hash = Beacon.md5(text);
             //如果没有更改仅修改时间即可
-            if (hash === that._hash) {
+            if (this._isUpdate) {
                 yield new Promise(function (resolve, reject) {
                     fs.utimes(filepath, now, now, function (err) {
                         //console.log('更新sesslin[' + that._cookie + ']的时间');
@@ -118,6 +125,7 @@ var FileSession = (function () {
                 });
                 return;
             }
+            var text = JSON.stringify(that._data);
             //如果修改了就写入内容
             yield new Promise(function (resolve, reject) {
                 fs.writeFile(filepath, text, 'utf8', function (err) {
