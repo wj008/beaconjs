@@ -3,6 +3,7 @@ import {Beaconkit} from "./beacon_kit";
 import {HttpContext} from "./http_context";
 import {Controller} from "../controllers/controller";
 import {MemorySession} from "../adapter/session/memory";
+import {FileSession} from "../adapter/session/file";
 import {Sdopx} from "sdopx";
 import fs = require("fs");
 /**
@@ -100,10 +101,10 @@ export class Beacon extends Beaconkit {
         Beacon._sessionType[type] = typeClass;
     }
 
-    public static getSessionInstance(type = 'memory') {
+    public static getSessionInstance(type = 'file') {
         let typeClass = Beacon._sessionType[type] || MemorySession;
         if (!Beacon._sessionUsed[type]) {
-            Beacon._sessionUsed[type] = MemorySession;
+            Beacon._sessionUsed[type] = typeClass;
         }
         return new typeClass();
     }
@@ -137,14 +138,16 @@ export class Beacon extends Beaconkit {
             Beacon._gc_timer = null;
         }
         Beacon._gc_timer = setInterval(function () {
-            //回收session
             for (let key in Beacon._sessionUsed) {
-                Beacon._sessionUsed[key].gc();
+                let typeClass = Beacon._sessionUsed[key] || null;
+                if (typeClass != null && Beacon.isFunction(typeClass.gc)) {
+                    typeClass.gc();
+                }
             }
-            // console.log('beacon gc...');
-        }, 10000);
+        }, 5000);
     }
 
 }
 Beacon.regSessionType('memory', MemorySession);
+Beacon.regSessionType('file', FileSession);
 global['Beacon'] = Object.create(Beacon);

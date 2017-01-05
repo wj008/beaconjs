@@ -19,8 +19,8 @@ export class MemorySession implements SessionBase {
 
     public async init(cookie: string) {
         this._cookie = cookie;
-        this._data = MemorySession.store[cookie] || {data: {}, expire: 0};
-        // console.log('init',this._data,cookie);
+        let data = MemorySession.store[cookie] || { data: {}, expire: 0 };
+        this._data = Beacon.clone(data);
         this._isInit = true;
     }
 
@@ -38,13 +38,13 @@ export class MemorySession implements SessionBase {
         return this._data.data[name];
     }
 
-    public set(name: string, value: any, timeout: number = this.timeout) {
+    public set(name: string, value: any) {
         if (!this._isInit) {
             return;
         }
         this._data = this._data || {data: {}, expire: 0};
         this._data.data[name] = value;
-        this._data.expire = Date.now() + timeout * 1000;
+        this._data.expire = Date.now() + this.timeout * 1000;
     }
 
     public delete(name?: string) {
@@ -55,15 +55,13 @@ export class MemorySession implements SessionBase {
         delete this._data[name];
     }
 
-    public async save() {
+    public async flush() {
         let store = MemorySession.store;
         if (this._data == null) {
             delete store[this._cookie];
             return;
         }
-        // console.log('save',this._data,this._cookie);
         store[this._cookie] = this._data;
-
     }
 
     public static gc() {

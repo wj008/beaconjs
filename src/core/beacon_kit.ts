@@ -332,4 +332,12 @@ export class Beaconkit {
         let str = crypto.randomBytes(Math.ceil(length * 0.75)).toString('base64').slice(0, length);
         return str.replace(/[\+\/]/g, '_');
     };
+
+    public static clone(obj) {
+        try {
+            return JSON.parse(JSON.stringify(obj));
+        } catch (e) {
+            return null;
+        }
+    }
 }

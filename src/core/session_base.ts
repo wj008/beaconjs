@@ -6,5 +6,5 @@ export interface SessionBase {
     get(name?: string);
     set(name: string, value: any, timeout?: number);
     delete(name?: string);
-    save();
+    flush();
 }

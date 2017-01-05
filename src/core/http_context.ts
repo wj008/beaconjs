@@ -1,6 +1,7 @@
 import url = require('url');
 import mime = require('mime');
 import os = require('os');
+import path=require('path');
 import multiparty = require('multiparty');
 import cookie from "../util/cookie";
 import {SessionBase} from "./session_base";
@@ -163,7 +164,7 @@ export class HttpContext {
         }
         let uploadDir = Beacon.getConfig('post:file_upload_path') || null;
         if (!uploadDir) {
-            uploadDir = os.tmpdir() + Beacon.sep + 'Beacon' + Beacon.sep + 'upload';
+            uploadDir = path.join(os.tmpdir(),'beacon/upload');
         }
         Beacon.mkdir(uploadDir);
         await this.getFormData(uploadDir);
@@ -562,7 +563,7 @@ export class HttpContext {
         this._sendCookie = null;
     }
 
-    public async initSesion(type: string = Beacon.getConfig('session:type', 'memory')) {
+    public async initSesion(type: string = Beacon.getConfig('session:type', 'file')) {
         let session_cookie_name = Beacon.getConfig('session:cookie_name', 'BEACONSSID');
         let session_cookie_length = Beacon.getConfig('session:cookie_length', 24);
         let cookie_value = this.getCookie(session_cookie_name);
@@ -578,8 +579,8 @@ export class HttpContext {
         return this._session.get(name);
     }
 
-    public setSession(name: string, value: any, timeout?) {
-        this._session.set(name, value, timeout)
+    public setSession(name: string, value: any) {
+        this._session.set(name, value);
     }
 
     public delSession(name?: string) {
@@ -628,12 +629,12 @@ export class HttpContext {
         this.sendCookie();
         this.res.end();
         if (this._session) {
-            if (Beacon.isPromise(this._session.save)) {
-                this._session.save().catch(function (e) {
+            if (Beacon.isPromise(this._session.flush)) {
+                this._session.flush().catch(function (e) {
                     throw e;
                 });
             } else {
-                this._session.save();
+                this._session.flush();
             }
         }
     }

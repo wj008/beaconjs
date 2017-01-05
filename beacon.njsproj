@@ -22,9 +22,15 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
+    <Compile Include="config\cookie.config.js" />
+    <Compile Include="config\session.config.js" />
     <Content Include="package.json" />
     <Content Include="tsconfig.json" />
     <Content Include="README.md" />
+    <Content Include="views\error.opx" />
+    <Content Include="views\foot.opx" />
+    <Content Include="views\index.opx" />
+    <Content Include="views\layout.opx" />
     <TypeScriptCompile Include="app.ts" />
     <Compile Include="config\beacon.config.js" />
     <Compile Include="config\post.config.js" />
@@ -33,12 +39,15 @@
     <Compile Include="route\home.route.js" />
     <TypeScriptCompile Include="apps\admin\controllers\index.ctl.ts" />
     <TypeScriptCompile Include="apps\home\controllers\index.ctl.ts" />
+    <TypeScriptCompile Include="src\adapter\session\file.ts" />
+    <TypeScriptCompile Include="src\adapter\session\memory.ts" />
     <TypeScriptCompile Include="src\controllers\controller.ts" />
     <TypeScriptCompile Include="src\core\beacon.ts" />
     <TypeScriptCompile Include="src\core\beacon_kit.ts" />
     <TypeScriptCompile Include="src\core\config.ts" />
     <TypeScriptCompile Include="src\core\http_context.ts" />
     <TypeScriptCompile Include="src\core\route.ts" />
+    <TypeScriptCompile Include="src\core\session_base.ts" />
     <TypeScriptCompile Include="src\util\cookie.ts" />
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +60,8 @@
     <Folder Include="public" />
     <Folder Include="route" />
     <Folder Include="src" />
+    <Folder Include="src\adapter\" />
+    <Folder Include="src\adapter\session\" />
     <Folder Include="src\controllers" />
     <Folder Include="src\core" />
     <Folder Include="src\util" />

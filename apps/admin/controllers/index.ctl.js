@@ -4,11 +4,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var beacon_1 = require("../../../src/core/beacon");
+var beacon_1 = require('../../../src/core/beacon');
 var Index = (function (_super) {
     __extends(Index, _super);
     function Index() {
-        return _super.apply(this, arguments) || this;
+        _super.apply(this, arguments);
     }
     Index.prototype.indexAction = function () {
         this.end(beacon_1.Beacon.BEACON_LIB_PATH);

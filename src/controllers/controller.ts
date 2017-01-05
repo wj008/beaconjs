@@ -142,8 +142,8 @@ export class Controller {
         return this.context.getSession(name);
     }
 
-    public setSession(name: string, value: any, timeout?) {
-        return this.context.setSession(name, value, timeout);
+    public setSession(name: string, value: any) {
+        return this.context.setSession(name, value);
     }
 
     public delSession(name?: string) {
