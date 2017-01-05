@@ -61,6 +61,7 @@ export class FileSession implements SessionBase {
         if (!this._isInit || !this._data) {
             return null;
         }
+        console.log(this._data);
         if (this._data.expire < Date.now()) {
             this._data = null;
             return null;
@@ -76,7 +77,8 @@ export class FileSession implements SessionBase {
             return;
         }
         if (this._isUpdate === false) {
-            let oldtext= JSON.stringify(this._data.data[name] || null);
+            let oldval = this._data.data[name] === void 0 ? null : this._data.data[name];
+            let oldtext = JSON.stringify(oldval);
             let newtext = JSON.stringify(value);
             if (oldtext.length !== newtext.length) {
                 this._isUpdate = true;
@@ -90,6 +92,7 @@ export class FileSession implements SessionBase {
     }
 
     public delete(name?: string) {
+        this._isUpdate = true;
         if (name === void 0) {
             this._data = null;
             return;
@@ -112,6 +115,7 @@ export class FileSession implements SessionBase {
                         if (err) {
                             return resolve(null);
                         }
+                        console.log('删除了文件:' , filepath);
                         return resolve(null);
                     });
                 });
@@ -121,10 +125,10 @@ export class FileSession implements SessionBase {
         
         let now = Date.now() / 1000;
         //如果没有更改仅修改时间即可
-        if (this._isUpdate) {
+        if (!this._isUpdate) {
             await new Promise(function (resolve, reject) {
                 fs.utimes(filepath, now, now, (err) => {
-                    //console.log('更新sesslin[' + that._cookie + ']的时间');
+                    console.log('更新sesslin[' + that._cookie + ']的时间');
                     return resolve(null);
                 });
             });
@@ -135,7 +139,7 @@ export class FileSession implements SessionBase {
         //如果修改了就写入内容
         await new Promise(function (resolve, reject) {
             fs.writeFile(filepath, text, 'utf8', (err) => {
-                //console.log('写入新的sesslin[' + that._cookie + ']的时间');
+                console.log('写入新的sesslin[' + that._cookie + ']的时间');
                 return resolve(null);
             });
         });
