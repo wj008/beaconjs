@@ -129,7 +129,9 @@ export class Beacon extends Beaconkit {
         let content = sdopx.display('error');
         context.setStatus(status);
         context.end(content);
-        console.error(error);
+        if(status==500){
+            console.error(error);
+        }
     }
 
     public static gc() {

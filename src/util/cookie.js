@@ -1,5 +1,5 @@
 "use strict";
-var crypto = require('crypto');
+var crypto = require("crypto");
 var Cookie = (function () {
     function Cookie() {
     }

@@ -1,5 +1,5 @@
 "use strict";
-var path = require('path');
+var path = require("path");
 var fs = require("fs");
 var Route = (function () {
     function Route() {
@@ -41,7 +41,7 @@ var Route = (function () {
             arg = Object.assign(arg, idata.default);
         }
         var rules = idata.rules || [];
-        var _loop_1 = function(item) {
+        var _loop_1 = function (item) {
             var m = baseurl.match(item.reg);
             if (m) {
                 for (var key in item.arg) {
@@ -57,7 +57,8 @@ var Route = (function () {
         for (var _i = 0, rules_1 = rules; _i < rules_1.length; _i++) {
             var item = rules_1[_i];
             var state_1 = _loop_1(item);
-            if (state_1 === "break") break;
+            if (state_1 === "break")
+                break;
         }
         arg.app = name;
         return arg;
@@ -138,11 +139,11 @@ var Route = (function () {
         }
         return null;
     };
-    Route.RouteData = {};
-    Route.AppPath = {};
-    Route.AppCtls = {};
-    Route.ROUTE_PATH = Beacon.ROUTE_PATH;
     return Route;
 }());
+Route.RouteData = {};
+Route.AppPath = {};
+Route.AppCtls = {};
+Route.ROUTE_PATH = Beacon.ROUTE_PATH;
 exports.Route = Route;
 //# sourceMappingURL=route.js.map

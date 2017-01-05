@@ -1,7 +1,7 @@
 "use strict";
-var path = require('path');
-var Hjson = require('hjson');
-var fs = require('fs');
+var path = require("path");
+var Hjson = require("hjson");
+var fs = require("fs");
 var Config = (function () {
     function Config(dirname) {
         this._names = {};
