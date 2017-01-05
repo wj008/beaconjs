@@ -61,7 +61,7 @@ export class FileSession implements SessionBase {
         if (!this._isInit || !this._data) {
             return null;
         }
-        console.log(this._data);
+        //console.log(this._data);
         if (this._data.expire < Date.now()) {
             this._data = null;
             return null;
@@ -115,7 +115,7 @@ export class FileSession implements SessionBase {
                         if (err) {
                             return resolve(null);
                         }
-                        console.log('删除了文件:' , filepath);
+                       // console.log('删除了文件:' , filepath);
                         return resolve(null);
                     });
                 });
@@ -128,7 +128,7 @@ export class FileSession implements SessionBase {
         if (!this._isUpdate) {
             await new Promise(function (resolve, reject) {
                 fs.utimes(filepath, now, now, (err) => {
-                    console.log('更新sesslin[' + that._cookie + ']的时间');
+                   // console.log('更新sesslin[' + that._cookie + ']的时间');
                     return resolve(null);
                 });
             });
@@ -139,7 +139,7 @@ export class FileSession implements SessionBase {
         //如果修改了就写入内容
         await new Promise(function (resolve, reject) {
             fs.writeFile(filepath, text, 'utf8', (err) => {
-                console.log('写入新的sesslin[' + that._cookie + ']的时间');
+               // console.log('写入新的sesslin[' + that._cookie + ']的时间');
                 return resolve(null);
             });
         });
