@@ -36,6 +36,8 @@ export class Beacon extends Beaconkit {
     private static _sessionUsed = {};
     private static _gc_timer = null;
 
+    public static debug = false;
+
     //框架版本号
     public static version = (function () {
         let packageFile = `${Beacon.BEACON_PATH}/package.json`;
@@ -83,7 +85,8 @@ export class Beacon extends Beaconkit {
         }
         try {
             await context.parsePayload(Beacon.getConfig('default_encoding', 'utf-8'));
-            let ctlobj = await new ctlClass(context);
+            let ctlobj = new ctlClass(context);
+            await ctlobj.init();
             let act = Beacon.lowerFirst(Beacon.toCamel(args.act || 'index')) + 'Action';
             if (ctlobj[act] && Beacon.isFunction(ctlobj[act])) {
                 await ctlobj[act]();
@@ -129,7 +132,7 @@ export class Beacon extends Beaconkit {
         let content = sdopx.display('error');
         context.setStatus(status);
         context.end(content);
-        if(status==500){
+        if (status == 500) {
             console.error(error);
         }
     }

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments)).next());
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
@@ -45,13 +45,67 @@ var Index = (function (_super) {
     function Index() {
         return _super.apply(this, arguments) || this;
     }
-    Index.prototype.indexAction = function () {
+    Index.prototype.init = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.initSesion()];
                     case 1:
                         _a.sent();
+                        return [4 /*yield*/, this.initDB('mysql')];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Index.prototype.indexAction = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var db, fields, iret, row, e_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        db = this.db;
+                        return [4 /*yield*/, db.beginTransaction()];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 9, , 11]);
+                        return [4 /*yield*/, db.existsTable('t_product_sku')];
+                    case 3:
+                        fields = _a.sent();
+                        return [4 /*yield*/, db.addField('t_product_sku', 'Fbox2')];
+                    case 4:
+                        _a.sent();
+                        console.log(fields);
+                        return [4 /*yield*/, db.insert('t_product_sku', {
+                                'Fname': 'xxxx'
+                            })];
+                    case 5:
+                        iret = _a.sent();
+                        console.log(iret);
+                        return [4 /*yield*/, db.getRow('SELECT * FROM t_product_sk WHERE Fid=?', iret.insertId)];
+                    case 6:
+                        row = _a.sent();
+                        console.log(row);
+                        return [4 /*yield*/, db.insert('t_product_sku', {
+                                'Fname': 'xxxx'
+                            })];
+                    case 7:
+                        _a.sent();
+                        return [4 /*yield*/, db.commit()];
+                    case 8:
+                        _a.sent();
+                        return [3 /*break*/, 11];
+                    case 9:
+                        e_1 = _a.sent();
+                        return [4 /*yield*/, db.rollback()];
+                    case 10:
+                        _a.sent();
+                        throw e_1;
+                    case 11:
                         console.log(this.getSession('abc'));
                         this.assign('title', this.getSession('abc'));
                         this.assign('foot_content', 'All rights reserved.');
@@ -67,15 +121,10 @@ var Index = (function (_super) {
     Index.prototype.loginAction = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.initSesion()];
-                    case 1:
-                        _a.sent();
-                        console.log(Date.now() - this.context.startTime);
-                        this.setSession('abc', 'xxxxxx');
-                        this.end('login');
-                        return [2 /*return*/];
-                }
+                console.log(Date.now() - this.context.startTime);
+                this.setSession('abc', 'xxxxxx');
+                this.end('login');
+                return [2 /*return*/];
             });
         });
     };

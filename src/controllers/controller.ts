@@ -8,16 +8,29 @@ export class Controller {
     public context: HttpContext = null;
     public sdopx: Sdopx = new Sdopx();
     public template_dirs = null;
-
+    public db = null;
 
     public constructor(context: HttpContext) {
         this.context = context;
+    }
+
+    public async init(){
+
     }
 
     private initSdopx() {
         if (this.sdopx === null) {
             this.sdopx = new Sdopx();
             this.sdopx.setTemplateDir(this.template_dirs || Beacon.VIEW_PATH);
+        }
+    }
+
+    public async initDB(type = 'mysql',options?:any) {
+        if (this.db == null) {
+            if (type == 'mysql') {
+                let Mysql = require("../adapter/db/mysql").Mysql;
+                this.db = new Mysql(options);
+            }
         }
     }
 
@@ -170,6 +183,9 @@ export class Controller {
      * @return {}          []
      */
     public end(obj = null, encoding = null) {
+        if (this.db) {
+            this.db.end();
+        }
         this.context.end(obj, encoding);
     }
 

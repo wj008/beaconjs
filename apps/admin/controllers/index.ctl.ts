@@ -1,4 +1,5 @@
 import {Beacon} from '../../../src/core/beacon';
+import {Mysql} from '../../../src/adapter/db/mysql';
 export class Index extends Beacon.Controller {
 
     public indexAction() {

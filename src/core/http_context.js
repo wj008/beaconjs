@@ -4,7 +4,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments)).next());
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
@@ -171,10 +171,8 @@ var HttpContext = (function () {
                         if (!this.req.readable) {
                             return [2 /*return*/];
                         }
-                        if (!(['POST', 'PUT', 'PATCH'].indexOf(this.req.method) > -1))
-                            return [3 /*break*/, 4];
-                        if (!this.hasPayload())
-                            return [3 /*break*/, 2];
+                        if (!(['POST', 'PUT', 'PATCH'].indexOf(this.req.method) > -1)) return [3 /*break*/, 4];
+                        if (!this.hasPayload()) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.parseQuerystring(encoding)];
                     case 1:
                         _a.sent();

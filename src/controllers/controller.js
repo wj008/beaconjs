@@ -4,7 +4,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments)).next());
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
@@ -40,13 +40,36 @@ var Controller = (function () {
         this.context = null;
         this.sdopx = new sdopx_1.Sdopx();
         this.template_dirs = null;
+        this.db = null;
         this.context = context;
     }
+    Controller.prototype.init = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/];
+            });
+        });
+    };
     Controller.prototype.initSdopx = function () {
         if (this.sdopx === null) {
             this.sdopx = new sdopx_1.Sdopx();
             this.sdopx.setTemplateDir(this.template_dirs || Beacon.VIEW_PATH);
         }
+    };
+    Controller.prototype.initDB = function (type, options) {
+        if (type === void 0) { type = 'mysql'; }
+        return __awaiter(this, void 0, void 0, function () {
+            var Mysql;
+            return __generator(this, function (_a) {
+                if (this.db == null) {
+                    if (type == 'mysql') {
+                        Mysql = require("../adapter/db/mysql").Mysql;
+                        this.db = new Mysql(options);
+                    }
+                }
+                return [2 /*return*/];
+            });
+        });
     };
     Controller.prototype.assign = function (key, value) {
         if (value === void 0) { value = null; }
@@ -174,6 +197,9 @@ var Controller = (function () {
     Controller.prototype.end = function (obj, encoding) {
         if (obj === void 0) { obj = null; }
         if (encoding === void 0) { encoding = null; }
+        if (this.db) {
+            this.db.end();
+        }
         this.context.end(obj, encoding);
     };
     Controller.prototype.getContentType = function () {

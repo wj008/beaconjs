@@ -6,6 +6,7 @@ const hostname = '127.0.0.1';
 const port = 3001;
 var serve = serveStatic('public', {'index': ['index.html', 'index.htm']});
 
+Beacon.debug = true;
 Beacon.init();
 Beacon.Route.loadRoute('admin');
 Beacon.Route.loadRoute('home');

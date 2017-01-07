@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments)).next());
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
@@ -100,12 +100,12 @@ var Beacon = (function (_super) {
                         return [4 /*yield*/, context.parsePayload(Beacon.getConfig('default_encoding', 'utf-8'))];
                     case 2:
                         _a.sent();
-                        return [4 /*yield*/, new ctlClass(context)];
+                        ctlobj = new ctlClass(context);
+                        return [4 /*yield*/, ctlobj.init()];
                     case 3:
-                        ctlobj = _a.sent();
+                        _a.sent();
                         act = Beacon.lowerFirst(Beacon.toCamel(args.act || 'index')) + 'Action';
-                        if (!(ctlobj[act] && Beacon.isFunction(ctlobj[act])))
-                            return [3 /*break*/, 5];
+                        if (!(ctlobj[act] && Beacon.isFunction(ctlobj[act]))) return [3 /*break*/, 5];
                         return [4 /*yield*/, ctlobj[act]()];
                     case 4:
                         _a.sent();
@@ -195,6 +195,7 @@ Beacon.Controller = controller_1.Controller;
 Beacon._sessionType = {};
 Beacon._sessionUsed = {};
 Beacon._gc_timer = null;
+Beacon.debug = false;
 //框架版本号
 Beacon.version = (function () {
     var packageFile = Beacon.BEACON_PATH + "/package.json";
