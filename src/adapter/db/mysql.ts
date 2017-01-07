@@ -1,4 +1,5 @@
-import  mysql=require("mysql");
+import  mysql=require("mysql2");
+
 declare var Beacon: any;
 
 class SqlBlock {
@@ -15,9 +16,18 @@ export class Mysql {
 
     public static pool = null;
     public conn = null;
+    public _inTransaction = 0;
     private _options = null;
+    public static instance: Mysql = null;
 
     private SqlList = [];
+
+    public static getDBInstance(): Mysql {
+        if (Mysql.instance != null) {
+            return Mysql.instance;
+        }
+        return Mysql.instance = new Mysql();
+    }
 
     public static createPool() {
         let options = Beacon.getConfig('mysql:*');
@@ -42,25 +52,33 @@ export class Mysql {
                 })
             });
         }
+        let that = this;
         if (Mysql.pool == null) {
             Mysql.createPool();
         }
-        return this.conn = await new Promise(function (resolve, reject) {
-            Mysql.pool.getConnection(function (err, connection) {
-                if (err) {
-                    return reject(err);
-                }
-                return resolve(connection);
-            });
+        let deferred = Beacon.defer();
+        Mysql.pool.getConnection(function (err, connection) {
+            if (err) {
+                return deferred.reject(err);
+            }
+            if (connection._onerror) {
+                connection.removeListener('error', connection._onerror);
+            }
+            connection._onerror = function (err) {
+                that.release();
+                console.log(err.code); // 'ER_BAD_DB_ERROR'
+            };
+            connection.once('error', connection._onerror);
+            return deferred.resolve(connection);
         });
+        return this.conn = await deferred.promise;
     }
 
-
     public async query(sql: any, args?: any) {
-        if (this.conn == null) {
-            await this.getConnection();
+        if (this._inTransaction > 0 && this.conn == null) {
+            throw new Error('mysql is disconnect');
         }
-        let conn = this.conn;
+        let conn = await this.getConnection();
         return await new Promise(function (resolve, reject) {
                 if (args === void 0 || args === null) {
                     conn.query(sql, function (err, result) {
@@ -87,17 +105,20 @@ export class Mysql {
         );
     }
 
-    public async end() {
+    public async release() {
         if (this.conn) {
-            this.conn.destroy();
+            Mysql.pool.releaseConnection(this.conn);
+            this.conn.release();
+            this.conn = null;
         }
     }
 
     public async beginTransaction() {
-        if (this.conn == null) {
-            await this.getConnection();
+        let conn = await this.getConnection();
+        this._inTransaction++;
+        if (this._inTransaction > 1) {
+            return false;
         }
-        let conn = this.conn;
         return await new Promise(function (resolve, reject) {
             conn.beginTransaction(function (err) {
                 if (err) {
@@ -110,6 +131,10 @@ export class Mysql {
 
     public async commit() {
         if (this.conn == null) {
+            throw new Error('mysql is disconnect');
+        }
+        this._inTransaction--;
+        if (this._inTransaction > 0) {
             return false;
         }
         let conn = this.conn;
@@ -125,6 +150,10 @@ export class Mysql {
 
     public async rollback() {
         if (this.conn == null) {
+            throw new Error('mysql is disconnect');
+        }
+        this._inTransaction--;
+        if (this._inTransaction > 0) {
             return false;
         }
         let conn = this.conn;
@@ -295,6 +324,8 @@ export class Mysql {
         switch (type) {
             case 'VARCHAR':
             case 'INT':
+            case 'BIGINT':
+            case 'SMALLINT':
             case 'INTEGER':
             case 'TINYINT':
                 excSql += type + '(' + len + ')';
@@ -333,6 +364,8 @@ export class Mysql {
         switch (type) {
             case 'VARCHAR':
             case 'INT':
+            case 'BIGINT':
+            case 'SMALLINT':
             case 'INTEGER':
             case 'TINYINT':
                 excSql += type + '(' + len + ')';
@@ -376,10 +409,12 @@ export class Mysql {
         }, options);
         let {type, len, scale, def, comment}=options;
         type = String(type).toUpperCase();
-        let excSql = `ALTER TABLE ${tbname} CHANGE \`${name}\` `;
+        let excSql = `ALTER TABLE ${tbname} CHANGE \`${oldname}\` \`${newname}\` `;
         switch (type) {
             case 'VARCHAR':
             case 'INT':
+            case 'BIGINT':
+            case 'SMALLINT':
             case 'INTEGER':
             case 'TINYINT':
                 excSql += type + '(' + len + ')';
