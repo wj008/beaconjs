@@ -180,15 +180,10 @@ export class Controller {
         return this.context.write(obj, encoding);
     }
 
-    /**
-     * end output
-     * @param  {Object} obj      []
-     * @param  {String} encoding [content encoding]
-     * @return {}          []
-     */
     public end(obj = null, encoding = null) {
         if (this.db) {
-            this.db.end();
+            this.db.release();
+            this.db=null;
         }
         this.context.end(obj, encoding);
     }
