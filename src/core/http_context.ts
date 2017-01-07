@@ -164,7 +164,7 @@ export class HttpContext {
         }
         let uploadDir = Beacon.getConfig('post:file_upload_path') || null;
         if (!uploadDir) {
-            uploadDir = path.join(os.tmpdir(),'beacon/upload');
+            uploadDir = path.join(os.tmpdir(), 'beacon/upload');
         }
         Beacon.mkdir(uploadDir);
         await this.getFormData(uploadDir);
