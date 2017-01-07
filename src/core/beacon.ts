@@ -101,8 +101,12 @@ export class Beacon extends Beaconkit {
                     if (isInit && ctlobj.finish && Beacon.isFunction(ctlobj.finish)) {
                         await ctlobj.finish();
                     }
+                    if (ctlobj.end && Beacon.isFunction(ctlobj.end)) {
+                        ctlobj.end();
+                    } else {
+                        context.end();
+                    }
                 }
-                context.end();
             } else {
                 Beacon.displayError(context, 404, 'then page url:"' + context.url + '" is not foult!');
             }
