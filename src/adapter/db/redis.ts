@@ -15,7 +15,6 @@ export class Redis {
     }
 
     public constructor(options = null) {
-        //console.log('create Redis');
         this._options = options;
     }
 
@@ -48,7 +47,7 @@ export class Redis {
                 reject(err);
             });
             client.on('end', function (err) {
-                //console.log('redis end....');
+                //console.log('redis release....');
                 that.connected = false;
                 that.client = null;
                 reject(err);
@@ -110,7 +109,6 @@ export class Redis {
                 if (err) {
                     return reject(err);
                 }
-                console.log('expire', key, timeout);
                 resolve(reply);
             });
         });
@@ -123,7 +121,6 @@ export class Redis {
                 if (err) {
                     return reject(err);
                 }
-                console.log('ttl', key);
                 resolve(reply);
             });
         });
