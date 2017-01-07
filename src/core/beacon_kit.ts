@@ -245,6 +245,21 @@ export class Beaconkit {
         return deferred;
     };
 
+    public static promisify(fn, receiver) {
+        return function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            return new Promise(function (resolve, reject) {
+                fn.apply(receiver, [].concat(args, [function (err, res) {
+                    return err ? reject(err) : resolve(res);
+                }]));
+            });
+        };
+    }
+
+
     public static getFiles(dir, prefix, filter) {
         dir = path.normalize(dir);
         if (!fs.existsSync(dir)) {
@@ -299,6 +314,7 @@ export class Beaconkit {
         }
         return true;
     };
+
 
     public static toUnder(str) {
         str = String(str).replace(/[A-Z]/g, function ($0) {
