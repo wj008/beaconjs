@@ -1,40 +1,39 @@
 "use strict";
-var path = require("path");
-var Hjson = require("hjson");
-var fs = require("fs");
-var Config = (function () {
-    function Config(dirname) {
+const path = require("path");
+const Hjson = require("hjson");
+const fs = require("fs");
+class Config {
+    constructor(dirname) {
         this._names = {};
         this._global = {};
         this._dirname = dirname;
     }
-    Config.prototype.setDir = function (dirname) {
+    setDir(dirname) {
         this._dirname = dirname;
-    };
-    Config.prototype.getDir = function () {
+    }
+    getDir() {
         return this._dirname;
-    };
+    }
     //加载配置文件
-    Config.prototype.load = function (name, filepath) {
-        if (filepath === void 0) { filepath = null; }
+    load(name, filepath = null) {
         if (this._names[name] !== void 0) {
             return this._names[name];
         }
-        var that = this;
-        var _loadFilepath = function (name, filepath) {
-            var exists = fs.existsSync(filepath);
+        let that = this;
+        let _loadFilepath = function (name, filepath) {
+            let exists = fs.existsSync(filepath);
             if (!exists) {
                 throw new Error("cat not found config file:" + filepath);
             }
-            var extname = path.extname(filepath).toLowerCase();
+            let extname = path.extname(filepath).toLowerCase();
             if (extname == '.json' || extname == '.js') {
-                var data = require(filepath);
+                let data = require(filepath);
                 that._names[name] = data;
                 return data;
             }
             try {
-                var htext = fs.readFileSync(filepath, 'utf8');
-                var data = Hjson.parse(htext);
+                let htext = fs.readFileSync(filepath, 'utf8');
+                let data = Hjson.parse(htext);
                 that._names[name] = data;
                 return data;
             }
@@ -45,29 +44,29 @@ var Config = (function () {
         if (filepath && typeof filepath === 'string') {
             return _loadFilepath(name, filepath);
         }
-        var extname = path.extname(name).toLowerCase();
+        let extname = path.extname(name).toLowerCase();
         if (extname == '') {
-            var extnames = ['.config.js', '.json', '.hjson'];
-            var files = [];
-            for (var i = 0; i < extnames.length; i++) {
-                var tempext = extnames[i];
-                var filepath_1 = path.join(that._dirname, name + tempext);
+            let extnames = ['.config.js', '.json', '.hjson'];
+            let files = [];
+            for (let i = 0; i < extnames.length; i++) {
+                let tempext = extnames[i];
+                let filepath = path.join(that._dirname, name + tempext);
                 try {
-                    var data = _loadFilepath(name, filepath_1);
+                    let data = _loadFilepath(name, filepath);
                     if (data) {
                         return data;
                     }
                 }
                 catch (e) {
-                    files.push(filepath_1);
+                    files.push(filepath);
                 }
             }
             throw new Error('cat not found config files:' + files.join(','));
         }
-        var tempname = name;
+        let tempname = name;
         filepath = path.join(that._dirname, tempname);
         try {
-            var data = _loadFilepath(name, filepath);
+            let data = _loadFilepath(name, filepath);
             if (data) {
                 return data;
             }
@@ -76,18 +75,16 @@ var Config = (function () {
             throw new Error('cat not found config name:' + name);
         }
         return null;
-    };
-    Config.prototype.gload = function (name, filepath) {
-        if (filepath === void 0) { filepath = null; }
-        var data = this.load(name, filepath);
+    }
+    gload(name, filepath = null) {
+        let data = this.load(name, filepath);
         this._global = Object.assign(this._global, data);
         return this._global;
-    };
+    }
     //获取值
-    Config.prototype.get = function (key, def) {
-        if (def === void 0) { def = null; }
-        var name = null;
-        var temp = key.split(':');
+    get(key, def = null) {
+        let name = null;
+        let temp = key.split(':');
         if (temp.length == 2) {
             name = temp[0];
             key = temp[1];
@@ -104,11 +101,11 @@ var Config = (function () {
                     return def;
                 }
                 if (typeof def === 'object') {
-                    var ret = {};
-                    for (var nkey in this._names[name]) {
+                    let ret = {};
+                    for (let nkey in this._names[name]) {
                         ret[nkey] = this._names[name][nkey];
                     }
-                    for (var dkey in def) {
+                    for (let dkey in def) {
                         if (ret[dkey] === void 0) {
                             ret[dkey] = def[dkey];
                         }
@@ -118,11 +115,11 @@ var Config = (function () {
                 return this._names[name];
             }
             if (typeof def === 'object') {
-                var ret = {};
-                for (var nkey in this._global) {
+                let ret = {};
+                for (let nkey in this._global) {
                     ret[nkey] = this._global[nkey];
                 }
-                for (var dkey in def) {
+                for (let dkey in def) {
                     if (ret[dkey] === void 0) {
                         ret[dkey] = def[dkey];
                     }
@@ -131,7 +128,7 @@ var Config = (function () {
             }
             return this._global;
         }
-        var keys = key.split('.');
+        let keys = key.split('.');
         if (keys.length == 1) {
             if (name) {
                 if (!this._names[name]) {
@@ -141,7 +138,7 @@ var Config = (function () {
             }
             return this._global[key] === void 0 ? def : this._global[key];
         }
-        var data = null;
+        let data = null;
         if (name) {
             if (!this._names[name]) {
                 return def;
@@ -151,19 +148,19 @@ var Config = (function () {
         else {
             data = this._global;
         }
-        for (var i = 0; i < keys.length; i++) {
-            var tkey = keys[i];
+        for (let i = 0; i < keys.length; i++) {
+            let tkey = keys[i];
             if (typeof data !== 'object' || data[tkey] === void 0) {
                 return def;
             }
             data = data[tkey];
         }
         return data;
-    };
+    }
     //设置值
-    Config.prototype.set = function (key, val) {
-        var name = null;
-        var temp = key.split(':');
+    set(key, val) {
+        let name = null;
+        let temp = key.split(':');
         if (temp.length == 2) {
             name = temp[0];
             key = temp[1];
@@ -176,17 +173,17 @@ var Config = (function () {
                 if (!this._names[name]) {
                     this._names[name] = {};
                 }
-                for (var key_1 in val) {
-                    this._names[name][key_1] = val[key_1];
+                for (let key in val) {
+                    this._names[name][key] = val[key];
                 }
                 return;
             }
-            for (var key_2 in val) {
-                this._global[key_2] = val[key_2];
+            for (let key in val) {
+                this._global[key] = val[key];
             }
             return;
         }
-        var keys = key.split('.');
+        let keys = key.split('.');
         if (keys.length == 1) {
             if (name) {
                 if (!this._names[name]) {
@@ -197,7 +194,7 @@ var Config = (function () {
             }
             this._global[key] = val;
         }
-        var data = null;
+        let data = null;
         if (name) {
             if (!this._names[name]) {
                 this._names[name] = {};
@@ -207,8 +204,8 @@ var Config = (function () {
         else {
             data = this._global;
         }
-        for (var i = 0; i < keys.length - 1; i++) {
-            var tkey = keys[i];
+        for (let i = 0; i < keys.length - 1; i++) {
+            let tkey = keys[i];
             if (typeof data !== 'object') {
                 return;
             }
@@ -218,25 +215,25 @@ var Config = (function () {
             data = data[tkey];
         }
         data[keys[keys.length - 1]] = val;
-    };
-    Config.prototype.save = function (filepath, data) {
-        var extname = path.extname(filepath).toLowerCase();
+    }
+    save(filepath, data) {
+        let extname = path.extname(filepath).toLowerCase();
         if (typeof data !== "object") {
             throw new Error('data must by object');
         }
-        var code = JSON.stringify(data);
+        let code = JSON.stringify(data);
         if (!(extname == '.js' || extname == '.json' || extname == '.hjson')) {
             throw new Error('This extension does not support:' + extname);
         }
         if (extname === '.js') {
             code = 'module.exports = ' + code;
         }
-        var dirname = path.dirname(filepath);
+        let dirname = path.dirname(filepath);
         if (dirname == '.') {
             dirname = this._dirname;
             filepath = path.join(dirname, filepath);
         }
-        var exists = fs.existsSync(dirname);
+        let exists = fs.existsSync(dirname);
         if (!exists) {
             throw new Error("cat not found the dirname:" + dirname);
         }
@@ -246,8 +243,7 @@ var Config = (function () {
         catch (err) {
             throw err;
         }
-    };
-    return Config;
-}());
+    }
+}
 exports.Config = Config;
 //# sourceMappingURL=config.js.map

@@ -1,35 +1,20 @@
 import {Beacon} from "../../../src/core/beacon";
 import {Mysql} from "../../../src/adapter/db/mysql";
+import {Redis} from "../../../src/adapter/db/redis";
 
 export class Index extends Beacon.Controller {
 
+    public redis: Redis;
+
     public async init() {
         await this.initSesion();
-        await this.initDB('mysql');
+        // await this.initDB('mysql');
+        this.redis = Redis.getRedisInstance();
     }
 
-    public async indexAction() {
-        let db:Mysql = this.db;
-        await db.beginTransaction();
-        try {
-            let fields = await db.existsTable('t_product_sku');
-            await db.addField('t_product_sku', 'Fbox2');
-            console.log(fields);
-            let iret = await db.insert('t_product_sku', {
-                'Fname': 'xxxx'
-            });
-            console.log(iret);
-            let row = await db.getRow('SELECT * FROM t_product_sk WHERE Fid=?', iret.insertId);
-            console.log(row);
-            await db.insert('t_product_sku', {
-                'Fname': 'xxxx'
-            });
-            await db.commit();
-        } catch (e) {
 
-            await db.rollback();
-            throw e;
-        }
+    public async indexAction() {
+        let db: Mysql = this.db;
         console.log(this.getSession('abc'));
         this.assign('title', this.getSession('abc'));
         this.assign('foot_content', 'All rights reserved.');
@@ -37,10 +22,10 @@ export class Index extends Beacon.Controller {
         //  throw new Error('数据异常请重试.');
         this.display('index');
         console.log(Date.now() - this.context.startTime);
-
     }
 
     public async loginAction() {
+        console.log(await this.redis.get('abc'));
         console.log(Date.now() - this.context.startTime);
         this.setSession('abc', 'xxxxxx');
         this.end('login');

@@ -1,70 +1,68 @@
 "use strict";
-var net = require("net");
-var fs = require("fs");
-var path = require("path");
-var crypto = require("crypto");
-var Beaconkit = (function () {
-    function Beaconkit() {
-    }
-    Beaconkit.isFunction = function (arg) {
+const net = require("net");
+const fs = require("fs");
+const path = require("path");
+const crypto = require("crypto");
+class Beaconkit {
+    static isFunction(arg) {
         return typeof arg === 'function';
-    };
-    Beaconkit.isArguments = function (arg) {
+    }
+    static isArguments(arg) {
         return Beaconkit.toString.call(arg) === '[object Arguments]';
-    };
+    }
     ;
-    Beaconkit.isBoolean = function (arg) {
+    static isBoolean(arg) {
         return typeof arg === 'boolean';
-    };
+    }
     ;
-    Beaconkit.isNumber = function (arg) {
+    static isNumber(arg) {
         return typeof arg === 'number';
-    };
+    }
     ;
-    Beaconkit.isObject = function (arg) {
+    static isObject(arg) {
         if (Beaconkit.isBuffer(arg)) {
             return false;
         }
         return typeof arg === 'object' && arg !== null;
-    };
+    }
     ;
-    Beaconkit.isString = function (arg) {
+    static isString(arg) {
         return typeof arg === 'string';
-    };
+    }
     ;
-    Beaconkit.isSymbol = function (arg) {
+    static isSymbol(arg) {
         return typeof arg === 'symbol';
-    };
-    Beaconkit.isRegExp = function (re) {
+    }
+    static isRegExp(re) {
         return Beaconkit.isObject(re) && Beaconkit.toString.call(re) === '[object RegExp]';
-    };
-    Beaconkit.isFile = function (p) {
+    }
+    static isFile(p) {
         try {
             return fs.statSync(p).isFile();
         }
         catch (e) {
         }
         return false;
-    };
+    }
     ;
-    Beaconkit.isDir = function (p) {
+    static isDir(p) {
         try {
             return fs.statSync(p).isDirectory();
         }
         catch (e) {
         }
         return false;
-    };
+    }
     ;
-    Beaconkit.isNumeric = function (obj) {
+    static isNumeric(obj) {
         if (!obj) {
             return false;
         }
-        var re = /^((\-?\d*\.?\d*(?:e[+-]?\d*(?:\d?\.?|\.?\d?)\d*)?)|(0[0-7]+)|(0x[0-9a-f]+))$/i;
+        let re = /^((\-?\d*\.?\d*(?:e[+-]?\d*(?:\d?\.?|\.?\d?)\d*)?)|(0[0-7]+)|(0x[0-9a-f]+))$/i;
         return re.test(obj);
-    };
+    }
     ;
-    Beaconkit.isPromise = function (obj) {
+    static isPromise(obj) {
         if (typeof Promise == 'function') {
             if (obj instanceof Promise) {
                 return true;
@@ -74,9 +72,9 @@ var Beaconkit = (function () {
         else {
             return !!(obj && typeof obj.then === 'function' && typeof obj['catch'] === 'function');
         }
-    };
+    }
     ;
-    Beaconkit.isNull = function (obj) {
+    static isNull(obj) {
         if (obj === void 0 || obj === null) {
             return true;
         }
@@ -84,8 +82,8 @@ var Beaconkit = (function () {
             return true;
         }
         return false;
-    };
-    Beaconkit.isEmpty = function (obj) {
+    }
+    static isEmpty(obj) {
         if (Beaconkit.isNull(obj)) {
             return true;
         }
@@ -105,22 +103,22 @@ var Beaconkit = (function () {
             return !obj;
         }
         return false;
-    };
+    }
     ;
-    Beaconkit.md5 = function (str) {
+    static md5(str) {
         var instance = crypto.createHash('md5');
         instance.update(str + '', 'utf8');
         return instance.digest('hex');
-    };
+    }
     ;
-    Beaconkit.isDate = function (arg) {
+    static isDate(arg) {
         return arg instanceof Date;
-    };
-    Beaconkit.isError = function (e) {
+    }
+    static isError(e) {
         return (Beaconkit.toString.call(e) === '[object Error]' || e instanceof Error);
-    };
-    Beaconkit.isValidDate = function (obj) {
-        var date = null;
+    }
+    static isValidDate(obj) {
+        let date = null;
         if (obj instanceof Date) {
             date = obj;
         }
@@ -138,10 +136,9 @@ var Beaconkit = (function () {
             return false;
         }
         return true;
-    };
-    Beaconkit.datetime = function (obj, format) {
-        if (format === void 0) { format = 'yyyy-MM-dd'; }
-        var date = null;
+    }
+    static datetime(obj, format = 'yyyy-MM-dd') {
+        let date = null;
         if (obj instanceof Date) {
             date = obj;
         }
@@ -158,16 +155,15 @@ var Beaconkit = (function () {
         if (date == null || date.toString() == 'Invalid Date' || isNaN(date.getTime())) {
             return obj;
         }
-        var zeroize = function (value, length) {
-            if (length === void 0) { length = 2; }
-            var zeros = '';
+        let zeroize = function (value, length = 2) {
+            let zeros = '';
             value = String(value);
-            for (var i = 0; i < (length - value.length); i++) {
+            for (let i = 0; i < (length - value.length); i++) {
                 zeros += '0';
             }
             return zeros + value;
         };
-        var mask = format.replace(/"[^"]*"|'[^']*'|\b(?:d{1,4}|M{1,4}|(?:yyyy|yy)|([hHmstT])\1?|[lLZ])\b/g, function ($0) {
+        let mask = format.replace(/"[^"]*"|'[^']*'|\b(?:d{1,4}|M{1,4}|(?:yyyy|yy)|([hHmstT])\1?|[lLZ])\b/g, function ($0) {
             switch ($0) {
                 case 'd':
                     return date.getDate();
@@ -223,25 +219,23 @@ var Beaconkit = (function () {
             }
         });
         return mask;
-    };
-    Beaconkit.getNow = function (format) {
-        if (format === void 0) { format = 'yyyy-MM-dd HH:mm:ss'; }
+    }
+    static getNow(format = 'yyyy-MM-dd HH:mm:ss') {
         return Beaconkit.datetime(new Date(), format);
-    };
-    Beaconkit.getDate = function (format) {
-        if (format === void 0) { format = 'yyyy-MM-dd'; }
+    }
+    static getDate(format = 'yyyy-MM-dd') {
         return Beaconkit.datetime(new Date(), format);
-    };
-    Beaconkit.defer = function () {
-        var deferred = { promise: null, resolve: null, reject: null };
+    }
+    static defer() {
+        let deferred = { promise: null, resolve: null, reject: null };
         deferred.promise = new Promise(function (resolve, reject) {
             deferred.resolve = resolve;
             deferred.reject = reject;
         });
         return deferred;
-    };
+    }
     ;
-    Beaconkit.getFiles = function (dir, prefix, filter) {
+    static getFiles(dir, prefix, filter) {
         dir = path.normalize(dir);
         if (!fs.existsSync(dir)) {
             return [];
@@ -273,18 +267,16 @@ var Beaconkit = (function () {
             }
         });
         return result;
-    };
+    }
     ;
-    Beaconkit.chmod = function (p, mode) {
-        if (mode === void 0) { mode = 777; }
+    static chmod(p, mode = 777) {
         if (!fs.existsSync(p)) {
             return true;
         }
         return fs.chmodSync(p, mode);
-    };
+    }
     ;
-    Beaconkit.mkdir = function (p, mode) {
-        if (mode === void 0) { mode = 777; }
+    static mkdir(p, mode = 777) {
         if (fs.existsSync(p)) {
             Beaconkit.chmod(p, mode);
             return true;
@@ -298,48 +290,46 @@ var Beaconkit = (function () {
             Beaconkit.mkdir(p, mode);
         }
         return true;
-    };
+    }
     ;
-    Beaconkit.toUnder = function (str) {
+    static toUnder(str) {
         str = String(str).replace(/[A-Z]/g, function ($0) {
             return '_' + String($0).toLocaleLowerCase();
         }).replace(/^_+/, '');
         return str;
-    };
-    Beaconkit.toCamel = function (str) {
+    }
+    static toCamel(str) {
         str = String(str).replace(/_+/g, '_').replace(/_[a-z]/g, function ($0) {
             return String($0).toLocaleUpperCase().substr(1);
         }).replace(/^[a-z]/, function ($0) {
             return String($0).toLocaleUpperCase();
         });
         return str;
-    };
-    Beaconkit.lowerFirst = function (str) {
+    }
+    static lowerFirst(str) {
         return String(str).replace(/^[A-Z]/, function ($0) {
             return String($0).toLocaleLowerCase();
         });
-    };
-    Beaconkit.upperFirst = function (str) {
+    }
+    static upperFirst(str) {
         return String(str).replace(/^[a-z]/, function ($0) {
             return String($0).toLocaleUpperCase();
         });
-    };
-    Beaconkit.uuid = function (length) {
-        if (length === void 0) { length = 32; }
-        var str = crypto.randomBytes(Math.ceil(length * 0.75)).toString('base64').slice(0, length);
+    }
+    static uuid(length = 32) {
+        let str = crypto.randomBytes(Math.ceil(length * 0.75)).toString('base64').slice(0, length);
         return str.replace(/[\+\/]/g, '_');
-    };
+    }
     ;
-    Beaconkit.clone = function (obj) {
+    static clone(obj) {
         try {
             return JSON.parse(JSON.stringify(obj));
         }
         catch (e) {
             return null;
         }
-    };
-    return Beaconkit;
-}());
+    }
+}
 Beaconkit.toString = Object.prototype.toString;
 Beaconkit.isArray = Array.isArray;
 Beaconkit.isBuffer = Buffer.isBuffer;

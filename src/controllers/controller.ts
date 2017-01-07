@@ -14,7 +14,11 @@ export class Controller {
         this.context = context;
     }
 
-    public async init(){
+    public async init() {
+
+    }
+
+    public async finish() {
 
     }
 
@@ -25,7 +29,7 @@ export class Controller {
         }
     }
 
-    public async initDB(type = 'mysql',options?:any) {
+    public async initDB(type = 'mysql', options?: any) {
         if (this.db == null) {
             if (type == 'mysql') {
                 let Mysql = require("../adapter/db/mysql").Mysql;
@@ -188,6 +192,7 @@ export class Controller {
         }
         this.context.end(obj, encoding);
     }
+
 
     public getContentType() {
         return this.context.getContentType();

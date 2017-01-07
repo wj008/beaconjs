@@ -1,20 +1,18 @@
 "use strict";
-var crypto = require("crypto");
-var Cookie = (function () {
-    function Cookie() {
-    }
-    Cookie.parse = function (str) {
-        var data = {};
+const crypto = require("crypto");
+class Cookie {
+    static parse(str) {
+        let data = {};
         if (!str) {
             return data;
         }
-        str.split(/; */).forEach(function (item) {
-            var pos = item.indexOf('=');
+        str.split(/; */).forEach(item => {
+            let pos = item.indexOf('=');
             if (pos === -1) {
                 return;
             }
-            var key = item.substr(0, pos).trim();
-            var val = item.substr(pos + 1).trim();
+            let key = item.substr(0, pos).trim();
+            let val = item.substr(pos + 1).trim();
             if ('"' === val[0]) {
                 val = val.slice(1, -1);
             }
@@ -28,10 +26,10 @@ var Cookie = (function () {
             }
         });
         return data;
-    };
-    Cookie.stringify = function (name, value, options) {
+    }
+    static stringify(name, value, options) {
         options = options || {};
-        var item = [name + '=' + encodeURIComponent(value)];
+        let item = [name + '=' + encodeURIComponent(value)];
         if (options.maxage) {
             item.push('Max-Age=' + options.maxage);
         }
@@ -41,7 +39,7 @@ var Cookie = (function () {
         if (options.path) {
             item.push('Path=' + options.path);
         }
-        var expires = options.expires;
+        let expires = options.expires;
         if (expires) {
             if (expires instanceof Date == false) {
                 expires = new Date(expires);
@@ -55,19 +53,17 @@ var Cookie = (function () {
             item.push('Secure');
         }
         return item.join('; ');
-    };
-    Cookie.sign = function (val, secret) {
-        if (secret === void 0) { secret = ''; }
+    }
+    static sign(val, secret = '') {
         secret = crypto.createHmac('sha256', secret).update(val).digest('base64');
         secret = secret.replace(/\=+$/, '');
         return val + '.' + secret;
-    };
-    Cookie.unsign = function (val, secret) {
-        var str = val.slice(0, val.lastIndexOf('.'));
+    }
+    static unsign(val, secret) {
+        let str = val.slice(0, val.lastIndexOf('.'));
         return Cookie.sign(str, secret) === val ? str : '';
-    };
-    return Cookie;
-}());
+    }
+}
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Cookie;
 //# sourceMappingURL=cookie.js.map

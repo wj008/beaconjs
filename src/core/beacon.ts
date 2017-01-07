@@ -86,10 +86,22 @@ export class Beacon extends Beaconkit {
         try {
             await context.parsePayload(Beacon.getConfig('default_encoding', 'utf-8'));
             let ctlobj = new ctlClass(context);
-            await ctlobj.init();
             let act = Beacon.lowerFirst(Beacon.toCamel(args.act || 'index')) + 'Action';
+            let isInit = false;
             if (ctlobj[act] && Beacon.isFunction(ctlobj[act])) {
-                await ctlobj[act]();
+                try {
+                    if (ctlobj.init && Beacon.isFunction(ctlobj.init)) {
+                        await ctlobj.init();
+                        isInit = true;
+                    }
+                    await ctlobj[act]();
+                } catch (e) {
+                    throw e;
+                } finally {
+                    if (isInit && ctlobj.finish && Beacon.isFunction(ctlobj.finish)) {
+                        await ctlobj.finish();
+                    }
+                }
                 context.end();
             } else {
                 Beacon.displayError(context, 404, 'then page url:"' + context.url + '" is not foult!');
