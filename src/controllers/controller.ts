@@ -26,8 +26,6 @@ export class Controller {
     public template_dirs = null;
     public db: Mysql = null;
 
-    public __exit = false;
-
     public constructor(context: HttpContext) {
         this.context = context;
     }
@@ -43,6 +41,7 @@ export class Controller {
     private initSdopx() {
         if (this.sdopx === null) {
             this.sdopx = new Sdopx(this);
+            this.sdopx.compile_check=false;
             let dirs = this.template_dirs || Beacon.VIEW_PATH;
             this.sdopx.setTemplateDir(dirs);
         }
@@ -204,7 +203,6 @@ export class Controller {
             this.db = null;
         }
         this.context.end(obj, encoding);
-        this.exit();
     }
 
     public exit() {
