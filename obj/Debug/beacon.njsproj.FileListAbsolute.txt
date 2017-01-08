@@ -1,1 +1,0 @@
-E:\node\beacon\bin\Microsoft.NodejsTools.WebRole.dll
