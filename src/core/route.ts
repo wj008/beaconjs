@@ -40,7 +40,7 @@ export class Route {
         if (idata == null) {
             return null;
         }
-        let arg = {app: '', ctl: '', act: ''};
+        let arg = {uri: idata.uri, app: '', ctl: '', act: ''};
         if (idata.default && Beacon.isObject(idata.default)) {
             arg = Object.assign(arg, idata.default);
         }
@@ -59,6 +59,7 @@ export class Route {
             }
         }
         arg.app = name;
+        arg.uri = idata.uri;
         return arg;
     }
 

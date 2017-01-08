@@ -1,0 +1,259 @@
+/* 
+ * 本程序由海口尚来网络科技有限公司独立开发，未经允许不可用于其他商业用途
+ * 作者：wj008 邮箱:26069680@qq.com  官方网站：www.web0898.com   * 
+ */
+(function ($) {
+    var tempdata = {};
+    function Linkage(element) {
+        var qem = $(element);
+        var name = qem.attr('name') || null;
+        var strval = qem.val() || '';
+        var values = /^\[.*\]$/.test(strval) ? $.parseJSON(strval) : null;
+        if (values !== null) {
+            for (var i in values) {
+                values[i] = values[i] == 0 ? "" : values[i];
+            }
+        }
+        //  console.log(values);
+        var source = qem.data('source') || qem.data('sourse') || null;
+        var method = (qem.data('method') || 'get').toLocaleLowerCase() === 'get' ? 'get' : 'post';
+        var level = qem.data('level') || 0;
+        var datatype = qem.data('datatype') || 'array';
+
+        var source = qem.data('source') || null;
+        var val_group = qem.data('val-group') || null;
+
+        var firstbox = null;
+        //更新值
+        var updateValue = function () {
+            var vlas = [];
+            var box = firstbox;
+            var empty = true;
+            while (box) {
+                var val = $(box).val();
+                if (val == "") {
+                    break;
+                }
+                vlas.push(val);
+                empty = false;
+                box = box.nextBox;
+            }
+            // console.log(vlas);
+            if (empty) {
+                qem.val("");
+            } else {
+                qem.val($.toJSON(vlas));
+            }
+        };
+        //拷贝属性
+        var copyAttr = function (box, lev) {
+            $.each(['class', 'style', 'readonly', 'disabled', 'size'], function (i, key) {
+                var attrval = qem.attr(key);
+                if (attrval) {
+                    if (key == "class") {
+                        attrval = attrval.replace('input-validation-error', '');
+                    }
+                    box.attr(key, attrval);
+                }
+            });
+            $.each(['header', 'val', 'val-msg', 'val-info', 'val-passed'], function (i, key) {
+                var data_name = key + lev.toString();
+                var data_val = qem.data(data_name) || null;
+                if (val_group && val_group.rule && (key == 'val' || key == 'val-msg')) {
+                    var idx = lev - 1;
+                    if (val_group.rule[idx] && key == 'val') {
+                        box.data('val', val_group.rule[idx]);
+                        return;
+                    }
+                    if (val_group.msg[idx] && key == 'val-msg') {
+                        box.data('val-msg', val_group.msg[idx]);
+                        return;
+                    }
+                }
+                if (data_val !== null) {
+                    box.data(key, data_val);
+                } else {
+                    data_name = key + 's';
+                    data_val = qem.data(data_name) || null;
+                    if (data_val && typeof (data_val[lev - 1]) !== 'undefiend') {
+                        box.data(key, data_val[lev - 1]);
+                    } else {
+                        data_val = qem.data(key) || null;
+                        if (data_val) {
+                            box.data(key, data_val);
+                        }
+                    }
+                }
+            });
+            if (name) {
+                var boxname = qem.data('name' + lev) || null;
+                if (boxname) {
+                    box.attr('name', boxname);
+                } else {
+                    box.attr('name', name + '[]');
+                    box.data('name-group', name);
+                }
+            }
+            if (qem.data('val-for')) {
+                box.data('val-for', qem.data('val-for'));
+            }
+            box.show();
+        };
+        var onchange = function (vals) {
+            var box = $(this);
+            var selected = box.children(':selected');
+            var childs = (selected.length > 0 && selected[0].childsData) ? selected[0].childsData : [];
+            //创建后面一个数据
+            createBox(box[0], childs, vals);
+        };
+        var removeBox = function (box) {
+            if (!box) {
+                return;
+            }
+            if (box.nextBox) {
+                removeBox(box.nextBox);
+            }
+            $(box).triggerHandler('mousedown');
+            $(box).empty().removeData('val').removeAttr('name').hide();
+        };
+        var initBox = function (box, lev, items, vals) {
+            if (level !== 0 && lev > level || !items) {
+                return;
+            }
+            var index = lev - 1;
+            vals = vals || [];
+            box[0].length = 0;
+            var header = box.data('header') || '';
+            if (header) {
+                if ($.isArray(header) && header.length >= 2) {
+                    box[0].add(new Option(header[1], header[0]));
+                } else {
+                    box[0].add(new Option(header, ''));
+                }
+            }
+            box.data('length', items.length);
+            var defval = vals[index] || '';
+            if (items !== null) {
+                for (var i = 0; i < items.length; i++) {
+                    var obj = {};
+                    //   console.log(typeof (items[i]));
+                    if (typeof (items[i]) === 'number' || typeof (items[i]) === 'string') {
+                        obj.value = items[i];
+                        obj.text = items[i];
+                        obj.childs = [];
+                    } else {
+                        if (typeof (items[i].value) !== 'undefined') {
+                            obj.value = items[i].value;
+                        } else if (typeof (items[i][0]) !== 'undefined') {
+                            obj.value = items[i][0];
+                        } else {
+                            continue;
+                        }
+                        if (typeof (items[i].text) !== 'undefined') {
+                            obj.text = items[i].text;
+                        } else if (typeof (items[i][1]) !== 'undefined') {
+                            // console.log(items[i]);
+                            obj.text = items[i][1];
+                        } else {
+                            obj.text = obj.value;
+                        }
+                        if (typeof (items[i].childs) !== 'undefined') {
+                            obj.childs = items[i].childs;
+                        } else if (typeof (items[i][2]) !== 'undefined') {
+                            obj.childs = items[i][2];
+                        } else {
+                            obj.childs = [];
+                        }
+                    }
+
+                    if (box[0].length == 1 && (obj.value === null || obj.value === '')) {
+                        box[0].length = 0;
+                        obj.value = '';
+                    }
+
+                    var optitem = new Option(obj.text, obj.value);
+                    box[0].add(optitem);
+                    //console.log(defval, obj.value);
+                    if (defval == obj.value) {
+                        optitem.selected = true;
+                    }
+                    optitem.childsData = obj.childs;
+                }
+            }
+            box.on('change', function () {
+                onchange.call(this);
+                updateValue();
+            });
+            onchange.call(box[0], vals);
+        };
+        var createBox = function (emum, items, vals) {
+            if (!items) {
+                return;
+            }
+            if ($.type(items) === 'string') {
+                if (!items) {
+                    return;
+                }
+                if (tempdata[items]) {
+                    createBox(emum, tempdata[items], vals);
+                    return;
+                }
+                $[method](items, function (data) {
+                    if (data) {
+                        tempdata[items] = data;
+                        createBox(emum, data, vals);
+                    } else {
+                        alert('无法加载远程数据！');
+                    }
+                }, 'json');
+
+                return;
+            }
+            var box = $(emum);
+            if (emum.nextBox) {
+                removeBox(emum.nextBox);
+            }
+            if (box.is('select')) {
+                var lev = box.data('temp-lev') + 1;
+                if ((level === 0 && items.length > 0) || level >= lev) {
+                    var nextQbox = emum.nextBox ? $(emum.nextBox).show() : $('<select>').insertAfter(box);
+                    copyAttr(nextQbox, lev);
+                    nextQbox.data('temp-lev', lev);
+                    emum.nextBox = nextQbox[0];
+                    initBox(nextQbox, lev, items, vals);
+                }
+            } else {
+                var fbox = $('<select>').insertAfter(box);
+                copyAttr(fbox, 1);
+                firstbox = fbox[0];
+                firstbox.nextBox = null;
+                fbox.data('temp-lev', 1);
+                initBox(fbox, 1, items, vals);
+            }
+        };
+
+        if (datatype == 'array') {
+            qem.hide().removeAttr('name');
+        }
+
+        createBox(element, source, values);
+        this.update = function () {
+            if (firstbox) {
+                removeBox(firstbox);
+            }
+            tempdata = {};
+            values = $.parseJSON(qem.val()) || null;
+            if (values !== null) {
+                for (var i in values) {
+                    values[i] = values[i] == 0 ? "" : values[i];
+                }
+            }
+            source = qem.data('source') || qem.data('sourse') || null;
+            method = (qem.data('method') || 'get').toLocaleLowerCase() === 'get' ? 'get' : 'post';
+            level = qem.data('level') || 0;
+            createBox(element, source, values);
+        };
+    }
+    $.sdopx_widget('linkage', Linkage, 'input.form-control.linkage:not(.notinit)');
+})(jQuery);
+

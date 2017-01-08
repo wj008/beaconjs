@@ -1,8 +1,0 @@
-<html>
-<title>{$title}</title>
-<body>
-<h1>{$message}</h1>
-<h2>{$status}</h2>
-<pre>{$error.stack}</pre>
-</body>
-</html>

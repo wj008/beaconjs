@@ -1,0 +1,14 @@
+{
+  "connectionLimit": 10,
+  //连接数
+  "host": "127.0.0.1",
+  //服务器IP
+  "user": "root",
+  //账号
+  "password": "123456",
+  //密码
+  "database": "smshop",
+  //数据库
+  "prefix":"sl_"
+  //表前缀
+}

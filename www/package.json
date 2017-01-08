@@ -1,0 +1,24 @@
+{
+  "name": "beacon",
+  "version": "0.0.1",
+  "main": "app.js",
+  "license": "Apache-2.0",
+  "description": "Embedded JavaScript templates",
+  "keywords": [
+    "beacon",
+    "sdopx"
+  ],
+  "author": "wj008 <26029682@qq.com>",
+  "repository": "git://github.com/wj008/beaconjs.git",
+  "dependencies": {
+    "@types/node": "^6.0.55",
+    "sdopx": ">=1.0.14",
+    "serve-static": ">=1.11.1",
+    "mime": ">=1.3.4",
+    "hjson": ">=2.3.1",
+
+    "mysql2": ">=1.1.2",
+    "redis": ">=2.6.3",
+    "multiparty": "4.1.2"
+  }
+}

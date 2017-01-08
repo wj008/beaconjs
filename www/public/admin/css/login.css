@@ -1,0 +1,15 @@
+/* CSS Document */
+body {
+	margin: 0px;
+	padding: 0px;
+	font-size: 12px;
+	background-color: #FFFFFF;
+	font-family:"微软雅黑", Tahoma, Geneva, sans-serif;
+}
+form{ border:none; margin:0; padding:0;}
+.hui{ color:#999;}
+.blu{ color:#09C;}
+.table{ margin-top:100px; height:390px; width:591px; color:#FFF; background:url(../images/login.png);}
+.table a{color:#FFF;}
+.model-text{ border:1px inset #069; height:20px; color:#666; width:160px;}
+.loginbtn{ border:none; padding:0; background:url(../images/loginbtn.png); width:112px; height:30px;}

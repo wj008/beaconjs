@@ -74,7 +74,7 @@ export class HttpContext {
     public parseRouteGet(args = {}) {
         this._route = Object.assign({}, args);
         for (let key in args) {
-            if (['app', 'ctl', 'act'].indexOf(key) > -1) {
+            if (['uri','app', 'ctl', 'act'].indexOf(key) > -1) {
                 continue;
             }
             if (this._get[key] === void 0) {

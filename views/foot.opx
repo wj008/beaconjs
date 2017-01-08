@@ -1,3 +1,0 @@
-{literal left='<@' right='@>'}
-<div data-option='{opt:1}'><@$foot_content@></div>
-{/literal}

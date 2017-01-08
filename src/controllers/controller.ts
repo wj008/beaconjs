@@ -1,14 +1,32 @@
 import path =require( 'path');
 import {HttpContext} from "../core/http_context";
+import {Mysql} from "../adapter/db/mysql";
 import {Sdopx} from "sdopx";
-
 declare var Beacon: any;
+
+Sdopx.registerFilter('pre', function (content: string, sdopx: Sdopx) {
+    if (sdopx.context) {
+        let uri = sdopx.context.route('uri', '');
+        content= content.replace(/__APPROOT__/g, uri);
+    }
+    return content;
+});
+
+export class ControllerError extends Error {
+    public code = '';
+    public constructor(msg: string, code: string) {
+        super(msg);
+        this.code = code;
+    }
+}
 export class Controller {
 
     public context: HttpContext = null;
-    public sdopx: Sdopx = new Sdopx();
+    public sdopx: Sdopx = null;
     public template_dirs = null;
-    public db = null;
+    public db: Mysql = null;
+
+    public __exit = false;
 
     public constructor(context: HttpContext) {
         this.context = context;
@@ -24,8 +42,9 @@ export class Controller {
 
     private initSdopx() {
         if (this.sdopx === null) {
-            this.sdopx = new Sdopx();
-            this.sdopx.setTemplateDir(this.template_dirs || Beacon.VIEW_PATH);
+            this.sdopx = new Sdopx(this);
+            let dirs = this.template_dirs || Beacon.VIEW_PATH;
+            this.sdopx.setTemplateDir(dirs);
         }
     }
 
@@ -51,8 +70,7 @@ export class Controller {
 
     public display(tplname: string) {
         this.initSdopx();
-        let content = this.sdopx.display(tplname);
-        this.end(content);
+        this.sdopx.display(tplname);
     }
 
     public fetch(tplname: string) {
@@ -183,11 +201,15 @@ export class Controller {
     public end(obj = null, encoding = null) {
         if (this.db) {
             this.db.release();
-            this.db=null;
+            this.db = null;
         }
         this.context.end(obj, encoding);
+        this.exit();
     }
 
+    public exit() {
+        throw new ControllerError('exit', 'CONTROLLER_EXIT');
+    }
 
     public getContentType() {
         return this.context.getContentType();

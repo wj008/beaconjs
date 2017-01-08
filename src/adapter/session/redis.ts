@@ -50,6 +50,7 @@ export class RedisSession implements SessionBase {
         if (!this._isInit) {
             return;
         }
+        this._data = this._data || {data: {}, expire: 0};
         if (this._isUpdate === false) {
             let oldval = this._data.data[name] === void 0 ? null : this._data.data[name];
             let oldtext = JSON.stringify(oldval);
@@ -60,7 +61,6 @@ export class RedisSession implements SessionBase {
                 this._isUpdate = true;
             }
         }
-        this._data = this._data || {data: {}, expire: 0};
         this._data.data[name] = value;
         this._data.expire = Date.now() + RedisSession.timeout * 1000;
     }

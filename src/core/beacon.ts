@@ -1,7 +1,7 @@
 import path =require('path');
 import {Beaconkit} from "./beacon_kit";
 import {HttpContext} from "./http_context";
-import {Controller} from "../controllers/controller";
+import { Controller} from "../controllers/controller";
 import {MemorySession} from "../adapter/session/memory";
 import {FileSession} from "../adapter/session/file";
 import {Sdopx} from "sdopx";
@@ -74,10 +74,12 @@ export class Beacon extends Beaconkit {
         let context = new HttpContext(req, res);
         let Route = Beacon.Route;
         let args = Route.parseUrl(context.pathname);
+        context.parseRouteGet(args);
         if (args == null || args.ctl == '') {
             Beacon.displayError(context, 404, 'then page url:"' + context.url + '" is not foult!');
             return;
         }
+
         let ctlClass = Route.getController(args.app, args.ctl);
         if (ctlClass == null) {
             Beacon.displayError(context, 404, 'then page url:"' + context.url + '" is not foult!');
@@ -96,7 +98,11 @@ export class Beacon extends Beaconkit {
                     }
                     await ctlobj[act]();
                 } catch (e) {
-                    throw e;
+                    if (e.code && e.code == 'CONTROLLER_EXIT') {
+                        return;
+                    }
+                    Beacon.displayError(context, 500, e);
+                    return;
                 } finally {
                     if (isInit && ctlobj.finish && Beacon.isFunction(ctlobj.finish)) {
                         await ctlobj.finish();
@@ -111,6 +117,9 @@ export class Beacon extends Beaconkit {
                 Beacon.displayError(context, 404, 'then page url:"' + context.url + '" is not foult!');
             }
         } catch (e) {
+            if (e.code && e.code == 'CONTROLLER_EXIT') {
+                return;
+            }
             Beacon.displayError(context, 500, e);
             return;
         }

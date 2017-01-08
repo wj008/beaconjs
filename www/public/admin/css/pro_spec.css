@@ -1,0 +1,142 @@
+a.spval_submit{
+    background-color: #4FC0E8;
+    border: 1px solid #4FC0E8;
+    color: #FFF;
+}
+a.spval_submit:hover{
+    background-color: #3BAEDA;
+    border: 1px solid #3BAEDA;
+}
+a.spval_cancel{
+    background-color: #FB6E52;
+    border: 1px solid #FB6E52;
+    color: #FFF;
+}
+a.spval_cancel:hover{
+    background-color: #E9573E;
+    border: 1px solid #E9573E;
+}
+span.add-spval{ display: none;}
+
+.spval_opts ul.form-control li{ height: 30px; line-height: 26px; overflow: hidden;vertical-align: middle;}
+.spval_opts ul.form-control li *{vertical-align: middle;}
+.spval_opts label{ height: 30px; line-height: 26px;vertical-align: middle; display: inline-block;}
+.spval_opts .add-spval{height: 30px; line-height: 26px;width: 220px; display: inline-block; overflow: hidden; vertical-align: middle;}
+.spval_opts .add-spval *{ vertical-align: middle;}
+.spval_opts a{ vertical-align: middle;}
+
+
+
+.spec_table {
+    background-color: #FFF;
+    width: 98%;
+    margin: 10px 10px 0 0;
+    border: solid 1px #BCE8F1;
+    box-shadow: 3px 3px 0 rgba(153,153,153,0.15);
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-bottom: 10px;
+}
+.spec_table thead th {
+    font-weight: 600;
+    line-height: 24px;
+    color: #3A87AD;
+    background: #D9EDF7;
+    white-space: nowrap;
+    height: 24px;
+    padding: 5px 10px;
+}
+.spec_table thead th em{
+    color: #E9573E;
+    font-style: normal;
+}
+
+.spec_table .batch {
+    vertical-align: middle;
+    display: inline-block;
+    margin-left: 4px;
+    position: relative;
+    z-index: 1;
+}
+.spec_table .batch i{
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: normal;
+}
+.spec_table .batch-input {
+    background-color: #FFF;
+    white-space: nowrap;
+    padding: 4px 9px;
+    border: solid 1px #BCE8F1;
+    position: absolute;
+    z-index: 1;
+    top: 25px;
+    left: -75px;
+    box-shadow: 3px 3px 0 rgba(153,153,153,0.25);
+}
+.spec_table .batch-input h6 {
+    font-size: 12px;
+    color: #555;
+}
+.spec_table .batch-input a.close {
+    font-size: 12px;
+    line-height: 12px;
+    color: #FFF;
+    text-decoration: none;
+    background-color: #333;
+    text-align: center;
+    display: block;
+    width: 15px;
+    height: 15px;
+    border-radius: 8px;
+    top: -7px;
+    right: -7px;
+    position: absolute;
+    z-index: 2;
+}
+.spec_table .batch-input input {
+    vertical-align: middle;
+    clear: both;
+    vertical-align: middle;
+    margin-right: 4px;
+}
+.spec_table .batch-input .arrow {
+    background: url(../images/ncsc_bg.png) no-repeat;
+    display: block;
+    width: 10px;
+    height: 6px;
+    margin-left: -5px;
+    top: -6px;
+    left: 50%;
+    position: absolute;
+    z-index: 2;
+}
+
+.spec_table tfoot th {
+    font-weight: 600;
+    line-height: 24px;
+    color: #3A87AD;
+    background: #D9EDF7;
+    white-space: nowrap;
+    height: 24px;
+    padding: 5px 10px;
+}
+.spec_table tbody td {
+    white-space: nowrap;
+    height: 30px;
+    padding: 5px 10px;
+    border-top: solid 1px #BCE8F1;
+}
+.spec_table .th-select{width: 20px;}
+.spec_table .th-price{ width:78px;}
+.spec_table .th-price input{ width: 60px;}
+.spec_table .th-mkprice{ width: 78px;}
+.spec_table .th-mkprice input{ width: 60px;}
+.spec_table .th-stock{ width:55px;}
+.spec_table .th-stock input{ width: 50px;}
+.spec_table .th-alarm{ width: 55px;}
+.spec_table .th-alarm input{ width: 50px;}
+.spec_table .th-sncode{ width: 95px;}
+.spec_table .th-sncode input{ width: 90px;}
+.spec_table .th-barcode{ width: 95px;}
+.spec_table .th-barcode input{ width: 90px;}

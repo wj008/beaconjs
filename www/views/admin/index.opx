@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>后台管理</title>
+    <link rel="stylesheet" type="text/css" href="/admin/css/main.css">
+    <script type="application/javascript" src="/admin/js/jquery-1.12.3.min.js"></script>
+    <script type="application/javascript" src="/admin/js/main.js"></script>
+</head>
+<body>
+<div id="header">
+    <div class="topline"></div>
+    <div>
+        <div class="logo"><img src="/admin/images/logo.png" width="200" height="60"></div>
+        <ul id="mainmune" class="mainmune">
+            {foreach from=$rows item=rs key=i}
+            {if $i==0}
+            <li class="idx">
+                <span class="lfirst"></span>
+                <a href="__APPROOT__/left.html" target="left" >{$rs.name}</a>
+                <span class="{if $rows.length==1}rlast{else}rfirst{/if}"></span>
+            </li>
+            {elseif $i==$rows.length-1}
+            <li>
+                <span class="llast"></span>
+                <a href="__APPROOT__/left" target="left" >{$rs.name}</a>
+                <span class="rlast"></span>
+            </li>
+            {else}
+            <li>
+                <span class="l"></span>
+                <a href="__APPROOT__/left.html" target="left" >{$rs.name}</a>
+                <span class="r"></span>
+            </li>
+            {/if}
+            {/foreach}
+        </ul>
+        <div id="logininfo">您好！<span class="name">{$adm.username}</span>&nbsp;&nbsp;
+            [
+            {if $adm.id == 1}超级管理员{else}
+            {if $adm.type} {$adm.type|option:{1:'高级管理员',2:'一般管理员',3:'仓库管理员'},'其他'}{/if}
+            {/if}
+            ]<span>&nbsp;&nbsp;&nbsp;</span>
+            <a href="__APPROOT__/logout.html">[退出]</a><span>&nbsp;|&nbsp;</span>
+            <a href="http://{#basehost#}" target="_blank" id="site_homepage">站点首页</a>
+        </div>
+    </div>
+</div>
+
+<div id="content">
+    <!--右侧内容区域-->
+    <div id="right">
+        <div class="sbar"><a href="#" id="bardiv"></a></div>
+
+        <div id="pagebar">
+            <div id="pbar"><div id="movebar"></div></div>
+            <div id="pbtns">
+                <a id="moveleft" class="btnleft" href="#"></a>
+                <a id="moveright" class="btnright" href="#"></a>
+                <a id="closeall" class="btnclose" href="#"></a>
+            </div>
+        </div>
+
+        <div id="rcontent"><iframe scrolling="auto" name="Main" id="Main" src="__APPROOT__/wellcome.html" frameborder="0" width="100%" height="100%"></iframe></div>
+    </div>
+    <!--左侧菜单区域-->
+    <div id="left">
+
+    </div>
+</div>
+</body>
+</html>
