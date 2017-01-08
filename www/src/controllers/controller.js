@@ -21,7 +21,6 @@ class Controller {
         this.sdopx = null;
         this.template_dirs = null;
         this.db = null;
-        this.__exit = false;
         this.context = context;
     }
     async init() {
@@ -31,6 +30,7 @@ class Controller {
     initSdopx() {
         if (this.sdopx === null) {
             this.sdopx = new sdopx_1.Sdopx(this);
+            this.sdopx.compile_check = false;
             let dirs = this.template_dirs || Beacon.VIEW_PATH;
             this.sdopx.setTemplateDir(dirs);
         }
@@ -153,7 +153,6 @@ class Controller {
             this.db = null;
         }
         this.context.end(obj, encoding);
-        this.exit();
     }
     exit() {
         throw new ControllerError('exit', 'CONTROLLER_EXIT');
