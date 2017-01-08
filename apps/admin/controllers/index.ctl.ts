@@ -9,6 +9,7 @@ export class Index extends AdminController {
         let adm = await this.db.getRow('select * from @pf_manage where id=?', this.adminId);
         this.assign('adm', adm);
         this.display('index');
+        console.log(Date.now() - this.context.startTime);
     }
 
 }
