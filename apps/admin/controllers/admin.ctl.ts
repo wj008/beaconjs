@@ -8,7 +8,7 @@ export class AdminController extends Beacon.Controller {
 
     public constructor(context) {
         super(context);
-        this.template_dirs = path.join(Beacon.VIEW_PATH, 'admin')+'/';
+        this.template_dirs = path.join(Beacon.VIEW_PATH, 'admin') + '/';
     }
 
     public error(msg: string, jump = this.getReferrer(), timeout = 3) {
@@ -16,6 +16,7 @@ export class AdminController extends Beacon.Controller {
         this.assign('jump', jump);
         this.assign('timeout', timeout);
         this.display('error');
+        console.log(Date.now() - this.context.startTime);
         this.exit();
     }
 
@@ -26,7 +27,6 @@ export class AdminController extends Beacon.Controller {
     }
 
     public async checkLogin() {
-
         this.adminId = this.getSession('adminId') || 0;
         this.adminName = this.getSession('adminName') || '';
         if (!Beacon.isEmpty(this.adminId)) {
@@ -38,13 +38,18 @@ export class AdminController extends Beacon.Controller {
         }
         let username = this.post('username:s', '');
         let password = this.post('password:s', '');
+        let code = this.post('code:s', '');
         if (username == '') {
             this.error('用户名不能为空！');
         }
         if (password == '') {
             this.error('用户密码不能为空！');
         }
-
+        let pcode = this.getSession('code') || '';
+        if (pcode == '' || pcode != code) {
+            this.setSession('code','');
+            this.error('验证码有误！');
+        }
         let row = await this.db.getRow('select * from @pf_manage where `username`=?', username);
         if (row == null) {
             this.error('账号不存在！');

@@ -1,7 +1,8 @@
 import {Beacon} from "../../../src/core/beacon";
 import {Mysql} from "../../../src/adapter/db/mysql";
 import {Redis} from "../../../src/adapter/db/redis";
-
+import {Captcha} from "../../../src/adapter/pnglib/captcha";
+import crypto=require('crypto');
 export class Index extends Beacon.Controller {
 
     public redis: Redis;
@@ -35,4 +36,5 @@ export class Index extends Beacon.Controller {
         this.setSession('abc', 'xxxxxx');
         this.end('login');
     }
+
 }

@@ -1,5 +1,4 @@
-
-import { AdminController } from './admin.ctl';
+import {AdminController} from "./admin.ctl";
 export class Index extends AdminController {
 
 
@@ -10,6 +9,11 @@ export class Index extends AdminController {
         this.assign('adm', adm);
         this.display('index');
         console.log(Date.now() - this.context.startTime);
+    }
+
+    public async logoutAction() {
+        this.delSession();
+        this.redirect('__APPROOT__/index.html');
     }
 
 }
