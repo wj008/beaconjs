@@ -185,6 +185,8 @@ export class Controller {
     }
 
     public redirect(url, code?: number) {
+        let uri = this.route('uri', '');
+        url= url.replace(/__APPROOT__/g, uri);
         this.context.redirect(url, code);
     }
 
@@ -213,7 +215,7 @@ export class Controller {
         return this.context.getContentType();
     }
 
-    public setContentType(ext, encoding) {
+    public setContentType(ext, encoding?) {
         return this.context.setContentType(ext, encoding);
     }
 
