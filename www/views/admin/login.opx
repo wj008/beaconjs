@@ -42,15 +42,9 @@
                             <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                 <tr>
                                     <th width="80" height="40">验&nbsp;证&nbsp;码：</th>
-                                    <td width="68"><input type="text" name="code" class="model-text"
-                                                          style="width:60px;"/></td>
-                                    <td width="60"><img id="codeimg" src="/service/code.php" alt="看不清楚点击刷新！"
-                                                        onclick="this.src = '/service/code.php?r=' + Math.random();"/>
-                                    </td>
-                                    <td width="92">
-                                        <a href="#"
-                                           onclick="document.getElementById('codeimg').src = '/service/code.php?r=' + Math.random();return false;">看不清?</a>
-                                    </td>
+                                    <td width="68"><input type="text" name="code" class="model-text" style="width:60px;"/></td>
+                                    <td width="60"><img id="codeimg" src="__APPROOT__/code.html" alt="看不清楚点击刷新！" onclick="this.src = '__APPROOT__/code.html?r=' + Math.random();"/></td>
+                                    <td width="92"><a href="#" onclick="document.getElementById('codeimg').src = '__APPROOT__/code.html?r=' + Math.random();return false;">看不清?</a></td>
                                 </tr>
                             </table>
                         </td>
@@ -61,9 +55,6 @@
                         <th height="44">
                             <input type="submit" class="loginbtn" value=""/>
                         </th>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
                     </tr>
                 </table>
             </form>

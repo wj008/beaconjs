@@ -41,7 +41,7 @@
             {if $adm.type} {$adm.type|option:{1:'高级管理员',2:'一般管理员',3:'仓库管理员'},'其他'}{/if}
             {/if}
             ]<span>&nbsp;&nbsp;&nbsp;</span>
-            <a href="__APPROOT__/logout.html">[退出]</a><span>&nbsp;|&nbsp;</span>
+            <a href="__APPROOT__/index/logout.html">[退出]</a><span>&nbsp;|&nbsp;</span>
             <a href="http://{#basehost#}" target="_blank" id="site_homepage">站点首页</a>
         </div>
     </div>
