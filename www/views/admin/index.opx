@@ -17,19 +17,19 @@
             {if $i==0}
             <li class="idx">
                 <span class="lfirst"></span>
-                <a href="__APPROOT__/left.html" target="left" >{$rs.name}</a>
+                <a href="__APPROOT__/index/left.html" target="left" >{$rs.name}</a>
                 <span class="{if $rows.length==1}rlast{else}rfirst{/if}"></span>
             </li>
             {elseif $i==$rows.length-1}
             <li>
                 <span class="llast"></span>
-                <a href="__APPROOT__/left" target="left" >{$rs.name}</a>
+                <a href="__APPROOT__/index/left.html" target="left" >{$rs.name}</a>
                 <span class="rlast"></span>
             </li>
             {else}
             <li>
                 <span class="l"></span>
-                <a href="__APPROOT__/left.html" target="left" >{$rs.name}</a>
+                <a href="__APPROOT__/index/left.html" target="left" >{$rs.name}</a>
                 <span class="r"></span>
             </li>
             {/if}
@@ -61,7 +61,7 @@
             </div>
         </div>
 
-        <div id="rcontent"><iframe scrolling="auto" name="Main" id="Main" src="__APPROOT__/wellcome.html" frameborder="0" width="100%" height="100%"></iframe></div>
+        <div id="rcontent"><iframe scrolling="auto" name="Main" id="Main" src="__APPROOT__/index/wellcome.html" frameborder="0" width="100%" height="100%"></iframe></div>
     </div>
     <!--左侧菜单区域-->
     <div id="left">
