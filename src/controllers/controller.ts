@@ -7,7 +7,7 @@ declare var Beacon: any;
 Sdopx.registerFilter('pre', function (content: string, sdopx: Sdopx) {
     if (sdopx.context) {
         let uri = sdopx.context.route('uri', '');
-        content= content.replace(/__APPROOT__/g, uri);
+        content = content.replace(/__APPROOT__/g, uri);
     }
     return content;
 });
@@ -41,7 +41,7 @@ export class Controller {
     private initSdopx() {
         if (this.sdopx === null) {
             this.sdopx = new Sdopx(this);
-            this.sdopx.compile_check=false;
+            this.sdopx.compile_check = false;
             let dirs = this.template_dirs || Beacon.VIEW_PATH;
             this.sdopx.setTemplateDir(dirs);
         }
@@ -186,7 +186,7 @@ export class Controller {
 
     public redirect(url, code?: number) {
         let uri = this.route('uri', '');
-        url= url.replace(/__APPROOT__/g, uri);
+        url = url.replace(/__APPROOT__/g, uri);
         this.context.redirect(url, code);
     }
 
@@ -197,6 +197,15 @@ export class Controller {
 
     public write(obj = null, encoding: string = null) {
         return this.context.write(obj, encoding);
+    }
+
+    public url(pathname: string = '', query?: any, app?: string) {
+        query = query || {};
+        app = app || this.route('app');
+        if (pathname.length > 0 && pathname[0] != '/') {
+            pathname = '/' + this.route('ctl') + '/' + pathname;
+        }
+        return Beacon.Route.resolve(app, pathname, query);
     }
 
     public end(obj = null, encoding = null) {
@@ -219,10 +228,8 @@ export class Controller {
         return this.context.setContentType(ext, encoding);
     }
 
-
     public sendTime(name) {
         return this.context.sendTime(name);
     }
-
 
 }
