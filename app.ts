@@ -13,14 +13,13 @@ Beacon.debug = true;
 Beacon.init();
 
 
-
 console.log(Beacon.RUNTIME_PATH);
 console.log(Beacon.VIEW_PATH);
 //ddddoo
 Beacon.Route.loadRoute('admin');
 Beacon.Route.loadRoute('home');
 
-var serve = serveStatic(Beacon.RUNTIME_PATH+'/public', {'index': ['index.html', 'index.htm']});
+var serve = serveStatic(Beacon.RUNTIME_PATH + '/public', {'index': ['index.html', 'index.htm']});
 
 const server = http.createServer((req, res) => {
     serve(req, res, function () {
@@ -35,3 +34,5 @@ server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
 });
 Beacon.gc();
+
+
