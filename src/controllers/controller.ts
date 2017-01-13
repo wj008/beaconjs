@@ -14,6 +14,7 @@ Sdopx.registerFilter('pre', function (content: string, sdopx: Sdopx) {
 
 export class ControllerError extends Error {
     public code = '';
+
     public constructor(msg: string, code: string) {
         super(msg);
         this.code = code;
@@ -200,6 +201,10 @@ export class Controller {
     }
 
     public url(pathname: string = '', query?: any, app?: string) {
+        if (typeof query == 'string' && app === void 0) {
+            app = query;
+            query = null;
+        }
         query = query || {};
         app = app || this.route('app');
         if (pathname.length > 0 && pathname[0] != '/') {
