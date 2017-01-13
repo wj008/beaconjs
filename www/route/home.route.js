@@ -20,7 +20,7 @@ module.exports = {
         }
     ],
     //default: {ctl: 'index', act: 'index'},
-    reverse: [
+    resolve: [
         '/{ctl}_{act}/{id}.html',
         '/{ctl}_{act}.html',
         '/{ctl}.html'
