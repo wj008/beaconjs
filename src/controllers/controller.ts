@@ -1,4 +1,5 @@
 import path =require( 'path');
+import url =require( 'url');
 import {HttpContext} from "../core/http_context";
 import {Mysql} from "../adapter/db/mysql";
 import {Sdopx} from "sdopx";
@@ -185,10 +186,24 @@ export class Controller {
         return this.context.delSession(name);
     }
 
-    public redirect(url, code?: number) {
-        let uri = this.route('uri', '');
-        url = url.replace(/__APPROOT__/g, uri);
-        this.context.redirect(url, code);
+    public redirect(uri, app?: any, code?: number) {
+        if (typeof app == 'number' && code === void 0) {
+            code = app;
+            app = this.route('app');
+        }
+        if (uri.length < 0) {
+            return;
+        }
+        if (uri[0] == '~') {
+            let touri = uri.substring(1);
+            let info = url.parse(touri, true, true);
+            touri = this.url(info.pathname, info.query, app);
+            this.context.redirect(touri, code);
+            return;
+        }
+        let appuri = this.route('uri', '');
+        uri = uri.replace(/__APPROOT__/g, appuri);
+        this.context.redirect(uri, code);
     }
 
     public setExpires(time) {
