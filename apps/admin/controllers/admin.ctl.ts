@@ -12,11 +12,13 @@ export class AdminController extends Beacon.Controller {
     }
 
     public error(msg: string, jump = this.getReferrer(), timeout = 3) {
+
         this.assign('message', msg);
         this.assign('jump', jump);
         this.assign('timeout', timeout);
         this.display('error');
         console.log(Date.now() - this.context.startTime);
+
         this.exit();
     }
 
@@ -76,7 +78,7 @@ export class AdminController extends Beacon.Controller {
         if (Object.keys(vals).length > 0) {
             await this.db.update('@pf_manage', vals, 'id=?', row.id);
         }
-        this.redirect('index.html');
+        this.redirect('~/index');
         this.exit();
     }
 
