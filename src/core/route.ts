@@ -157,6 +157,7 @@ export class Route {
         let index = urlpath.length > 50 ? Beacon.md5(urlpath) : urlpath;
         if (Route.cache_uris[index]) {
             let tplurl = Route.cache_uris[index];
+           // console.log('缓存的',tplurl);
             return tplurl.replace(/\{(\w+)\}/g, function ($0, key) {
                 if (query[key] !== void 0 && query[key] !== null && query[key] !== '') {
                     return encodeURIComponent(query[key]);
@@ -233,6 +234,7 @@ export class Route {
             tplurl += '?' + queryStr.join('&');
         }
         Route.cache_uris[index] = tplurl;
+        //console.log('生成的',tplurl);
         return tplurl.replace(/\{(\w+)\}/g, function ($0, key) {
             if (query[key] !== void 0 && query[key] !== null && query[key] !== '') {
                 return encodeURIComponent(query[key]);
