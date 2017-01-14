@@ -21,8 +21,8 @@ module.exports = {
     ],
     //default: {ctl: 'index', act: 'index'},
     resolve: [
-        '/{ctl}_{act}/{id}.html',
-        '/{ctl}_{act}.html',
+        '/{ctl}/{act}/{id}.html',
+        '/{ctl}/{act}.html',
         '/{ctl}.html'
     ]
 };
