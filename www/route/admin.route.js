@@ -3,15 +3,15 @@ module.exports = {
     uri: '/admin',
     rules: [
         {
-            reg: new RegExp('^/(\\w+)/(\\w+)/(\\d+)\\.html$', 'i'),
+            reg: new RegExp('^/(\\w+)/(\\w+)/(\\d+)$', 'i'),
             arg: {ctl: '$1', act: '$2', id: '$3'}
         },
         {
-            reg: new RegExp('^/(\\w+)/(\\w+)\\.html$', 'i'),
+            reg: new RegExp('^/(\\w+)/(\\w+)$', 'i'),
             arg: {ctl: '$1', act: '$2'}
         },
         {
-            reg: new RegExp('^/(\\w+)\\.html$', 'i'),
+            reg: new RegExp('^/(\\w+)$', 'i'),
             arg: {ctl: '$1'}
         },
         {
@@ -19,10 +19,10 @@ module.exports = {
             arg: {ctl: 'index'}
         }
     ],
-    //default: {ctl: 'index', act: 'index'},
+   // default: {ctl: 'index', act: 'index'},
     resolve: [
-        '/{ctl}/{act}/{id}.html',
-        '/{ctl}/{act}.html',
-        '/{ctl}.html'
+        '/{ctl}/{act}/{id}',
+        '/{ctl}/{act}',
+        '/{ctl}'
     ]
 };
