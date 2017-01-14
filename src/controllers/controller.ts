@@ -3,6 +3,7 @@ import url =require( 'url');
 import {HttpContext} from "../core/http_context";
 import {Mysql} from "../adapter/db/mysql";
 import {Sdopx} from "sdopx";
+import {type} from "os";
 declare var Beacon: any;
 
 Sdopx.registerFilter('pre', function (content: string, sdopx: Sdopx) {
@@ -186,8 +187,22 @@ export class Controller {
         return this.context.delSession(name);
     }
 
-    public redirect(uri, app?: any, code?: number) {
-        if (typeof app == 'number' && code === void 0) {
+    public redirect(uri, query?: any, app?: any, code?: number) {
+        if (typeof query == 'number' && app === void 0 && code === void 0) {
+            code = query;
+            query = null;
+            app = this.route('app');
+        }
+        else if (typeof query == 'string' && app === void 0 && code === void 0) {
+            app = query;
+            query = null;
+        }
+        else if (typeof query == 'string' && typeof app === 'number' && code === void 0) {
+            code = app;
+            app = query;
+            query = null;
+        }
+        else if (typeof app == 'number' && code === void 0) {
             code = app;
             app = this.route('app');
         }
@@ -197,7 +212,10 @@ export class Controller {
         if (uri[0] == '~') {
             let touri = uri.substring(1);
             let info = url.parse(touri, true, true);
-            touri = this.url(info.pathname, info.query, app);
+            if (query != null && Beacon.isObject(query)) {
+                query = Object.assign(info.query, query);
+            }
+            touri = this.url(info.pathname, query, app);
             this.context.redirect(touri, code);
             return;
         }
