@@ -31,6 +31,7 @@ export class HttpContext {
     private _sendCookie: Object = null;
 
     private _isEnd = false;
+    private _isJson = false;
     private _timeoutTimer = null;
     private _contentTypeIsSend = false;
 
@@ -62,6 +63,13 @@ export class HttpContext {
         } else {
             let urlInfo = url.parse('//' + this.host + this.req.url, true, true);
             this.pathname = this.normalizePathname(urlInfo.pathname);
+            if (Beacon.getConfig('enable_json_ext') == true) {
+                let m = this.pathname.match(/^(.*)\.json/i);
+                if (m) {
+                    this._isJson = true;
+                    this.pathname = m[1];
+                }
+            }
             this.hostname = urlInfo.hostname;
             let query = urlInfo.query;
             if (query) {
@@ -74,7 +82,7 @@ export class HttpContext {
     public parseRouteGet(args = {}) {
         this._route = Object.assign({}, args);
         for (let key in args) {
-            if (['uri','app', 'ctl', 'act'].indexOf(key) > -1) {
+            if (['uri', 'app', 'ctl', 'act'].indexOf(key) > -1) {
                 continue;
             }
             if (this._get[key] === void 0) {
@@ -120,10 +128,10 @@ export class HttpContext {
                 that.payload = Buffer.concat(buffers);
                 deferred.resolve(that.payload);
             });
-            that.req.on('error', () => {
+            that.req.on('fail', () => {
                 that.res.statusCode = 400;
                 that.end();
-                deferred.reject(new Error('client error'));
+                deferred.reject(new Error('client fail'));
             });
             return deferred.promise;
         };
@@ -201,7 +209,7 @@ export class HttpContext {
             deferred.resolve(null);
         });
 
-        form.on('error', err => {
+        form.on('fail', err => {
             that.req.resume();
             that.res.statusCode = 400;
             that.end();
@@ -221,6 +229,9 @@ export class HttpContext {
     }
 
     public isAjax() {
+        if (this._isJson) {
+            return true;
+        }
         return this.headers['x-requested-with'] === 'XMLHttpRequest';
     }
 

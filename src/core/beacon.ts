@@ -153,8 +153,8 @@ export class Beacon extends Beaconkit {
         sdopx.assign('title', title);
         sdopx.assign('message', error.message);
         sdopx.assign('status', status);
-        sdopx.assign('error', error);
-        let content = sdopx.display('error');
+        sdopx.assign('fail', error);
+        let content = sdopx.display('fail');
         context.setStatus(status);
         context.end(content);
         if (status == 500) {

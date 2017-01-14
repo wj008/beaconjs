@@ -17,7 +17,7 @@ export class Route {
             let idata = require(filepath);
             idata.name = app;
             idata.uri = idata.uri || '';
-            idata.match = new RegExp('^' + String(idata.uri).replace(/[|\\{}()[\]^$+*?.]/g, '\\$&') + '(/.*)$', 'i');
+            idata.match = new RegExp('^' + String(idata.uri).replace(/[|\\{}()[\]^$+*?.]/g, '\\$&') + '(/.*)?$', 'i');
             Route.RouteData[app] = idata;
         }
         return Route;
@@ -36,6 +36,7 @@ export class Route {
             }
             return null;
         })();
+        baseurl = baseurl.length == 0 ? '/' : baseurl;
         if (name.length == 0) {
             return null;
         }
@@ -97,7 +98,6 @@ export class Route {
         let temps = {};
         let allpath = path.join(apppath, 'controllers');
         let files = Beacon.getFiles(allpath, '', function (item) {
-            //console.log(item,/^\w+\.ctl\.js$/.test(item));
             return /^\w+\.ctl\.js$/.test(item);
         });
         for (let file of files) {
@@ -157,7 +157,7 @@ export class Route {
         let index = urlpath.length > 50 ? Beacon.md5(urlpath) : urlpath;
         if (Route.cache_uris[index]) {
             let tplurl = Route.cache_uris[index];
-           // console.log('缓存的',tplurl);
+            // console.log('缓存的',tplurl);
             return tplurl.replace(/\{(\w+)\}/g, function ($0, key) {
                 if (query[key] !== void 0 && query[key] !== null && query[key] !== '') {
                     return encodeURIComponent(query[key]);

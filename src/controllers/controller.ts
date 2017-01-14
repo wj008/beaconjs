@@ -3,7 +3,6 @@ import url =require( 'url');
 import {HttpContext} from "../core/http_context";
 import {Mysql} from "../adapter/db/mysql";
 import {Sdopx} from "sdopx";
-import {type} from "os";
 declare var Beacon: any;
 
 Sdopx.registerFilter('pre', function (content: string, sdopx: Sdopx) {
@@ -28,6 +27,7 @@ export class Controller {
     public sdopx: Sdopx = null;
     public template_dirs = null;
     public db: Mysql = null;
+    private _info = {};
 
     public constructor(context: HttpContext) {
         this.context = context;
@@ -59,11 +59,16 @@ export class Controller {
         }
     }
 
-
     public assign(key, value = null) {
-        this.initSdopx();
-        this.sdopx.assign(key, value);
+        if (typeof key == 'string') {
+            this._info[key] = value;
+            return;
+        }
+        if (Beacon.isObject(key)) {
+            this._info = Object.assign(this._info, key);
+        }
     }
+
 
     public assignConfig(key, value = null) {
         this.initSdopx();
@@ -72,6 +77,7 @@ export class Controller {
 
     public display(tplname: string) {
         this.initSdopx();
+        this.sdopx._book = Object.assign(this.sdopx._book, this._info);
         this.sdopx.display(tplname);
     }
 
@@ -79,7 +85,6 @@ export class Controller {
         this.initSdopx();
         return this.sdopx.fetch(tplname);
     }
-
 
     public indexAction() {
         this.end('hello beaconjs.');
