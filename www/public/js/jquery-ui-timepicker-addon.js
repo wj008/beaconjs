@@ -1708,7 +1708,7 @@
 	};
 
 	/*
-	* override parseDate() because UI 1.8.14 throws an error about "Extra characters"
+	* override parseDate() because UI 1.8.14 throws an fail about "Extra characters"
 	* An option in datapicker to ignore extra format characters would be nicer.
 	*/
 	$.datepicker._base_parseDate = $.datepicker.parseDate;
@@ -1717,7 +1717,7 @@
 		try {
 			date = this._base_parseDate(format, value, settings);
 		} catch (err) {
-			// Hack!  The error message ends with a colon, a space, and
+			// Hack!  The fail message ends with a colon, a space, and
 			// the "extra" characters.  We rely on that instead of
 			// attempting to perfectly reproduce the parsing algorithm.
 			if (err.indexOf(":") >= 0) {
@@ -2158,8 +2158,8 @@
 	};
 
 	/**
-	 * Log error or data to the console during error or debugging
-	 * @param  {Object} err pass any type object to log to the console during error or debugging
+	 * Log fail or data to the console during fail or debugging
+	 * @param  {Object} err pass any type object to log to the console during fail or debugging
 	 * @return {void}
 	 */
 	$.timepicker.log = function (err) {

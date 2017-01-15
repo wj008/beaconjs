@@ -72,16 +72,16 @@
                         }
                         //如果存在错误
                         if (data.status == false) {
-                            if (data.error) {
-                                if (typeof (data.error) == 'object') {
+                            if (data.fail) {
+                                if (typeof (data.fail) == 'object') {
                                     if ($.SdopxValidator) {
-                                        qelem.showError(data.error);
+                                        qelem.showError(data.fail);
                                     }
                                 } else {
                                     if (window.layer) {
-                                        window.layer.msg(data.error, {icon: 0, time: 2000});
+                                        window.layer.msg(data.fail, {icon: 0, time: 2000});
                                     } else {
-                                        alert(data.error);
+                                        alert(data.fail);
                                     }
                                 }
                             }

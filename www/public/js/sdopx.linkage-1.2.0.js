@@ -51,7 +51,7 @@
                 var attrval = qem.attr(key);
                 if (attrval) {
                     if (key == "class") {
-                        attrval = attrval.replace('input-validation-error', '');
+                        attrval = attrval.replace('input-validation-fail', '');
                     }
                     box.attr(key, attrval);
                 }

@@ -67,7 +67,7 @@
                 if (data && data.success) {
                     start();
 
-                } else if (data && data.error) {
+                } else if (data && data.fail) {
 
                 }
             }, 'json');

@@ -1,0 +1,374 @@
+@charset "utf-8";
+
+/* 防止用户自定义背景颜色对网页的影响，添加让用户可以自定义字体 */
+html {
+  background: white;
+  color: black;
+}
+
+/* 内外边距通常让各个浏览器样式的表现位置不同 */
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td, hr, button, article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+  margin: 0;
+  padding: 0;
+}
+
+article, aside, dialog, footer, header, section, footer, nav, figure, menu {
+  display: block;
+}
+
+/* 要注意表单元素并不继承父级 font 的问题 */
+body, button, input, select, textarea {
+  font: 12px "Microsoft Yahei", "Lucida Grande", Verdana, Lucida, Helvetica, Arial, sans-serif;
+}
+
+input, select, textarea {
+  font-size: 100%;
+}
+
+/* ie bug：th 不继承 text-align */
+th {
+  text-align: inherit;
+}
+
+/* ie6 7 8(q) bug 显示为行内表现 */
+iframe {
+  display: block;
+}
+
+/* 去掉 firefox 下此元素的边框 */
+abbr, acronym {
+  border: none;
+  font-variant: normal;
+}
+
+/* 一致的 del 样式 */
+del {
+  text-decoration: line-through;
+}
+
+address, caption, cite, code, dfn, em, th, var {
+  font-style: normal;
+  font-weight: 500;
+}
+
+/* 去掉列表前的标识，li 会继承 */
+ol, ul {
+  list-style: none;
+}
+
+/* 来自yahoo，让标题都自定义，适应多个系统应用 */
+h1, h2, h3, h4, h5, h6 {
+  font-size: 100%;
+  font-weight: 500;
+}
+
+q:before, q:after {
+  content: '';
+}
+
+/* 统一上标和下标 */
+sub, sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sup {
+  top: -0.5em;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+/* 让链接在 hover 状态下显示下划线 */
+a:hover {
+  text-decoration: underline;
+}
+
+/* 默认不显示下划线，保持页面简洁 */
+ins, a {
+  text-decoration: none;
+}
+
+/* 去除 ie6 & ie7 焦点点状线 */
+a:focus, *:focus {
+  outline: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+fieldset, img {
+  border: 0;
+}
+
+address, caption, cite, code, dfn, em, strong, th, var {
+  font-style: normal;
+  font-weight: normal;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+capation, th {
+  text-align: left;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-size: 100%;
+  font-weight: normal;
+}
+
+q:before, q:after {
+  content: ''
+}
+
+abbr, acronym {
+  border: 0;
+}
+
+.f12 {
+  font-size: 12px;
+}
+
+.f13 {
+  font-size: 13px;
+}
+
+.f14 {
+  font-size: 14px;
+}
+
+.f16 {
+  font-size: 16px;
+}
+
+.f20 {
+  font-size: 20px;
+}
+
+.fb {
+  font-weight: bold;
+}
+
+.fn {
+  font-weight: normal;
+}
+
+.t2 {
+  text-indent: 2em;
+}
+
+.lh150 {
+  line-height: 150%
+}
+
+.lh180 {
+  line-height: 180%
+}
+
+.lh200 {
+  line-height: 200%
+}
+
+.unl {
+  text-decoration: underline;
+}
+
+.no_unl {
+  text-decoration: none;
+}
+
+.tl {
+  text-align: left;
+}
+
+.tc {
+  text-align: center;
+}
+
+.tr {
+  text-align: right;
+}
+
+.bc {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.fl {
+  float: left;
+  display: inline;
+}
+
+.fr {
+  float: right;
+  display: inline;
+}
+
+.cb {
+  clear: both;
+}
+
+.cl {
+  clear: left;
+}
+
+.cr {
+  clear: right;
+}
+
+.clearfix:after {
+  content: '.';
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden
+}
+
+.clearfix {
+  display: inline-block;
+}
+
+*html .clearfix {
+  height: 1%
+}
+
+.vm {
+  vertical-align: center;
+}
+
+.pr {
+  position: relative;
+}
+
+.pa {
+  position: absolute;
+}
+
+.abs-right {
+  position: absolute;
+  right: 0;
+}
+
+.zoom {
+  zoom: 1
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.none {
+  display: none;
+}
+
+.block {
+  display: block;
+}
+
+/*颜色表
+*******************************/
+
+.ftx-01 {
+  color: #707070;
+}
+
+.ftx-02 {
+  color: #333 !important;
+}
+
+.ftx-03 {
+  color: #62b3ff;
+}
+
+.blue_bg:hover, .blue_btn:hover {
+  background-color: #31b4e1;
+  color: #fff;
+}
+
+.green_bg {
+  background-color: #0C0
+}
+
+.blue2_bg {
+  background-color: #09C;
+}
+
+.violet_bg {
+  background-color: #C69;
+}
+
+.orange_bg {
+  background-color: #F60;
+}
+
+.red_bg {
+  background-color: #F00;
+}
+
+.org {
+  color: #F90;
+}
+
+.org2 {
+  color: #f3a43d;
+}
+
+.org3 {
+  color: #F60;
+}
+
+.red {
+  color: #F00;
+}
+
+.red2 {
+  color: #ec5151;
+}
+
+.red3 {
+  color: #CC0000;
+}
+
+.blue {
+  color: #31b4e1;
+}
+
+.blue2 {
+  color: #0071E1
+}
+
+.navy {
+  color: #009B9B;
+}
+
+.navy2 {
+  color: #707070;
+}
+
+.green {
+  color: #2FBC5E;
+}
+
+.yellow {
+  color: #C60;
+}
+
+/*borderçº¿æ¡*/
+.bor_bt_das {
+  border-bottom: 1px dashed #dcdcdc;
+}
+
+.bor_top_das {
+  border-top: 1px dashed #dcdcdc;
+}
+
+.bor_top_not {
+  border-top: 0 !important;
+}

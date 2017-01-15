@@ -22,13 +22,13 @@
         }
         var maxheight = qem.data('opt-height') || 292;
         qem.on('displayError', function () {
-            box.removeClass('input-val-valid input-val-default').addClass('input-val-error');
+            box.removeClass('input-val-valid input-val-default').addClass('input-val-fail');
         });
         qem.on('displayDefault', function () {
-            box.removeClass('input-val-error input-val-valid').addClass('input-val-default');
+            box.removeClass('input-val-fail input-val-valid').addClass('input-val-default');
         });
         qem.on('displayValid', function () {
-            box.removeClass('input-val-default input-val-error').addClass('input-val-valid');
+            box.removeClass('input-val-default input-val-fail').addClass('input-val-valid');
         });
         qem.on('focus', function () {
             box.focus();

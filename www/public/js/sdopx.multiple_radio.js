@@ -105,7 +105,7 @@
                 if (sourse) {
                     $.get(sourse, ourl, function (data) {
                         if (!data.status) {
-                            layer.alert(data.error || '获取数据失败！');
+                            layer.alert(data.fail || '获取数据失败！');
                             return;
                         }
                         var rows = data.success.list;
@@ -129,7 +129,7 @@
             if (sourse) {
                 $.get(sourse, obj, function (data) {
                     if (!data.status) {
-                        layer.alert(data.error || '获取数据失败！');
+                        layer.alert(data.fail || '获取数据失败！');
                         return;
                     }
                     var rows = data.success.list;

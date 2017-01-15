@@ -97,13 +97,13 @@
             , val_off: 'val-off'			    //关闭验证
             , val_info: 'val-info'                    //默认描述
             , val_valid: 'val-valid'                     //正确描述
-            , val_error: 'val-error'                    //服务器返回错误
+            , val_error: 'val-fail'                    //服务器返回错误
             , val_for: 'val-for'			//显示消息控件属性值 = id
                     //-CSS--------------------------
-            , field_error: 'field-val-error'
+            , field_error: 'field-val-fail'
             , field_valid: 'field-val-valid'
             , field_default: 'field-val-default'
-            , input_error: 'input-val-error'
+            , input_error: 'input-val-fail'
             , input_valid: 'input-val-valid'
             , input_default: 'input-val-default'
         };
