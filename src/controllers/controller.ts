@@ -44,7 +44,7 @@ export class Controller {
     private initSdopx() {
         if (this.sdopx === null) {
             this.sdopx = new Sdopx(this);
-            this.sdopx.compile_check = false;
+           // this.sdopx.compile_check = false;
             let dirs = this.template_dirs || Beacon.VIEW_PATH;
             this.sdopx.setTemplateDir(dirs);
         }
