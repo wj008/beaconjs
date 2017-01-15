@@ -334,6 +334,14 @@ class Beaconkit {
         return str.replace(/[\+\/]/g, '_');
     }
     ;
+    static randNumber(length = 4) {
+        let temp = [];
+        for (let i = 0; i < length; i++) {
+            temp.push(Math.floor(Math.random() * 9.999));
+        }
+        return temp.join('');
+    }
+    ;
     static clone(obj) {
         try {
             return JSON.parse(JSON.stringify(obj));

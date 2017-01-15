@@ -3,69 +3,98 @@
 <head>
     <meta charset="utf-8">
     <title>后台管理</title>
-    <link rel="stylesheet" type="text/css" href="/admin/css/main.css">
-    <script type="application/javascript" src="/js/jquery-1.12.3.min.js"></script>
-    <script type="application/javascript" src="/admin/js/main.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/base.css">
+    <link rel="stylesheet" type="text/css" href="/admin/css/index.css">
+    <link rel="stylesheet" href="/icofont/css/icofont.css">
+    <script type="text/javascript" src="/js/jquery-1.12.3.min.js"></script>
+    <script type="text/javascript" src="/admin/js/index.js"></script>
+    <!--[if lt IE 7]>
+    <script type="text/javascript" src="/js/html5.js"></script>
+    <![endif]-->
 </head>
 <body>
-<div id="header">
-    <div class="topline"></div>
-    <div>
-        <div class="logo"><img src="/admin/images/logo.png" width="200" height="60"></div>
-        <ul id="mainmune" class="mainmune">
-            {foreach from=$rows item=rs key=i}
-            {if $i==0}
-            <li class="idx">
-                <span class="lfirst"></span>
-                <a href="__APPROOT__/index/left.html" target="left" >{$rs.name}</a>
-                <span class="{if $rows.length==1}rlast{else}rfirst{/if}"></span>
-            </li>
-            {elseif $i==$rows.length-1}
-            <li>
-                <span class="llast"></span>
-                <a href="__APPROOT__/index/left.html" target="left" >{$rs.name}</a>
-                <span class="rlast"></span>
-            </li>
-            {else}
-            <li>
-                <span class="l"></span>
-                <a href="__APPROOT__/index/left.html" target="left" >{$rs.name}</a>
-                <span class="r"></span>
-            </li>
-            {/if}
-            {/foreach}
-        </ul>
-        <div id="logininfo">您好！<span class="name">{$adm.username}</span>&nbsp;&nbsp;
-            [
-            {if $adm.id == 1}超级管理员{else}
-            {if $adm.type} {$adm.type|option:{1:'高级管理员',2:'一般管理员',3:'仓库管理员'},'其他'}{/if}
-            {/if}
-            ]<span>&nbsp;&nbsp;&nbsp;</span>
-            <a href="__APPROOT__/index/logout.html">[退出]</a><span>&nbsp;|&nbsp;</span>
-            <a href="http://{#basehost#}" target="_blank" id="site_homepage">站点首页</a>
+<header>
+    <div class="top-bar clearfix">
+        <div class="logo">
+            <a href="__APPROOT__/index" class="mypng"><img src="/admin/images/admin-logo.png"/></a>
+            <div class="foldsider"><i id="foldsider" class="fa fa-outdent"></i></div>
         </div>
-    </div>
-</div>
 
-<div id="content">
-    <!--右侧内容区域-->
-    <div id="right">
-        <div class="sbar"><a href="#" id="bardiv"></a></div>
+        <ul id="main-mune" class="main-mune">
+            <li><a href="/admin/left?parentId=11" target="left">平台</a></li>
+            <li><a href="/admin/left?parentId=12" target="left">店铺</a></li>
+            <li><a href="/admin/left?parentId=13" target="left">会员</a></li>
+            <li class="idx"><a href="/admin/left?parentId=14" target="left">商品</a></li>
+            <li><a href="/admin/left?parentId=15" target="left">进货</a></li>
+            <li><a href="/admin/left?parentId=16" target="left">订单</a></li>
+            <li><a href="/admin/left?parentId=17" target="left">财务</a></li>
+            <li><a href="/admin/left?parentId=18" target="left">营销</a></li>
+            <li><a href="/admin/left?parentId=19" target="left">仓库</a></li>
+            <li><a href="/admin/left?parentId=20" target="left">配送</a></li>
+            <li><a href="/admin/left?parentId=21" target="left">统计</a></li>
+            <li><a href="/admin/left?parentId=90" target="left">设置</a></li>
+        </ul>
+        <div class="head-right">
 
-        <div id="pagebar">
-            <div id="pbar"><div id="movebar"></div></div>
-            <div id="pbtns">
-                <a id="moveleft" class="btnleft" href="#"></a>
-                <a id="moveright" class="btnright" href="#"></a>
-                <a id="closeall" class="btnclose" href="#"></a>
+            <div class="manager">
+                <dl>
+                    <dt class="name">admin</dt>
+                    <dd class="group">超级管理员</dd>
+                </dl>
+                <span class="avatar">
+				<img nctype="admin_avatar" src="/admin/images/admin.png">
+			</span>
+            </div>
+
+            <div class="operate">
+                <ul>
+                    <li style="position: relative;">
+                        <a href="javascript:void(0);" class="item" title="查看消息"><i class="icofont icofont-ui-messaging"></i></a>
+                        <!-- 消息通知 bylu -->
+                        <div id="msg_Container">
+                            <h3>消息通知</h3>
+                            <div class="msg_content">
+                                <div class="no_msg">暂无消息!</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li><a href="../" target="_blank" class="item" title="新窗口打开商城首页"><i class="icofont icofont-home"></i></a></li>
+                    <li><a href="javascript:void(0);" class="item" title="查看全部管理菜单"><i class="icofont icofont-site-map"></i></a></li>
+                    <li><a href="__APPROOT__/index/logout" class="item" title="安全退出管理中心"><i class="icofont icofont-power"></i></a></li>
+                </ul>
+
             </div>
         </div>
-
-        <div id="rcontent"><iframe scrolling="auto" name="Main" id="Main" src="__APPROOT__/index/wellcome.html" frameborder="0" width="100%" height="100%"></iframe></div>
     </div>
-    <!--左侧菜单区域-->
-    <div id="left">
+    <div class="top-border"></div>
+</header>
 
+<div class="main">
+    <div id="left" class="left">
+        <h1>平台管理</h1>
+        <dl>
+            <dt><i class="icofont icofont-repair"></i><span>平台设置</span></dt>
+            <dd><a class="active" href="__APPROOT__/index/welcome" target="main">收入汇总</a></dd>
+            <dd><a href="/admin/main/data/incomeSummary" target="main">收入汇总</a></dd>
+            <dd><a href="/admin/main/data/salesSummary" target="main">销售汇总</a></dd>
+            <dd><a href="/admin/main/data/salesDetail" target="main">销售明细</a></dd>
+            <dd><a href="/admin/main/data/purchaseSummary" target="main">进货单汇总</a></dd>
+        </dl>
+    </div>
+    <div class="right">
+        <div id="pagebars">
+            <div id="page-bar">
+                <div id="move-bar"></div>
+            </div>
+            <div id="page-btns">
+                <i id="move-left" class="icofont icofont-circled-left"></i>
+                <i id="move-right" class="icofont icofont-circled-right"></i>
+                <i id="close-all" class="icofont icofont-close-circled"></i>
+            </div>
+        </div>
+        <div id="content">
+            <iframe scrolling="auto" name="main" id="main" src="__APPROOT__/index/welcome" frameborder="0" width="100%" height="100%"></iframe>
+        </div>
     </div>
 </div>
 </body>

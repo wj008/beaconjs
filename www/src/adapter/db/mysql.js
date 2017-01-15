@@ -58,13 +58,13 @@ class Mysql {
                 return deferred.reject(err);
             }
             if (connection._onerror) {
-                connection.removeListener('error', connection._onerror);
+                connection.removeListener('fail', connection._onerror);
             }
             connection._onerror = function (err) {
                 that.release();
                 console.log(err.code); // 'ER_BAD_DB_ERROR'
             };
-            connection.once('error', connection._onerror);
+            connection.once('fail', connection._onerror);
             return deferred.resolve(connection);
         });
         return this.conn = await deferred.promise;

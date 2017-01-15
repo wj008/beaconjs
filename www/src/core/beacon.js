@@ -38,12 +38,12 @@ class Beacon extends beacon_kit_1.Beaconkit {
         let args = Route.parseUrl(context.pathname);
         context.parseRouteGet(args);
         if (args == null || args.ctl == '') {
-            Beacon.displayError(context, 404, 'then page url:"' + context.url + '" is not foult!');
+            Beacon.displayError(context, 404, 'the page url:"' + context.url + '" is not found!');
             return;
         }
         let ctlClass = Route.getController(args.app, args.ctl);
         if (ctlClass == null) {
-            Beacon.displayError(context, 404, 'then page url:"' + context.url + '" is not foult!');
+            Beacon.displayError(context, 404, 'the page url:"' + context.url + '" is not found!');
             return;
         }
         try {
@@ -79,7 +79,7 @@ class Beacon extends beacon_kit_1.Beaconkit {
                 }
             }
             else {
-                Beacon.displayError(context, 404, 'then page url:"' + context.url + '" is not foult!');
+                Beacon.displayError(context, 404, 'the page url:"' + context.url + '" is not found!');
             }
         }
         catch (e) {

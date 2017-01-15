@@ -7,6 +7,14 @@ class Index extends admin_ctl_1.AdminController {
         let adm = await this.db.getRow('select * from @pf_manage where id=?', this.adminId);
         this.assign('adm', adm);
         this.display('index');
+        console.log(Date.now() - this.context.startTime);
+    }
+    async logoutAction() {
+        this.delSession();
+        this.redirect('__APPROOT__/index.html');
+    }
+    async welcomeAction() {
+        this.display('welcome');
     }
 }
 exports.Index = Index;

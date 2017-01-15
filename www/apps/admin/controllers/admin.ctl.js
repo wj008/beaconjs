@@ -8,11 +8,63 @@ class AdminController extends beacon_1.Beacon.Controller {
         this.adminName = '';
         this.template_dirs = path.join(beacon_1.Beacon.VIEW_PATH, 'admin') + '/';
     }
-    error(msg, jump = this.getReferrer(), timeout = 3) {
-        this.assign('message', msg);
+    fail(message, jump, code, timeout = 3) {
+        if (this.isAjax()) {
+            let ret = {};
+            ret.message = message;
+            ret.status = false;
+            ret.timeout = timeout;
+            if (jump !== void 0) {
+                ret.jump = jump;
+            }
+            if (code !== void 0) {
+                ret.code = code;
+            }
+            this.returnJson(ret);
+        }
+        if (jump === void 0) {
+            jump = this.getReferrer();
+        }
+        else if (jump == false) {
+            jump = 'javascript:history.go(-1);';
+        }
+        this.assign('message', message);
         this.assign('jump', jump);
         this.assign('timeout', timeout);
-        this.display('error');
+        this.assign('code', code);
+        this.display('fail');
+        this.exit();
+    }
+    success(message, jump, code, timeout = 3) {
+        if (jump === void 0) {
+            jump = this.param('__BACK__', this.getReferrer()) || null;
+        }
+        if (this.isAjax()) {
+            let ret = {};
+            ret.message = message;
+            ret.status = true;
+            ret.timeout = timeout;
+            if (jump !== void 0) {
+                ret.jump = jump;
+            }
+            if (code !== void 0) {
+                ret.code = code;
+            }
+            this.returnJson(ret);
+        }
+        if (jump == false) {
+            jump = 'javascript:history.go(-1);';
+        }
+        this.assign('message', message);
+        this.assign('jump', jump);
+        this.assign('timeout', timeout);
+        this.assign('code', code);
+        this.display('success');
+        this.exit();
+    }
+    returnJson(data) {
+        this.setContentType('json');
+        this.end(JSON.stringify(data));
         this.exit();
     }
     async init() {
@@ -32,18 +84,24 @@ class AdminController extends beacon_1.Beacon.Controller {
         }
         let username = this.post('username:s', '');
         let password = this.post('password:s', '');
+        let code = this.post('code:s', '');
         if (username == '') {
-            this.error('用户名不能为空！');
+            this.fail('用户名不能为空！');
         }
         if (password == '') {
-            this.error('用户密码不能为空！');
+            this.fail('用户密码不能为空！');
+        }
+        let pcode = this.getSession('code') || '';
+        if (pcode == '' || pcode != code) {
+            this.setSession('code', '');
+            this.fail('验证码有误！');
         }
         let row = await this.db.getRow('select * from @pf_manage where `username`=?', username);
         if (row == null) {
-            this.error('账号不存在！');
+            this.fail('账号不存在！');
         }
         if (row.password != beacon_1.Beacon.md5(password)) {
-            this.error('用户密码不正确！');
+            this.fail('用户密码不正确！');
         }
         this.setSession('adminId', row.id);
         this.setSession('amdinName', row.username);
@@ -64,7 +122,7 @@ class AdminController extends beacon_1.Beacon.Controller {
         if (Object.keys(vals).length > 0) {
             await this.db.update('@pf_manage', vals, 'id=?', row.id);
         }
-        this.redirect('index.html');
+        this.redirect('~/index');
         this.exit();
     }
 }

@@ -36,7 +36,7 @@ class Redis {
                 that.connected = true;
                 resolve(client);
             });
-            client.on('error', function (err) {
+            client.on('fail', function (err) {
                 that.connected = false;
                 that.client = null;
                 reject(err);

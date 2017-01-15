@@ -9,7 +9,7 @@ class Route {
             let idata = require(filepath);
             idata.name = app;
             idata.uri = idata.uri || '';
-            idata.match = new RegExp('^' + String(idata.uri).replace(/[|\\{}()[\]^$+*?.]/g, '\\$&') + '(/.*)$', 'i');
+            idata.match = new RegExp('^' + String(idata.uri).replace(/[|\\{}()[\]^$+*?.]/g, '\\$&') + '(/.*)?$', 'i');
             Route.RouteData[app] = idata;
         }
         return Route;
@@ -27,6 +27,7 @@ class Route {
             }
             return null;
         })();
+        baseurl = baseurl.length == 0 ? '/' : baseurl;
         if (name.length == 0) {
             return null;
         }
@@ -85,7 +86,6 @@ class Route {
         let temps = {};
         let allpath = path.join(apppath, 'controllers');
         let files = Beacon.getFiles(allpath, '', function (item) {
-            //console.log(item,/^\w+\.ctl\.js$/.test(item));
             return /^\w+\.ctl\.js$/.test(item);
         });
         for (let file of files) {
@@ -131,10 +131,108 @@ class Route {
         }
         return null;
     }
+    //解析成路径
+    static resolve(app, pathname, query = {}) {
+        if (app == null || app.length == 0) {
+            return '';
+        }
+        let temp = [];
+        for (let name in query) {
+            temp.push(name + '={' + name + '}');
+        }
+        let urlpath = app + ':' + pathname + '?' + temp.join('&');
+        let index = urlpath.length > 50 ? Beacon.md5(urlpath) : urlpath;
+        if (Route.cache_uris[index]) {
+            let tplurl = Route.cache_uris[index];
+            // console.log('缓存的',tplurl);
+            return tplurl.replace(/\{(\w+)\}/g, function ($0, key) {
+                if (query[key] !== void 0 && query[key] !== null && query[key] !== '') {
+                    return encodeURIComponent(query[key]);
+                }
+                return '';
+            });
+        }
+        let ctl = '';
+        let act = '';
+        if (pathname.length > 0) {
+            let mth = pathname.match(/^\/(\w+)(?:\/(\w+))?$/);
+            if (mth) {
+                ctl = mth[1];
+            }
+            if (mth[2]) {
+                act = mth[2];
+            }
+        }
+        let oquery = {};
+        for (let name in query) {
+            oquery[name] = '{' + name + '}';
+        }
+        let args = {};
+        if (ctl) {
+            args.__ctl__ = ctl;
+        }
+        if (act) {
+            args.__act__ = act;
+        }
+        args = Object.assign(args, oquery);
+        let route = Route.RouteData[app] || null;
+        if (!route) {
+            return '';
+        }
+        let uri = route.uri || '';
+        let resolve = route.resolve || null;
+        if (resolve == null) {
+            return '';
+        }
+        let out_url = '';
+        for (let i = 0; i < resolve.length; i++) {
+            let in_url = resolve[i];
+            let delkeys = [];
+            let isHas = true;
+            let _url = in_url.replace(/\{(\w+)\}/g, function ($0, key) {
+                if (['ctl', 'act'].indexOf(key) >= 0) {
+                    key = '__' + key + '__';
+                }
+                delkeys.push(key);
+                if (args[key] === void 0 || args[key] === null || args[key] === '') {
+                    isHas = false;
+                    return '';
+                }
+                return args[key];
+            });
+            if (isHas) {
+                out_url = _url;
+                for (let n = 0; n < delkeys.length; n++) {
+                    let del = delkeys[n];
+                    delete args[del];
+                }
+                break;
+            }
+        }
+        let queryStr = [];
+        for (let name in args) {
+            if (['__ctl__', '__act__'].indexOf(name) >= 0) {
+                continue;
+            }
+            queryStr.push(name + '=' + args[name]);
+        }
+        let tplurl = uri + out_url;
+        if (queryStr.length > 0) {
+            tplurl += '?' + queryStr.join('&');
+        }
+        Route.cache_uris[index] = tplurl;
+        //console.log('生成的',tplurl);
+        return tplurl.replace(/\{(\w+)\}/g, function ($0, key) {
+            if (query[key] !== void 0 && query[key] !== null && query[key] !== '') {
+                return encodeURIComponent(query[key]);
+            }
+        });
+    }
 }
 Route.RouteData = {};
 Route.AppPath = {};
 Route.AppCtls = {};
 Route.ROUTE_PATH = Beacon.ROUTE_PATH;
+Route.cache_uris = {}; //缓存路径
 exports.Route = Route;
 //# sourceMappingURL=route.js.map
