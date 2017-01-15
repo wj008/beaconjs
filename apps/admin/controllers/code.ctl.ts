@@ -8,9 +8,10 @@ export class Code extends Beacon.Controller {
     public async indexAction() {
         await this.initSesion();
         let code = Beacon.randNumber(4);
+        console.log(code);
         this.setSession('code', code);
         let oo = new Captcha(70, 26, code);
-        this.setContentType('image/png');
+        this.setContentType('png');
         this.end(oo.captchapng().getBuffer());
     }
 

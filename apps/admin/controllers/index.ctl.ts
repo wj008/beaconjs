@@ -16,4 +16,8 @@ export class Index extends AdminController {
         this.redirect('__APPROOT__/index.html');
     }
 
+    public async welcomeAction() {
+        this.display('welcome');
+    }
+
 }
