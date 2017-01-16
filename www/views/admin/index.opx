@@ -65,15 +65,6 @@
 
 <div class="main">
     <div id="left" class="left">
-        <h1>平台管理</h1>
-        <dl>
-            <dt><i class="icofont icofont-repair"></i><span>平台设置</span></dt>
-            <dd><a class="active" href="__APPROOT__/index/welcome" target="main">收入汇总</a></dd>
-            <dd><a href="/admin/main/data/incomeSummary" target="main">收入汇总</a></dd>
-            <dd><a href="/admin/main/data/salesSummary" target="main">销售汇总</a></dd>
-            <dd><a href="/admin/main/data/salesDetail" target="main">销售明细</a></dd>
-            <dd><a href="/admin/main/data/purchaseSummary" target="main">进货单汇总</a></dd>
-        </dl>
     </div>
     <div class="right">
         <div id="pagebars">
