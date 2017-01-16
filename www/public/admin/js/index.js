@@ -230,6 +230,22 @@ var PageObject = function (url, title) {
 
 $(function () {
 
+    var atops = $('#main-mune li').on('click', function () {
+        atops.removeClass('idx');
+        var that = $(this).addClass('idx');
+        that.prev('li').addClass('lidx');
+        var url = that.find('a').attr('href');
+        if (url.length > 0 && url !== '#') {
+            $.ajax({
+                url: url, success: function (html) {
+                    $('#left').html(html);
+                }, cache: false
+            });
+        }
+        return false;
+    });
+    atops.eq(0).trigger('click');
+
     $('#left').on('click', 'a[target="main"]', function () {
         $('#left a[target="main"]').removeClass('active');
         var that = $(this).addClass('active');
@@ -248,7 +264,7 @@ $(function () {
         return false;
     });
 
-    $('#move-left').mousedown(function () {
+    $('#move-left').on('mousedown',function () {
         if (Timer != null) {
             window.clearInterval(Timer);
             Timer = null;
@@ -270,7 +286,7 @@ $(function () {
         });
     });
 
-    $('#move-right').mousedown(function () {
+    $('#move-right').on('mousedown', function () {
         if (Timer != null) {
             window.clearInterval(Timer);
             Timer = null;
@@ -295,7 +311,7 @@ $(function () {
         });
     });
 
-    $('#close-all').click(function () {
+    $('#close-all').on('click', function () {
         if (!confirm("确定要关闭所有标签页面吗？"))
             return;
         $('#move-bar a').each(function (index, element) {
