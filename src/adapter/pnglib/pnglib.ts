@@ -1,5 +1,5 @@
-import tinycolor=require ('tinycolor2');
-import base64 =require ('base64-js') ;
+import tinycolor=require('tinycolor2');
+import base64 =require('base64-js') ;
 const HEADER = '\x89PNG\r\n\x1A\n';
 
 const _crc32 = new Array();

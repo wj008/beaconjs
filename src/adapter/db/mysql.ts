@@ -84,7 +84,7 @@ export class Mysql {
         return this.conn = await deferred.promise;
     }
 
-    public async query(sql: any, args?: any) {
+    public async query(sql: any, args?: any): Promise<any> {
         if (this._inTransaction > 0 && this.conn == null) {
             throw new Error('mysql is disconnect');
         }
@@ -188,7 +188,7 @@ export class Mysql {
         return rows[0];
     }
 
-    public async getList(sql: string, args?: any) {
+    public async getList(sql: string, args?: any): Promise<any> {
         if (this.prefix) {
             sql = sql.replace('@pf_', this.prefix);
         }
@@ -335,7 +335,7 @@ export class Mysql {
         return await this.query(excsql);
     }
 
-    public async getFields(tbname: string):Array<any> {
+    public async getFields(tbname: string): Promise<any> {
         if (this.prefix) {
             tbname = tbname.replace('@pf_', this.prefix);
         }
