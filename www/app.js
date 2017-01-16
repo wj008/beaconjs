@@ -8,8 +8,8 @@ const port = 3001;
 beacon_1.Beacon.regSessionType('redis', redis_1.RedisSession);
 beacon_1.Beacon.debug = true;
 beacon_1.Beacon.init();
-console.log(beacon_1.Beacon.RUNTIME_PATH);
-console.log(beacon_1.Beacon.VIEW_PATH);
+//console.log(Beacon.RUNTIME_PATH);
+//console.log(Beacon.VIEW_PATH);
 //ddddoo
 beacon_1.Beacon.Route.loadRoute('admin');
 beacon_1.Beacon.Route.loadRoute('home');
