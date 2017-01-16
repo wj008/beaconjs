@@ -21,21 +21,12 @@
         </div>
 
         <ul id="main-mune" class="main-mune">
-            <li><a href="/admin/left?parentId=11" target="left">平台</a></li>
-            <li><a href="/admin/left?parentId=12" target="left">店铺</a></li>
-            <li><a href="/admin/left?parentId=13" target="left">会员</a></li>
-            <li class="idx"><a href="/admin/left?parentId=14" target="left">商品</a></li>
-            <li><a href="/admin/left?parentId=15" target="left">进货</a></li>
-            <li><a href="/admin/left?parentId=16" target="left">订单</a></li>
-            <li><a href="/admin/left?parentId=17" target="left">财务</a></li>
-            <li><a href="/admin/left?parentId=18" target="left">营销</a></li>
-            <li><a href="/admin/left?parentId=19" target="left">仓库</a></li>
-            <li><a href="/admin/left?parentId=20" target="left">配送</a></li>
-            <li><a href="/admin/left?parentId=21" target="left">统计</a></li>
-            <li><a href="/admin/left?parentId=90" target="left">设置</a></li>
+            {foreach from=$rows item=rs}
+            <li><a href="__APPROOT__/index/left?pid={$rs.id}" target="left">{$rs.name}</a></li>
+            {/foreach}
         </ul>
-        <div class="head-right">
 
+        <div class="head-right">
             <div class="manager">
                 <dl>
                     <dt class="name">admin</dt>
@@ -45,11 +36,11 @@
 				<img nctype="admin_avatar" src="/admin/images/admin.png">
 			</span>
             </div>
-
             <div class="operate">
                 <ul>
                     <li style="position: relative;">
-                        <a href="javascript:void(0);" class="item" title="查看消息"><i class="icofont icofont-ui-messaging"></i></a>
+                        <a href="javascript:void(0);" class="item" title="查看消息"><i
+                                class="icofont icofont-ui-messaging"></i></a>
                         <!-- 消息通知 bylu -->
                         <div id="msg_Container">
                             <h3>消息通知</h3>
@@ -58,9 +49,12 @@
                             </div>
                         </div>
                     </li>
-                    <li><a href="../" target="_blank" class="item" title="新窗口打开商城首页"><i class="icofont icofont-home"></i></a></li>
-                    <li><a href="javascript:void(0);" class="item" title="查看全部管理菜单"><i class="icofont icofont-site-map"></i></a></li>
-                    <li><a href="__APPROOT__/index/logout" class="item" title="安全退出管理中心"><i class="icofont icofont-power"></i></a></li>
+                    <li><a href="../" target="_blank" class="item" title="新窗口打开商城首页"><i
+                            class="icofont icofont-home"></i></a></li>
+                    <li><a href="javascript:void(0);" class="item" title="查看全部管理菜单"><i
+                            class="icofont icofont-site-map"></i></a></li>
+                    <li><a href="__APPROOT__/index/logout" class="item" title="安全退出管理中心"><i
+                            class="icofont icofont-power"></i></a></li>
                 </ul>
 
             </div>
@@ -93,7 +87,8 @@
             </div>
         </div>
         <div id="content">
-            <iframe scrolling="auto" name="main" id="main" src="__APPROOT__/index/welcome" frameborder="0" width="100%" height="100%"></iframe>
+            <iframe scrolling="auto" name="main" id="main" src="__APPROOT__/index/welcome" frameborder="0" width="100%"
+                    height="100%"></iframe>
         </div>
     </div>
 </div>
