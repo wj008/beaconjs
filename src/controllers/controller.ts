@@ -4,14 +4,7 @@ import {HttpContext} from "../core/http_context";
 import {Mysql} from "../adapter/db/mysql";
 import {Sdopx} from "sdopx";
 declare var Beacon: any;
-
-Sdopx.registerFilter('pre', function (content: string, sdopx: Sdopx) {
-    if (sdopx.context) {
-        let uri = sdopx.context.route('uri', '');
-        content = content.replace(/__APPROOT__/g, uri);
-    }
-    return content;
-});
+require('../adapter/sdopx/sdopx_ext');
 
 export class ControllerError extends Error {
     public code = '';
@@ -44,7 +37,7 @@ export class Controller {
     private initSdopx() {
         if (this.sdopx === null) {
             this.sdopx = new Sdopx(this);
-           // this.sdopx.compile_check = false;
+            // this.sdopx.compile_check = false;
             let dirs = this.template_dirs || Beacon.VIEW_PATH;
             this.sdopx.setTemplateDir(dirs);
         }
@@ -211,7 +204,7 @@ export class Controller {
             code = app;
             app = this.route('app');
         }
-        if (uri.length < 0) {
+        if (uri.length == 0) {
             return;
         }
         if (uri[0] == '~') {
