@@ -248,7 +248,7 @@ export class Mysql {
         }
         let excsql = `INSERT INTO ${tbname} `;
         excsql += '(`' + names.join('`,`') + '`)';
-        excsql += 'VALUES (' + vals.join(',') + ');';
+        excsql += ' VALUES (' + vals.join(',') + ');';
         return await this.query(excsql);
     }
 
@@ -282,7 +282,7 @@ export class Mysql {
         }
         let excsql = `REPLACE  INTO ${tbname} `;
         excsql += '(`' + names.join('`,`') + '`)';
-        excsql += 'VALUES (' + vals.join(',') + ');';
+        excsql += ' VALUES (' + vals.join(',') + ');';
         return await this.query(excsql);
     }
 
@@ -314,8 +314,12 @@ export class Mysql {
         }
         let excsql = `UPDATE ${tbname} SET `;
         excsql += sets.join(',');
+        if(typeof where=='number' && /^\d+$/.test(where) && args==void 0){
+            args=where;
+            where='id=?';
+        }
         if (!where) {
-            excsql += ' WHERE 1=1';
+            excsql += ' WHERE true';
         } else {
             excsql += ' WHERE ' + mysql.format(where, args);
         }
@@ -327,8 +331,12 @@ export class Mysql {
             tbname = tbname.replace('@pf_', this.prefix);
         }
         let excsql = `DELETE  FROM ${tbname}`;
+        if(typeof where=='number' && /^\d+$/.test(where) && args==void 0){
+            args=where;
+            where='id=?';
+        }
         if (!where) {
-            excsql += ' WHERE 1=1';
+            excsql += ' WHERE true';
         } else {
             excsql += ' WHERE ' + mysql.format(where, args);
         }
