@@ -22,11 +22,12 @@ export class Index extends AdminController {
         }
         this.assign('rows', rows);
         this.display('left');
+        console.log(Date.now() - this.context.startTime);
     }
 
     public async logoutAction() {
         this.delSession();
-        this.redirect('__APPROOT__/index.html');
+        this.redirect('~/index');
     }
 
     public async welcomeAction() {
