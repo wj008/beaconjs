@@ -91,7 +91,7 @@ export class AdminController extends Beacon.Controller {
         }
         let username = this.post('username:s', '');
         let password = this.post('password:s', '');
-        let code = this.post('code:s', '');
+        let code = this.post('code:s', '').toUpperCase();
         if (username == '') {
             this.fail('用户名不能为空！');
         }
