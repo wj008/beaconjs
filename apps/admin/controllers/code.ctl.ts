@@ -8,7 +8,7 @@ import path = require('path');
 export class Code extends Beacon.Controller {
 
 
-    //使用gm库 需要安装 Ghostscript
+    //使用gm库 需要安装 GraphicsMagick
     public async indexAction() {
 
         await this.initSesion();
