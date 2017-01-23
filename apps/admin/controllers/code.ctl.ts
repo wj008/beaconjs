@@ -27,6 +27,7 @@ export class Code extends Beacon.Controller {
         await this.initSesion();
         let code = randcode(4).toUpperCase();
         let bcode = randcode(4);
+        console.log(code);
         this.setSession('code', code);
         let buffer = await new Promise(function (resolve, reject) {
             let bgcolor = 'rgb(240,243,248)';
