@@ -49,9 +49,10 @@ export class Mysql {
     }
 
     public async getConnection() {
-        if (this.conn) {
+        if (this.conn && this.conn.stream && !this.conn.stream.destroyed) {
             return this.conn;
         }
+
         if (this._options != null) {
             return this.conn = await new Promise(function (resolve, reject) {
                 mysql.createConnection(this._options, function (err, connection) {
