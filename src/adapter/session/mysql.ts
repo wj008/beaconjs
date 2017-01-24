@@ -226,8 +226,12 @@ export class MysqlSession implements SessionBase {
 
     public static gc() {
         let time = Math.round(Date.now() / 1000);
-        Mysql.getDBInstance().delete('@pf_session', 'expire<=?', time);
-        Mysql.getDBInstance().delete('@pf_session_long', 'expire<=?', time);
+        Promise.all([
+            Mysql.getDBInstance().delete('@pf_session', 'expire<=?', time),
+            Mysql.getDBInstance().delete('@pf_session_long', 'expire<=?', time)
+        ]).catch(function (e) {
+            
+        })
     }
 }
 
