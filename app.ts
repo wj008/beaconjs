@@ -12,6 +12,7 @@ Beacon.init();
 //console.log(Beacon.RUNTIME_PATH);
 //console.log(Beacon.VIEW_PATH);
 //ddddoo
+Beacon.Route.loadRoute('service');
 Beacon.Route.loadRoute('admin');
 Beacon.Route.loadRoute('home');
 

@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 const url = require("url");
 const mime = require("mime");
 const os = require("os");
@@ -93,69 +101,77 @@ class HttpContext {
         }
         return (this.req.headers['content-length'] | 0) > 0;
     }
-    async getPayload(encoding) {
-        if (this.payload) {
-            return this.payload;
-        }
-        if (!this.req.readable) {
-            return new Buffer(0);
-        }
-        let that = this;
-        let _getPayload = function () {
-            let buffers = [];
-            let deferred = Beacon.defer();
-            that.req.on('data', chunk => {
-                buffers.push(chunk);
-            });
-            that.req.on('end', () => {
-                that.payload = Buffer.concat(buffers);
-                deferred.resolve(that.payload);
-            });
-            that.req.on('fail', () => {
-                that.res.statusCode = 400;
-                that.end();
-                deferred.reject(new Error('client fail'));
-            });
-            return deferred.promise;
-        };
-        let buffer = await _getPayload();
-        if (encoding === true) {
-            return buffer;
-        }
-        encoding = encoding === void 0 ? 'utf-8' : encoding;
-        return buffer.toString(encoding);
-    }
-    async parsePayload(encoding) {
-        if (!this.req.readable) {
-            return;
-        }
-        if (['POST', 'PUT', 'PATCH'].indexOf(this.req.method) > -1) {
-            if (this.hasPayload()) {
-                await this.parseQuerystring(encoding);
+    getPayload(encoding) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.payload) {
+                return this.payload;
             }
-            await this.parseForm();
-        }
+            if (!this.req.readable) {
+                return new Buffer(0);
+            }
+            let that = this;
+            let _getPayload = function () {
+                let buffers = [];
+                let deferred = Beacon.defer();
+                that.req.on('data', chunk => {
+                    buffers.push(chunk);
+                });
+                that.req.on('end', () => {
+                    that.payload = Buffer.concat(buffers);
+                    deferred.resolve(that.payload);
+                });
+                that.req.on('fail', () => {
+                    that.res.statusCode = 400;
+                    that.end();
+                    deferred.reject(new Error('client fail'));
+                });
+                return deferred.promise;
+            };
+            let buffer = yield _getPayload();
+            if (encoding === true) {
+                return buffer;
+            }
+            encoding = encoding === void 0 ? 'utf-8' : encoding;
+            return buffer.toString(encoding);
+        });
     }
-    async parseQuerystring(encoding) {
-        let contentType = this.getContentType();
-        if (contentType && contentType.indexOf('application/x-www-form-urlencoded') === -1) {
-            return;
-        }
-        let buffer = await this.getPayload(encoding);
-        this._post = Object.assign(this._post, querystring.parse(buffer));
+    parsePayload(encoding) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.req.readable) {
+                return;
+            }
+            if (['POST', 'PUT', 'PATCH'].indexOf(this.req.method) > -1) {
+                if (this.hasPayload()) {
+                    yield this.parseQuerystring(encoding);
+                }
+                yield this.parseForm();
+            }
+        });
     }
-    async parseForm(encoding) {
-        let re = /^multipart\/(form-data|related);\s*boundary=(?:"([^"]+)"|([^;]+))$/i;
-        let contentType = this.getHeader('content-type');
-        if (!contentType || !re.test(contentType)) {
-            return;
-        }
-        let uploadDir = Beacon.getConfig('post:file_upload_path') || null;
-        if (!uploadDir) {
-            uploadDir = path.join(os.tmpdir(), 'beacon/upload');
-        }
-        Beacon.mkdir(uploadDir);
-        await this.getFormData(uploadDir);
+    parseQuerystring(encoding) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let contentType = this.getContentType();
+            if (contentType && contentType.indexOf('application/x-www-form-urlencoded') === -1) {
+                return;
+            }
+            let buffer = yield this.getPayload(encoding);
+            this._post = Object.assign(this._post, querystring.parse(buffer));
+        });
+    }
+    parseForm(encoding) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let re = /^multipart\/(form-data|related);\s*boundary=(?:"([^"]+)"|([^;]+))$/i;
+            let contentType = this.getHeader('content-type');
+            if (!contentType || !re.test(contentType)) {
+                return;
+            }
+            let uploadDir = Beacon.getConfig('post:file_upload_path') || null;
+            if (!uploadDir) {
+                uploadDir = path.join(os.tmpdir(), 'beacon/upload');
+            }
+            Beacon.mkdir(uploadDir);
+            yield this.getFormData(uploadDir);
+        });
     }
     getFormData(uploadDir) {
         let deferred = Beacon.defer();
@@ -518,16 +534,18 @@ class HttpContext {
         this.setHeader('Set-Cookie', cookies);
         this._sendCookie = null;
     }
-    async initSesion(type = Beacon.getConfig('session:type', 'file')) {
-        let session_cookie_name = Beacon.getConfig('session:cookie_name', 'BEACONSSID');
-        let session_cookie_length = Beacon.getConfig('session:cookie_length', 24);
-        let cookie_value = this.getCookie(session_cookie_name);
-        if (!cookie_value) {
-            cookie_value = Beacon.uuid(session_cookie_length);
-            this.setCookie(session_cookie_name, cookie_value);
-        }
-        this._session = Beacon.getSessionInstance(type);
-        await this._session.init(cookie_value);
+    initSesion(type = Beacon.getConfig('session:type', 'file')) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let session_cookie_name = Beacon.getConfig('session:cookie_name', 'BEACONSSID');
+            let session_cookie_length = Beacon.getConfig('session:cookie_length', 24);
+            let cookie_value = this.getCookie(session_cookie_name);
+            if (!cookie_value) {
+                cookie_value = Beacon.uuid(session_cookie_length);
+                this.setCookie(session_cookie_name, cookie_value);
+            }
+            this._session = Beacon.getSessionInstance(type);
+            yield this._session.init(cookie_value);
+        });
     }
     getSession(name) {
         return this._session.get(name);

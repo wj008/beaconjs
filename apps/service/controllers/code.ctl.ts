@@ -1,5 +1,4 @@
 import {Beacon} from "../../../src/core/beacon";
-import {Captcha} from "../../../src/adapter/pnglib/captcha";
 
 import gm = require("gm");
 import path = require('path');
@@ -10,11 +9,11 @@ export class Code extends Beacon.Controller {
 
     //使用gm库 需要安装 GraphicsMagick
     public async indexAction() {
-
         function rand(start, end) {
             let p = Math.round(Math.random() * (end - start));
             return start + p;
         }
+
         function randcode(len = 4) {
             let text = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
             let out = [];
@@ -24,6 +23,7 @@ export class Code extends Beacon.Controller {
             }
             return out.join('');
         }
+
         await this.initSesion();
         let code = randcode(4).toUpperCase();
         let bcode = randcode(4);
@@ -60,17 +60,5 @@ export class Code extends Beacon.Controller {
         this.end(buffer);
     }
 
-    //无组件，不完善的png库
-
-    public async imgAction() {
-        await this.initSesion();
-        let code = Beacon.randNumber(4);
-        console.log(code);
-        this.setSession('code', code);
-        let oo = new Captcha(70, 26, code);
-        this.setContentType('png');
-        this.end(oo.captchapng().getBuffer());
-
-    }
 
 }

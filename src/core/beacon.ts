@@ -1,7 +1,7 @@
 import path =require('path');
 import {Beaconkit} from "./beacon_kit";
 import {HttpContext} from "./http_context";
-import { Controller} from "../controllers/controller";
+import {Controller} from "../controllers/controller";
 import {MemorySession} from "../adapter/session/memory";
 import {FileSession} from "../adapter/session/file";
 import {Sdopx} from "sdopx";
@@ -75,19 +75,19 @@ export class Beacon extends Beaconkit {
         let Route = Beacon.Route;
         let args = Route.parseUrl(context.pathname);
         context.parseRouteGet(args);
+        // console.log(args);
         if (args == null || args.ctl == '') {
             Beacon.displayError(context, 404, 'the page url:"' + context.url + '" is not found!');
             return;
         }
-
-        let ctlClass = Route.getController(args.app, args.ctl);
-        if (ctlClass == null) {
-            Beacon.displayError(context, 404, 'the page url:"' + context.url + '" is not found!');
-            return;
-        }
         try {
-            await context.parsePayload(Beacon.getConfig('default_encoding', 'utf-8'));
+            let ctlClass = Route.getController(args.app, args.ctl);
+            if (ctlClass == null) {
+                Beacon.displayError(context, 404, 'the page url:"' + context.url + '" is not found!');
+                return;
+            }
             let ctlobj = new ctlClass(context);
+            await ctlobj.parsePayload(Beacon.getConfig('default_encoding', 'utf-8'));
             let act = Beacon.lowerFirst(Beacon.toCamel(args.act || 'index')) + 'Action';
             let isInit = false;
             if (ctlobj[act] && Beacon.isFunction(ctlobj[act])) {

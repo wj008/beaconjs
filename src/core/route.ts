@@ -139,7 +139,7 @@ export class Route {
             }
         }
         catch (e) {
-            return null;
+            throw e;
         }
         return null;
     }

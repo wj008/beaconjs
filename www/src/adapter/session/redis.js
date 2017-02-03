@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 const redis_1 = require("../db/redis");
 class RedisSession {
     constructor() {
@@ -13,14 +21,16 @@ class RedisSession {
             RedisSession.timeout = options.timeout || 3600;
         }
     }
-    async init(cookie) {
-        if (!cookie || typeof cookie !== 'string') {
-            return;
-        }
-        this._cookie = cookie;
-        this._isUpdate = false;
-        this._isInit = true;
-        this._data = (await this.redis.get('session_' + cookie)) || { data: {}, expire: 0 };
+    init(cookie) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!cookie || typeof cookie !== 'string') {
+                return;
+            }
+            this._cookie = cookie;
+            this._isUpdate = false;
+            this._isInit = true;
+            this._data = (yield this.redis.get('session_' + cookie)) || { data: {}, expire: 0 };
+        });
     }
     get(name) {
         if (!this._isInit || !this._data) {
@@ -62,21 +72,23 @@ class RedisSession {
         }
         delete this._data[name];
     }
-    async flush() {
-        let name = 'session_' + this._cookie;
-        let that = this;
-        //如果为空删除
-        if (that._data == null) {
-            await this.redis.delete(name);
+    flush() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let name = 'session_' + this._cookie;
+            let that = this;
+            //如果为空删除
+            if (that._data == null) {
+                yield this.redis.delete(name);
+                return;
+            }
+            //如果没有更改仅修改时间即可
+            if (!this._isUpdate) {
+                yield this.redis.expire(name, RedisSession.timeout);
+                return;
+            }
+            yield this.redis.set(name, that._data, RedisSession.timeout);
             return;
-        }
-        //如果没有更改仅修改时间即可
-        if (!this._isUpdate) {
-            await this.redis.expire(name, RedisSession.timeout);
-            return;
-        }
-        await this.redis.set(name, that._data, RedisSession.timeout);
-        return;
+        });
     }
 }
 RedisSession.timeout = null;

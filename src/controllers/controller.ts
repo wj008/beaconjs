@@ -268,4 +268,7 @@ export class Controller {
         return this.context.sendTime(name);
     }
 
+    public async parsePayload(encoding?) {
+        return await this.context.parsePayload(encoding);
+    }
 }

@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 class MemorySession {
     constructor() {
         this.timeout = 3600;
@@ -8,11 +16,13 @@ class MemorySession {
         let options = Beacon.getConfig('session:*');
         this.timeout = options.timeout || 3600;
     }
-    async init(cookie) {
-        this._cookie = cookie;
-        let data = MemorySession.store[cookie] || { data: {}, expire: 0 };
-        this._data = Beacon.clone(data);
-        this._isInit = true;
+    init(cookie) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this._cookie = cookie;
+            let data = MemorySession.store[cookie] || { data: {}, expire: 0 };
+            this._data = Beacon.clone(data);
+            this._isInit = true;
+        });
     }
     get(name) {
         if (!this._isInit || !this._data) {
@@ -42,13 +52,15 @@ class MemorySession {
         }
         delete this._data[name];
     }
-    async flush() {
-        let store = MemorySession.store;
-        if (this._data == null) {
-            delete store[this._cookie];
-            return;
-        }
-        store[this._cookie] = this._data;
+    flush() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let store = MemorySession.store;
+            if (this._data == null) {
+                delete store[this._cookie];
+                return;
+            }
+            store[this._cookie] = this._data;
+        });
     }
     static gc() {
         let now = Date.now();

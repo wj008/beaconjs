@@ -1,13 +1,15 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 const url = require("url");
 const sdopx_1 = require("sdopx");
-sdopx_1.Sdopx.registerFilter('pre', function (content, sdopx) {
-    if (sdopx.context) {
-        let uri = sdopx.context.route('uri', '');
-        content = content.replace(/__APPROOT__/g, uri);
-    }
-    return content;
-});
+require('../adapter/sdopx/sdopx_ext');
 class ControllerError extends Error {
     constructor(msg, code) {
         super(msg);
@@ -25,9 +27,13 @@ class Controller {
         this._info = {};
         this.context = context;
     }
-    async init() {
+    init() {
+        return __awaiter(this, void 0, void 0, function* () {
+        });
     }
-    async finish() {
+    finish() {
+        return __awaiter(this, void 0, void 0, function* () {
+        });
     }
     initSdopx() {
         if (this.sdopx === null) {
@@ -37,13 +43,15 @@ class Controller {
             this.sdopx.setTemplateDir(dirs);
         }
     }
-    async initDB(type = 'mysql', options) {
-        if (this.db == null) {
-            if (type == 'mysql') {
-                let Mysql = require("../adapter/db/mysql").Mysql;
-                this.db = new Mysql(options);
+    initDB(type = 'mysql', options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.db == null) {
+                if (type == 'mysql') {
+                    let Mysql = require("../adapter/db/mysql").Mysql;
+                    this.db = new Mysql(options);
+                }
             }
-        }
+        });
     }
     assign(key, value = null) {
         if (typeof key == 'string') {
@@ -133,8 +141,10 @@ class Controller {
     setCookie(name, value, options) {
         return this.context.setCookie(name, value, options);
     }
-    async initSesion(type) {
-        return await this.context.initSesion(type);
+    initSesion(type) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.context.initSesion(type);
+        });
     }
     getSession(name) {
         return this.context.getSession(name);
@@ -164,7 +174,7 @@ class Controller {
             code = app;
             app = this.route('app');
         }
-        if (uri.length < 0) {
+        if (uri.length == 0) {
             return;
         }
         if (uri[0] == '~') {
@@ -218,6 +228,11 @@ class Controller {
     }
     sendTime(name) {
         return this.context.sendTime(name);
+    }
+    parsePayload(encoding) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.context.parsePayload(encoding);
+        });
     }
 }
 exports.Controller = Controller;

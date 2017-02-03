@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 const path = require("path");
 const os = require("os");
 const fs = require("fs");
@@ -20,33 +28,35 @@ class FileSession {
         Beacon.mkdir(save_path);
         FileSession._save_path = save_path;
     }
-    async init(cookie) {
-        if (!cookie || typeof cookie !== 'string') {
-            return;
-        }
-        this._cookie = cookie;
-        this._isUpdate = false;
-        let filepath = path.join(FileSession._save_path, this._cookie + '.json');
-        let text = await new Promise(function (resolve, reject) {
-            fs.access(filepath, fs.constants.R_OK | fs.constants.W_OK, (err) => {
-                if (err) {
-                    return resolve(null);
-                }
-                fs.readFile(filepath, 'utf8', (err, text) => {
+    init(cookie) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!cookie || typeof cookie !== 'string') {
+                return;
+            }
+            this._cookie = cookie;
+            this._isUpdate = false;
+            let filepath = path.join(FileSession._save_path, this._cookie + '.json');
+            let text = yield new Promise(function (resolve, reject) {
+                fs.access(filepath, fs.constants.R_OK | fs.constants.W_OK, (err) => {
                     if (err) {
                         return resolve(null);
                     }
-                    return resolve(text);
+                    fs.readFile(filepath, 'utf8', (err, text) => {
+                        if (err) {
+                            return resolve(null);
+                        }
+                        return resolve(text);
+                    });
                 });
             });
+            try {
+                let json = JSON.parse(String(text));
+                this._data = json || { data: {}, expire: 0 };
+                this._isInit = true;
+            }
+            catch (e) {
+            }
         });
-        try {
-            let json = JSON.parse(String(text));
-            this._data = json || { data: {}, expire: 0 };
-            this._isInit = true;
-        }
-        catch (e) {
-        }
     }
     get(name) {
         if (!this._isInit || !this._data) {
@@ -89,47 +99,49 @@ class FileSession {
         }
         delete this._data[name];
     }
-    async flush() {
-        let filepath = path.join(FileSession._save_path, this._cookie + '.json');
-        let that = this;
-        //如果为空删除
-        if (that._data == null) {
-            await new Promise(function (resolve, reject) {
-                fs.access(filepath, fs.constants.R_OK | fs.constants.W_OK, (err) => {
-                    if (err) {
-                        return resolve(null);
-                    }
-                    fs.unlink(filepath, (err) => {
+    flush() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let filepath = path.join(FileSession._save_path, this._cookie + '.json');
+            let that = this;
+            //如果为空删除
+            if (that._data == null) {
+                yield new Promise(function (resolve, reject) {
+                    fs.access(filepath, fs.constants.R_OK | fs.constants.W_OK, (err) => {
                         if (err) {
                             return resolve(null);
                         }
-                        // console.log('删除了文件:' , filepath);
+                        fs.unlink(filepath, (err) => {
+                            if (err) {
+                                return resolve(null);
+                            }
+                            // console.log('删除了文件:' , filepath);
+                            return resolve(null);
+                        });
+                    });
+                });
+                return;
+            }
+            let now = Date.now() / 1000;
+            //如果没有更改仅修改时间即可
+            if (!this._isUpdate) {
+                yield new Promise(function (resolve, reject) {
+                    fs.utimes(filepath, now, now, (err) => {
+                        // console.log('更新sesslin[' + that._cookie + ']的时间');
                         return resolve(null);
                     });
                 });
-            });
-            return;
-        }
-        let now = Date.now() / 1000;
-        //如果没有更改仅修改时间即可
-        if (!this._isUpdate) {
-            await new Promise(function (resolve, reject) {
-                fs.utimes(filepath, now, now, (err) => {
-                    // console.log('更新sesslin[' + that._cookie + ']的时间');
+                return;
+            }
+            let text = JSON.stringify(that._data);
+            //如果修改了就写入内容
+            yield new Promise(function (resolve, reject) {
+                fs.writeFile(filepath, text, 'utf8', (err) => {
+                    // console.log('写入新的sesslin[' + that._cookie + ']的时间');
                     return resolve(null);
                 });
             });
             return;
-        }
-        let text = JSON.stringify(that._data);
-        //如果修改了就写入内容
-        await new Promise(function (resolve, reject) {
-            fs.writeFile(filepath, text, 'utf8', (err) => {
-                // console.log('写入新的sesslin[' + that._cookie + ']的时间');
-                return resolve(null);
-            });
         });
-        return;
     }
     static gc() {
         let removeFile = function (filepath) {

@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 const path = require("path");
 const beacon_kit_1 = require("./beacon_kit");
 const http_context_1 = require("./http_context");
@@ -32,63 +40,66 @@ class Beacon extends beacon_kit_1.Beaconkit {
         return this;
     }
     //获取http对象
-    static async run(req, res) {
-        let context = new http_context_1.HttpContext(req, res);
-        let Route = Beacon.Route;
-        let args = Route.parseUrl(context.pathname);
-        context.parseRouteGet(args);
-        if (args == null || args.ctl == '') {
-            Beacon.displayError(context, 404, 'the page url:"' + context.url + '" is not found!');
-            return;
-        }
-        let ctlClass = Route.getController(args.app, args.ctl);
-        if (ctlClass == null) {
-            Beacon.displayError(context, 404, 'the page url:"' + context.url + '" is not found!');
-            return;
-        }
-        try {
-            await context.parsePayload(Beacon.getConfig('default_encoding', 'utf-8'));
-            let ctlobj = new ctlClass(context);
-            let act = Beacon.lowerFirst(Beacon.toCamel(args.act || 'index')) + 'Action';
-            let isInit = false;
-            if (ctlobj[act] && Beacon.isFunction(ctlobj[act])) {
-                try {
-                    if (ctlobj.init && Beacon.isFunction(ctlobj.init)) {
-                        await ctlobj.init();
-                        isInit = true;
-                    }
-                    await ctlobj[act]();
-                }
-                catch (e) {
-                    if (e.code && e.code == 'CONTROLLER_EXIT') {
-                        return;
-                    }
-                    Beacon.displayError(context, 500, e);
-                    return;
-                }
-                finally {
-                    if (isInit && ctlobj.finish && Beacon.isFunction(ctlobj.finish)) {
-                        await ctlobj.finish();
-                    }
-                    if (ctlobj.end && Beacon.isFunction(ctlobj.end)) {
-                        ctlobj.end();
-                    }
-                    else {
-                        context.end();
-                    }
-                }
-            }
-            else {
+    static run(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let context = new http_context_1.HttpContext(req, res);
+            let Route = Beacon.Route;
+            let args = Route.parseUrl(context.pathname);
+            context.parseRouteGet(args);
+            // console.log(args);
+            if (args == null || args.ctl == '') {
                 Beacon.displayError(context, 404, 'the page url:"' + context.url + '" is not found!');
-            }
-        }
-        catch (e) {
-            if (e.code && e.code == 'CONTROLLER_EXIT') {
                 return;
             }
-            Beacon.displayError(context, 500, e);
-            return;
-        }
+            try {
+                let ctlClass = Route.getController(args.app, args.ctl);
+                if (ctlClass == null) {
+                    Beacon.displayError(context, 404, 'the page url:"' + context.url + '" is not found!');
+                    return;
+                }
+                let ctlobj = new ctlClass(context);
+                yield ctlobj.parsePayload(Beacon.getConfig('default_encoding', 'utf-8'));
+                let act = Beacon.lowerFirst(Beacon.toCamel(args.act || 'index')) + 'Action';
+                let isInit = false;
+                if (ctlobj[act] && Beacon.isFunction(ctlobj[act])) {
+                    try {
+                        if (ctlobj.init && Beacon.isFunction(ctlobj.init)) {
+                            yield ctlobj.init();
+                            isInit = true;
+                        }
+                        yield ctlobj[act]();
+                    }
+                    catch (e) {
+                        if (e.code && e.code == 'CONTROLLER_EXIT') {
+                            return;
+                        }
+                        Beacon.displayError(context, 500, e);
+                        return;
+                    }
+                    finally {
+                        if (isInit && ctlobj.finish && Beacon.isFunction(ctlobj.finish)) {
+                            yield ctlobj.finish();
+                        }
+                        if (ctlobj.end && Beacon.isFunction(ctlobj.end)) {
+                            ctlobj.end();
+                        }
+                        else {
+                            context.end();
+                        }
+                    }
+                }
+                else {
+                    Beacon.displayError(context, 404, 'the page url:"' + context.url + '" is not found!');
+                }
+            }
+            catch (e) {
+                if (e.code && e.code == 'CONTROLLER_EXIT') {
+                    return;
+                }
+                Beacon.displayError(context, 500, e);
+                return;
+            }
+        });
     }
     static regSessionType(type, typeClass) {
         Beacon._sessionType[type] = typeClass;
