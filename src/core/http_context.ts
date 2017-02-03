@@ -112,35 +112,35 @@ export class HttpContext {
 
     public async getPayload(encoding?) {
         if (this.payload) {
-            return this.payload;
+            if (encoding === true) {
+                return this.payload;
+            }
+            encoding = encoding === void 0 ? 'utf-8' : encoding;
+            let out = this.payload.toString(encoding);
+            return out;
         }
         if (!this.req.readable) {
             return new Buffer(0);
         }
         let that = this;
-        let _getPayload = function () {
+        let buffer: any = this.payload = await new Promise(function (resolve, reject) {
             let buffers = [];
-            let deferred = Beacon.defer();
             that.req.on('data', chunk => {
                 buffers.push(chunk);
             });
-            that.req.on('end', () => {
-                that.payload = Buffer.concat(buffers);
-                deferred.resolve(that.payload);
+            that.req.once('end', () => {
+                resolve(Buffer.concat(buffers));
             });
-            that.req.on('fail', () => {
-                that.res.statusCode = 400;
-                that.end();
-                deferred.reject(new Error('client fail'));
+            that.req.once('error', () => {
+                reject(new Error('client fail'));
             });
-            return deferred.promise;
-        };
-        let buffer = await _getPayload();
+        });
         if (encoding === true) {
             return buffer;
         }
         encoding = encoding === void 0 ? 'utf-8' : encoding;
-        return buffer.toString(encoding);
+        let out = buffer.toString(encoding);
+        return out;
     }
 
     public async parsePayload(encoding?) {

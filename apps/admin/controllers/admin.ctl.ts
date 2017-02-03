@@ -74,7 +74,9 @@ export class AdminController extends Beacon.Controller {
     }
 
     public async init() {
+
         this.initDB('mysql');
+
         await this.initSesion();
         await this.checkLogin();
     }
@@ -82,6 +84,7 @@ export class AdminController extends Beacon.Controller {
     public async checkLogin() {
         this.adminId = this.getSession('adminId') || 0;
         this.adminName = this.getSession('adminName') || '';
+
         if (!Beacon.isEmpty(this.adminId)) {
             return;
         }
@@ -92,6 +95,7 @@ export class AdminController extends Beacon.Controller {
         let username = this.post('username:s', '');
         let password = this.post('password:s', '');
         let code = this.post('code:s', '').toUpperCase();
+
         if (username == '') {
             this.fail('用户名不能为空！');
         }
