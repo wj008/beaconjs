@@ -132,7 +132,7 @@ export class HttpContext {
                 resolve(Buffer.concat(buffers));
             });
             that.req.once('error', () => {
-                reject(new Error('client fail'));
+                reject(new Error('client error'));
             });
         });
         if (encoding === true) {
