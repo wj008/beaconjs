@@ -1,7 +1,6 @@
 import {Beacon} from "../../../src/core/beacon";
 import {Mysql} from "../../../src/adapter/db/mysql";
 import {Redis} from "../../../src/adapter/db/redis";
-import {Captcha} from "../../../src/adapter/pnglib/captcha";
 import crypto=require('crypto');
 export class Index extends Beacon.Controller {
 
@@ -25,7 +24,7 @@ export class Index extends Beacon.Controller {
         this.assign('foot_content', 'All rights reserved.');
         this.assign('meetingPlace', 'New York');
         //console.log(Beacon);
-        
+
         //  throw new Error('数据异常请重试.');
         this.display('index');
         console.log(Date.now() - this.context.startTime);
