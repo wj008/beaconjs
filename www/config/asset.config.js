@@ -8,8 +8,10 @@ module.exports = {
         'jquery-json': 'jquery.json',
         'jquery-cookie': 'jquery.cookie',
         'jquery-ui': '../jquery-ui/jquery-ui',
+        'yee': 'yee',
     },
     depends: {
         'jquery-ui': ['../jquery-ui/custom.css', 'jquery'],
+        'yee': ['jquery'],
     }
 };
