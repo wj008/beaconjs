@@ -122,7 +122,6 @@
         }
         Yee.readyed = true;
         Yee.update();
-
     };
 
     //监听事件
@@ -182,10 +181,10 @@
         //当前的
         var funcs = Yee._eventList[event] || null;
         if (funcs != null) {
-            for (var i = 0; i < Yee._eventList[event].length; i++) {
-                var func = Yee._eventList[event][i].func;
+            for (var i = 0; i < funcs.length; i++) {
+                var func = funcs[i].func;
                 func.apply(Yee, args);
-                if (Yee._eventList[event][i].tice == 1) {
+                if (funcs[i].tice == 1) {
                     Yee.off(event, func);
                 }
             }
@@ -194,15 +193,14 @@
         var eventList = window.top._yee_eventList = window.top._yee_eventList || {};
         var gfuncs = eventList[event] || null;
         if (gfuncs != null) {
-            for (var i = 0; i < eventList[event].length; i++) {
-                var func = eventList[event][i].func;
+            for (var i = 0; i < gfuncs.length; i++) {
+                var func = gfuncs[i].func;
                 func.apply(Yee, args);
-                if (eventList[event][i].tice == 1) {
+                if (gfuncs[i].tice == 1) {
                     Yee.off(event, func, true);
                 }
             }
         }
-
     }
 
     var isIE = navigator.userAgent.match(/MSIE\s*(\d+)/i);
@@ -231,32 +229,6 @@
 //number 数值输入
 (function ($, Yee) {
     Yee.extend(':input', 'number', function (elem) {
-        var that = $(elem);
-        that.on('keydown', function (event) {
-            if (this.value == '' || this.value == '-' || /^-?([1-9]\d*|0)$/.test(this.value) || /^-?([1-9]\d*|0)\.$/.test(this.value) || /^-?([1-9]\d*|0)\.\d+$/.test(this.value)) {
-                $(this).data('last-value', this.value);
-            }
-        });
-        that.on('keypress keyup', function (event) {
-            if (this.value == '' || this.value == '-' || /^-?([1-9]\d*|0)$/.test(this.value) || /^-?([1-9]\d*|0)\.$/.test(this.value) || /^-?([1-9]\d*|0)\.\d+$/.test(this.value)) {
-                $(this).data('last-value', this.value);
-                return true;
-            }
-            this.value = $(this).data('last-value') || '';
-            return false;
-        });
-        that.on('dragenter', function () {
-            return false;
-        });
-        that.on('blur', function () {
-            this.value = /^-?([1-9]\d*|0)(\.\d+)?$/.test(this.value) ? this.value : '';
-        });
-
-    });
-})(jQuery, Yee);
-
-(function ($, Yee) {
-    Yee.extend(':input', 'number-x', function (elem) {
         var that = $(elem);
         that.on('keydown', function (event) {
             if (this.value == '' || this.value == '-' || /^-?([1-9]\d*|0)$/.test(this.value) || /^-?([1-9]\d*|0)\.$/.test(this.value) || /^-?([1-9]\d*|0)\.\d+$/.test(this.value)) {
