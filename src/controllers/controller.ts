@@ -6,6 +6,7 @@ import {Sdopx} from "sdopx";
 declare var Beacon: any;
 require('../adapter/sdopx/sdopx_ext');
 
+
 export class ControllerError extends Error {
     public code = '';
 
