@@ -8,7 +8,6 @@
     {literal}
     <script>
 
-
         setTimeout(function () {
             Yee.emit('load','欢迎界面');
         }, 1000);
@@ -53,7 +52,7 @@
                     </p>
                 </td>
             </tr>
-            <input yee-module="number-x" type="text"/>
+            <input yee-module="number" type="text"/>
         </table>
     </div>
 </div>
