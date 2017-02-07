@@ -20,7 +20,8 @@ export class Controller {
     public sdopx: Sdopx = null;
     public template_dirs = null;
     public db: Mysql = null;
-    private _info = {};
+    private _info: any = {};
+    private _asset: any = null;
 
     public constructor(context: HttpContext) {
         this.context = context;
@@ -168,7 +169,6 @@ export class Controller {
         return this.context.setCookie(name, value, options);
     }
 
-
     public async initSesion(type?: string) {
         return await this.context.initSesion(type);
     }
@@ -270,5 +270,144 @@ export class Controller {
 
     public async parsePayload(encoding?) {
         return await this.context.parsePayload(encoding);
+    }
+
+    public addAsset(name: string, depend?: any) {
+        this._asset = this._asset || {};
+        if (this._asset[name]) {
+            return;
+        }
+        let that = this;
+        let config = Beacon.getConfig('asset:*');
+        let depends = config.depends || {};
+        let paths = config.paths || {};
+        let url_join = function (item) {
+            if (item[1] == '/') {
+                return item;
+            }
+            let items = item.split('/');
+            let bases = config.baseUrl.split('/');
+            let temps = [];
+            for (let xitem of items) {
+                if (xitem == '..') {
+                    bases.pop();
+                    continue;
+                }
+                temps.push(xitem);
+            }
+            bases = bases.concat(temps);
+            return bases.join('/');
+        }
+
+        let add_asset = function (name) {
+            if (that._asset[name]) {
+                return;
+            }
+            let data: any = {};
+            let xdepend = depends[name] || [];
+
+            if (depend) {
+                let temp = xdepend.slice(0);
+                if (depend instanceof Array && depend.length > 0) {
+                    temp = temp.concat(depend);
+                }
+                if (typeof depend == 'string' && depend.length > 0) {
+                    temp.push(depend);
+                }
+                xdepend = temp;
+                depend = null;
+            }
+
+            if (xdepend.length > 0) {
+                xdepend.forEach(function (item) {
+                    if (item.length == 0) {
+                        return;
+                    }
+                    if (paths[item]) {
+                        add_asset(item);
+                        return;
+                    }
+                    if (/\.js$/i.test(item)) {
+                        data.js = data.js || [];
+                        if (item[1] == '/') {
+                            data.js.push(item);
+                            return;
+                        }
+                        data.js.push(url_join(item));
+                        return;
+                    }
+                    if (/\.css$/i.test(item)) {
+                        data.css = data.css || [];
+                        if (item[1] == '/') {
+                            data.css.push(item);
+                            return;
+                        }
+                        data.css.push(url_join(item));
+                        return;
+                    }
+                });
+            }
+            data.js = data.js || [];
+            if (/\.js$/i.test(name)) {
+                data.js.push(name);
+                that._asset[name] = data;
+                return;
+            }
+            if (/\.css$/i.test(name)) {
+                data.css = data.css || [];
+                data.css.push(name);
+                that._asset[name] = data;
+                return;
+            }
+            if (!paths[name] || paths[name].length == 0) {
+                return;
+            }
+            let item = paths[name] + '.js';
+            if (item[1] == '/') {
+                data.js.push(item);
+            } else {
+                data.js.push(url_join(item));
+            }
+            that._asset[name] = data;
+        }
+        add_asset(name);
+    }
+
+    public getAsset(name?: string) {
+        let data = {js: [], css: []};
+        let version = Beacon.getConfig('asset:version', '');
+        if (name === void 0) {
+            for (let name in this._asset) {
+                let item = this._asset[name];
+                if (version != '') {
+                    item.js && item.js.forEach(function (oitem) {
+                        data.js.push(oitem + '?v=' + version);
+                    });
+                    item.css && item.css.forEach(function (oitem) {
+                        data.css.push(oitem + '?v=' + version);
+                    });
+                    continue;
+                }
+                data.js.concat(item.js);
+                data.css.concat(item.css);
+            }
+            return data;
+        }
+        let item = this._asset[name] || null;
+        if (item) {
+            if (version != '') {
+                item.js && item.js.forEach(function (oitem) {
+                    data.js.push(oitem + '?v=' + version);
+                });
+                item.css && item.css.forEach(function (oitem) {
+                    data.css.push(oitem + '?v=' + version);
+                });
+                return data;
+            }
+            data.js.concat(item.js);
+            data.css.concat(item.css);
+            return data;
+        }
+        return data;
     }
 }
