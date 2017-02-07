@@ -7,6 +7,9 @@
     {asset src="yee"}
     {literal}
     <script>
+        Yee.on('xload', function (abc) {
+            console.log('abc', abc);
+        }, true);
 
         setTimeout(function () {
             Yee.emit('load','欢迎界面');
