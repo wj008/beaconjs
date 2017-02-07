@@ -1,7 +1,6 @@
 //Yee插件
 (function ($) {
 
-
     var Yee = window.Yee = $.Yee = window.Yee || {};
     Yee._update_modules = {};
     Yee._eventList = {};
@@ -129,8 +128,17 @@
         var eventList = Yee._eventList;
         if (global === true) {
             eventList = window.top._yee_eventList = window.top._yee_eventList || {};
+            $(window).on('unload', function () {
+                Yee.off(event, func, true);
+            });
         }
         eventList[event] = eventList[event] || [];
+        for (var i = 0; i < eventList[event].length; i++) {
+            if (eventList[event][i].func === func) {
+                eventList[event][i].tice = 0;
+                return;
+            }
+        }
         eventList[event].push({tice: 0, func: func});
     }
     //移除监听
@@ -161,8 +169,17 @@
         var eventList = Yee._eventList;
         if (global === true) {
             eventList = window.top._yee_eventList = window.top._yee_eventList || {};
+            $(window).on('unload', function () {
+                Yee.off(event, func, true);
+            });
         }
         eventList[event] = eventList[event] || [];
+        for (var i = 0; i < eventList[event].length; i++) {
+            if (eventList[event][i].func === func) {
+                eventList[event][i].tice = 1;
+                return;
+            }
+        }
         eventList[event].push({tice: 1, func: func});
     }
 
