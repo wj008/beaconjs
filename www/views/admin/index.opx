@@ -10,6 +10,22 @@
     <!--[if lt IE 7]>
     <script type="text/javascript" src="/js/html5.js"></script>
     <![endif]-->
+    {asset src="yee"}
+    {literal}
+    <script>
+        Yee.on('load', function (abc) {
+            console.log('abc', abc);
+        }, true);
+
+        Yee.once('load', function (abc) {
+            console.log('abc_once', abc);
+        }, true);
+
+        setTimeout(function () {
+            Yee.emit('load', '后台');
+        }, 3000);
+    </script>
+    {/literal}
 </head>
 <body>
 <header>

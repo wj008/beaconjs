@@ -4,13 +4,23 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="/css/base.css">
     <title>欢迎首页</title>
+    {asset src="yee"}
     {literal}
+    <script>
+
+
+        setTimeout(function () {
+            Yee.emit('load','欢迎界面');
+        }, 1000);
+
+    </script>
     <style>
         html, body {
             margin: 0;
             padding: 0;
             background: #F9F9F9;
         }
+
         h1 {
             height: 50px;
             line-height: 50px;
@@ -19,8 +29,9 @@
             color: #343434;
             padding: 0 28px;
         }
-        .content{
-            margin-top:20px;
+
+        .content {
+            margin-top: 20px;
         }
     </style>
     {/literal}
@@ -42,6 +53,7 @@
                     </p>
                 </td>
             </tr>
+            <input yee-module="number-x" type="text"/>
         </table>
     </div>
 </div>
