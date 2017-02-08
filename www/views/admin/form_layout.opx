@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{block name="title"}{/block}</title>
+    <link rel="stylesheet" type="text/css" href="/assets/css/yeeui.css">
+    {asset src='yee-validate'}
+</head>
+
+<body>
+<div class="yeeui-body">
+    <div class="yeeui-caption">{block name="caption"}{/block}</div>
+    <div class="yeeui-form">
+        {block name="form"}{/block}
+    </div>
+</div>
+</body>
+
+</html>
