@@ -9,9 +9,11 @@ module.exports = {
         'jquery-cookie': 'jquery.cookie',
         'jquery-ui': '../jquery-ui/jquery-ui',
         'yee': 'yee',
+        'yee-validate': 'yee.validate-2.0.1',
     },
     depends: {
         'jquery-ui': ['../jquery-ui/custom.css', 'jquery'],
         'yee': ['jquery'],
+        'yee-validate': ['yee'],
     }
 };
