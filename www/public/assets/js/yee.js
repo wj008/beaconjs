@@ -243,8 +243,9 @@
     }
 })(jQuery);
 
-//number 数值输入
+//数值验证
 (function ($, Yee) {
+//number 数值输入
     Yee.extend(':input', 'number', function (elem) {
         var that = $(elem);
         that.on('keydown', function (event) {
@@ -268,4 +269,28 @@
         });
 
     });
+//integer 整数输入
+    Yee.extend(':input', 'integer', function (elem) {
+        var that = $(elem);
+        that.on('keydown', function (event) {
+            if (this.value == '' || this.value == '-' || /^-?([1-9]\d*|0)$/.test(this.value)) {
+                $(this).data('last-value', this.value);
+            }
+        });
+        that.on('keypress keyup', function (event) {
+            if (this.value == '' || this.value == '-' || /^-?([1-9]\d*|0)$/.test(this.value)) {
+                $(this).data('last-value', this.value);
+                return true;
+            }
+            this.value = $(this).data('last-value') || '';
+            return false;
+        });
+        that.on('dragenter', function () {
+            return false;
+        });
+        that.on('blur', function () {
+            this.value = /^-?([1-9]\d*|0)$/.test(this.value) ? this.value : '';
+        });
+    });
+
 })(jQuery, Yee);
