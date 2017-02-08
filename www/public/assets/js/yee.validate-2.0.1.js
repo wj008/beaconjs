@@ -91,12 +91,12 @@
             , val_error: 'val-error'                    //服务器返回错误
             , val_for: 'val-for'			//显示消息控件属性值 = id
             //-CSS--------------------------
-            , field_error: 'field-val-error'
-            , field_valid: 'field-val-valid'
-            , field_default: 'field-val-default'
-            , input_error: 'input-val-error'
-            , input_valid: 'input-val-valid'
-            , input_default: 'input-val-default'
+            , field_error: 'field-error'
+            , field_valid: 'field-valid'
+            , field_default: 'field-default'
+            , input_error: 'input-error'
+            , input_valid: 'input-valid'
+            , input_default: 'input-default'
         };
 
         var Messages = {
@@ -681,7 +681,7 @@
                 if (!data.pass) {
                     var msg = data.msgs[data.erropt] || '';
                     msg = StringFormat(msg, data.rules[data.erropt]);
-                    errItems.push({elem: elem, msg: msg});
+                    errItems.push({elem: elem, msg: msg, data: data});
                 } else {
                     setValid(elem, data.msg_valid, false);
                 }
@@ -698,6 +698,13 @@
                 if ($(form).triggerHandler('displayAllError', [errItems]) !== false) {
                     $(errItems).each(function () {
                         setError(this.elem, this.msg, false);
+                        /*
+                        if (this.data.events == '') {
+                            this.data.events = 'blur';
+                            this.elem.off('blur', elem_chcek);
+                            this.elem.on('blur', elem_chcek);
+                        }
+                        */
                     });
                 }
 
