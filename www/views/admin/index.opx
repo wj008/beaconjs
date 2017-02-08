@@ -10,7 +10,6 @@
     <!--[if lt IE 7]>
     <script type="text/javascript" src="/js/html5.js"></script>
     <![endif]-->
-    {asset src="yee"}
     {literal}
     <script>
         Yee.on('load', function (abc) {
