@@ -2,7 +2,7 @@
 {foreach from=$rows item=rs}
 <dl>
     <dt><i class="{$rs.iconcss}"></i><span>{$rs.name}</span></dt>
-    <dd><a href="{uri act='welcome'}" target="main">欢迎</a></dd>
+    <dd><a href="{uri ctl='manage'}" target="main">管理</a></dd>
     {foreach from=$rs.childs item=xrs}
     <dd><a href="{$xrs.url}" target="main">{$xrs.name}</a></dd>
     {/foreach}
