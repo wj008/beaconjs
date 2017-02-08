@@ -202,12 +202,10 @@
                 if (!items) {
                     return;
                 }
-
                 if (tempdata[items]) {
                     createBox(emum, tempdata[items], vals);
                     return;
                 }
-
                 $[method](items, function (ret) {
                     if (ret.status === true && ret.list) {
                         tempdata[items] = ret.list;
@@ -223,7 +221,6 @@
             if (emum.nextBox) {
                 removeBox(emum.nextBox);
             }
-
             if (box.is('select')) {
                 var lev = box.data('temp-lev') + 1;
                 if ((level === 0 && items.length > 0) || level >= lev) {
