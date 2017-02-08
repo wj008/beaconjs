@@ -122,7 +122,6 @@
         Yee.readyed = true;
         Yee.update();
     };
-
     //监听事件
     Yee.on = function (event, func, global) {
         var eventList = Yee._eventList;
