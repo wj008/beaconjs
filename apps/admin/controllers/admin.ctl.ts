@@ -35,11 +35,11 @@ export class AdminController extends Beacon.Controller {
         this.assign('jump', jump);
         this.assign('timeout', timeout);
         this.assign('code', code);
-        this.display('fail');
+        this.display('common/fail');
         this.exit();
     }
 
-    public success(message: any, jump?: any, code?: any, timeout: number = 3) {
+    public success(message: any, jump?: any, code?: any, timeout: number = 1) {
         if (jump === void 0) {
             jump = this.param('__BACK__', this.getReferrer()) || null;
         }
@@ -63,7 +63,7 @@ export class AdminController extends Beacon.Controller {
         this.assign('jump', jump);
         this.assign('timeout', timeout);
         this.assign('code', code);
-        this.display('success');
+        this.display('common/success');
         this.exit();
     }
 
@@ -107,24 +107,24 @@ export class AdminController extends Beacon.Controller {
             this.setSession('code', '');
             this.fail('验证码有误！');
         }
-        let row = await this.db.getRow('select * from @pf_manage where `username`=?', username);
+        let row = await this.db.getRow('select * from @pf_manage where `name`=?', username);
         if (row == null) {
             this.fail('账号不存在！');
         }
-        if (row.password != Beacon.md5(password)) {
+        if (row.pwd != Beacon.md5(password)) {
             this.fail('用户密码不正确！');
         }
         this.setSession('adminId', row.id);
-        this.setSession('amdinName', row.username);
+        this.setSession('amdinName', row.name);
         let fields = await this.db.getFields('@pf_manage');
         let temp = [];
         for (let i = 0; i < fields.length; i++) {
             temp.push(fields[i]['Field']);
         }
         let vals = {};
-        if (temp.indexOf('thisdate') >= 0 && temp.indexOf('lastdate') >= 0) {
-            vals['thisdate'] = Beacon.getDate();
-            vals['lastdate'] = row.thisdate;
+        if (temp.indexOf('thistime') >= 0 && temp.indexOf('lasttime') >= 0) {
+            vals['thistime'] = new Date();
+            vals['lasttime'] = row.thistime;
         }
         if (temp.indexOf('thisip') >= 0 && temp.indexOf('lastip') >= 0) {
             vals['thisip'] = this.getIP();
