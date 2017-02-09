@@ -232,11 +232,18 @@ export class Mysql {
             names.push(key);
             if (Beacon.isObject(item) && item instanceof SqlBlock) {
                 vals.push(mysql.format(item.sql, item.args));
-            } else if (Beacon.isBoolean(item)) {
+            }
+            else if (Beacon.isDate(item)) {
+                vals.push(mysql.escape(Beacon.datetime(item, 'yyyy-MM-dd HH:mm:ss')));
+            }
+            else if (Beacon.isBoolean(item)) {
                 vals.push(item ? 1 : 0);
             }
             else if (item === null) {
                 vals.push('NULL');
+            }
+            else if (Beacon.isArray(item) || Beacon.isObject(item)) {
+                vals.push(mysql.escape(JSON.stringify(item)));
             }
             else {
                 item = String(item);
@@ -266,11 +273,18 @@ export class Mysql {
             names.push(key);
             if (Beacon.isObject(item) && item instanceof SqlBlock) {
                 vals.push(mysql.format(item.sql, item.args));
-            } else if (Beacon.isBoolean(item)) {
+            }
+            else if (Beacon.isDate(item)) {
+                vals.push(mysql.escape(Beacon.datetime(item, 'yyyy-MM-dd HH:mm:ss')));
+            }
+            else if (Beacon.isBoolean(item)) {
                 vals.push(item ? 1 : 0);
             }
             else if (item === null) {
                 vals.push('NULL');
+            }
+            else if (Beacon.isArray(item) || Beacon.isObject(item)) {
+                vals.push(mysql.escape(JSON.stringify(item)));
             }
             else {
                 item = String(item);
@@ -286,7 +300,7 @@ export class Mysql {
         return await this.query(excsql);
     }
 
-    public async update(tbname: string, values: any, where?: string, args?: any) {
+    public async update(tbname: string, values: any, where?: any, args?: any) {
         if (this.prefix) {
             tbname = tbname.replace('@pf_', this.prefix);
         }
@@ -298,11 +312,18 @@ export class Mysql {
             let item = values[key];
             if (Beacon.isObject(item) && item instanceof SqlBlock) {
                 sets.push('`' + key + '`=' + mysql.format(item.sql, item.args));
-            } else if (Beacon.isBoolean(item)) {
+            }
+            else if (Beacon.isDate(item)) {
+                sets.push('`' + key + '`=' + mysql.escape(Beacon.datetime(item, 'yyyy-MM-dd HH:mm:ss')));
+            }
+            else if (Beacon.isBoolean(item)) {
                 sets.push('`' + key + '`=' + (item ? 1 : 0));
             }
             else if (item === null) {
                 sets.push('`' + key + '`=' + 'NULL');
+            }
+            else if (Beacon.isArray(item) || Beacon.isObject(item)) {
+                sets.push('`' + key + '`=' + mysql.escape(JSON.stringify(item)));
             }
             else {
                 item = String(item);
@@ -314,9 +335,9 @@ export class Mysql {
         }
         let excsql = `UPDATE ${tbname} SET `;
         excsql += sets.join(',');
-        if(typeof where=='number' && /^\d+$/.test(where) && args==void 0){
-            args=where;
-            where='id=?';
+        if (typeof where == 'number' && /^\d+$/.test(String(where)) && args == void 0) {
+            args = where;
+            where = 'id=?';
         }
         if (!where) {
             excsql += ' WHERE true';
@@ -326,14 +347,14 @@ export class Mysql {
         return await this.query(excsql);
     }
 
-    public async delete(tbname: string, where?: string, args?: any) {
+    public async delete(tbname: string, where?: any, args?: any) {
         if (this.prefix) {
             tbname = tbname.replace('@pf_', this.prefix);
         }
         let excsql = `DELETE  FROM ${tbname}`;
-        if(typeof where=='number' && /^\d+$/.test(where) && args==void 0){
-            args=where;
-            where='id=?';
+        if (typeof where == 'number' && /^\d+$/.test(String(where)) && args == void 0) {
+            args = where;
+            where = 'id=?';
         }
         if (!where) {
             excsql += ' WHERE true';
