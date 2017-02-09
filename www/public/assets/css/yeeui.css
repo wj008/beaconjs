@@ -1,184 +1,35 @@
-html,
-body {
-  margin: 0;
-  padding: 0;
-  background: #F9F9F9;
-}
-.yeeui-content {
-  position: relative;
-  padding: 20px 30px;
-}
-.yeeui-caption {
-  height: 50px;
-  line-height: 50px;
-  border-bottom: 1px solid #e4eaec;
-  font-size: 18px;
-  padding: 0 28px;
-}
-.yeeui-caption a.s-back {
-  border: 1px solid #62b3ff;
-  border-radius: 50%;
-  width: 25px;
-  height: 25px;
-  line-height: 23px;
-  display: inline-block;
-  text-align: center;
-}
-.yeeui-caption a.s-back i {
-  color: #62b3ff;
-}
-.form-panel {
-  margin-bottom: 15px;
-  border-radius: 5px;
-  background: #fff;
-  padding: 15px 20px;
-  color: #606060;
-  -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.05);
-  -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.05);
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.05);
-}
-.form-group {
-  line-height: 36px;
-  background: #FFFFFF;
-  color: #606060;
-  clear: both;
-  display: table;
-  border: 0;
-  width: 100%;
-  margin: 0px;
-  padding: 0px;
-}
-.form-group .form-label,
-.form-group .form-box {
-  display: table-cell;
-  font-weight: normal;
-  text-align: left;
-  padding: 3px;
-  vertical-align: middle;
-  *float: left;
-}
-.form-group .form-label {
-  text-align: right;
-  width: 250px;
-}
-.form-group .form-label em {
-  font-style: normal;
-  margin-left: 5px;
-}
-.form-group .form-label em:before {
-  content: '*';
-  color: #E84C3D;
-  margin-right: 5px;
-}
-.panel-title {
-  border-bottom: 1px solid #e4eaec;
-  line-height: 40px;
-  position: relative;
-}
-.panel-title h3 {
-  font-size: 16px;
-  font-weight: 600;
-  color: #555;
-}
-.panel-title i {
-  color: #31b4e1;
-  float: left;
-  margin: 15px 10px 0 3px;
-}
-.panel-content {
-  padding-top: 30px;
-}
-.form-submit {
-  padding: 15px 0 30px 0;
-  display: table;
-}
-.form-submit .form-label,
-.form-submit .form-box {
-  display: table-cell;
-  font-weight: normal;
-  text-align: left;
-  padding: 3px;
-  vertical-align: middle;
-  *float: left;
-}
-.form-submit .form-label {
-  text-align: right;
-  width: 250px;
-}
-.form-submit input.btn,
-.form-submit a.btn {
-  height: 35px;
-  line-height: 33px;
-  height: 30px;
-  line-height: 30px;
-  font-size: 14px;
-  padding: 0 20px;
-  border-radius: 3px;
-  cursor: pointer;
-  float: left;
-  margin-right: 15px;
-}
-.form-submit .submit {
-  border: 1px solid #ec5151;
-  color: #fff;
-  background: #ec5151;
-}
-.form-submit .back {
-  border: 1px solid #ec5151;
-  background-color: #fff;
-  color: #ec5151;
-}
-.form-inp {
-  border: 1px solid #dbdbdb;
-  border-radius: 2px;
-  height: 28px;
-  line-height: 28px;
-  padding: 0 10px;
-  -o-transition: all .2s;
-  -moz-transition: all .2s;
-  -webkit-transition: all .2s;
-  -ms-transition: all .2s;
-  margin-right: 10px;
-}
-.form-inp:focus {
-  border: 1px solid #62b3ff;
-}
-.field-error {
-  line-height: 20px;
-  color: #ec5151;
-}
-.field-error:before {
-  font-family: 'IcoFont' !important;
-  content: '\efea';
-  display: inline-block;
-  margin-right: 3px;
-}
-.field-valid {
-  line-height: 20px;
-  color: #2FBC5E;
-}
-.field-valid:before {
-  display: inline-block;
-  font-family: 'IcoFont' !important;
-  content: '\efad';
-  margin-right: 3px;
-}
-input.input-error {
-  background: #FFF0F0;
-  border: 1px dashed #E84C3D;
-  border-radius: 3px;
-}
-input.input-error:focus {
-  border: 1px dashed #E84C3D;
-}
-input.input-valid {
-  background: #F0FCF0;
-  border: 1px dashed #2FBC5E;
-  border-radius: 3px;
-}
-input.input-valid:focus {
-  border: 1px dashed #2FBC5E;
-}
-.field-default {
-  color: #909090;
-}
+body,html{margin:0;padding:0;background:#F9F9F9}
+.yeeui-content{position:relative;padding:20px 30px}
+.yeeui-caption{height:50px;line-height:50px;border-bottom:1px solid #e4eaec;font-size:18px;padding:0 28px}
+.yeeui-caption a.s-back{border:1px solid #62b3ff;border-radius:50%;width:25px;height:25px;line-height:23px;display:inline-block;text-align:center}
+.yeeui-caption a.s-back i{color:#62b3ff}
+.form-panel{margin-bottom:15px;border-radius:5px;background:#fff;padding:15px 20px;color:#606060;-webkit-box-shadow:0 0 2px rgba(0,0,0,.05);-moz-box-shadow:0 0 2px rgba(0,0,0,.05);box-shadow:0 0 2px rgba(0,0,0,.05)}
+.form-group{line-height:36px;background:#FFF;color:#606060;clear:both;display:table;border:0;width:100%;margin:0;padding:0}
+.form-group .form-box,.form-group .form-label{display:table-cell;font-weight:400;text-align:left;padding:3px;vertical-align:middle}
+.form-group .form-label{text-align:right;vertical-align:top;width:250px}
+.form-group .form-label em{font-style:normal;margin-left:5px}
+.form-group .form-label em:before{content:'*';color:#E84C3D;margin-right:5px}
+.form-group .field-text{font-size:14px}
+.form-group .field-tips{padding-left:15px;line-height:20px;color:#909090}
+.form-group .field-tips:before{color:#a0a0a0;font-family:IcoFont!important;content:'\f0ae';width:15px;display:inline-block;margin-left:-15px}
+.panel-title{border-bottom:1px solid #e4eaec;line-height:40px;position:relative}
+.panel-title h3{font-size:16px;color:#555}
+.panel-title i{color:#31b4e1;float:left;margin:15px 10px 0 3px}
+.panel-content{padding-top:30px}
+.form-submit{padding:15px 0 30px 0;display:table}
+.form-submit .form-box,.form-submit .form-label{display:table-cell;font-weight:400;text-align:left;padding:3px;vertical-align:middle}
+.form-submit .form-label{text-align:right;width:250px}
+.form-submit a.btn,.form-submit input.btn{height:35px;line-height:33px;height:30px;line-height:30px;font-size:14px;padding:0 20px;border-radius:3px;cursor:pointer;float:left;margin-right:15px}
+.form-submit .submit{border:1px solid #ec5151;color:#fff;background:#ec5151}
+.form-submit .back{border:1px solid #ec5151;background-color:#fff;color:#ec5151}
+.form-inp{border:1px solid #dbdbdb;border-radius:2px;height:28px;line-height:28px;padding:0 10px;-o-transition:all .2s;-moz-transition:all .2s;-webkit-transition:all .2s;-ms-transition:all .2s;margin-right:10px}
+.form-inp:focus{border:1px solid #62b3ff}
+.field-error{line-height:20px;color:#ec5151}
+.field-error:before{font-family:IcoFont!important;content:'\efea';display:inline-block;margin-right:3px}
+.field-valid{line-height:20px;color:#2FBC5E}
+.field-valid:before{display:inline-block;font-family:IcoFont!important;content:'\efad';margin-right:3px}
+input.input-error{background:#FFF0F0;border:1px dashed #E84C3D;border-radius:3px}
+input.input-error:focus{border:1px dashed #E84C3D}
+input.input-valid{background:#F0FCF0;border:1px dashed #2FBC5E;border-radius:3px}
+input.input-valid:focus{border:1px dashed #2FBC5E}
+.field-default{color:#909090}

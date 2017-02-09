@@ -60,6 +60,7 @@ html, body {
   }
   .form-label {
     text-align: right;
+    vertical-align: top;
     width: 250px;
   }
   .form-label em {
@@ -71,6 +72,22 @@ html, body {
     color: #E84C3D;
     margin-right: 5px;
   }
+  .field-text {
+    font-size: 14px;
+  }
+  .field-tips {
+    padding-left: 15px;
+    line-height: 20px;
+    color: #909090;
+  }
+  .field-tips:before {
+    color: #a0a0a0;
+    font-family: 'IcoFont' !important;
+    content: '\f0ae';
+    width: 15px;
+    display: inline-block;
+    margin-left: -15px;
+  }
 }
 
 .panel-title {
@@ -79,7 +96,6 @@ html, body {
   position: relative;
   h3 {
     font-size: 16px;
-    font-weight: 600;
     color: #555;
   }
   i {
@@ -88,6 +104,7 @@ html, body {
     margin: 15px 10px 0 3px;
   }
 }
+
 
 .panel-content {
   padding-top: 30px;
