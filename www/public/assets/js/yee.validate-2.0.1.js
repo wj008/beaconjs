@@ -91,12 +91,12 @@
             , val_error: 'val-error'                    //服务器返回错误
             , val_for: 'val-for'			//显示消息控件属性值 = id
             //-CSS--------------------------
-            , field_error: 'field-val-error'
-            , field_valid: 'field-val-valid'
-            , field_default: 'field-val-default'
-            , input_error: 'input-val-error'
-            , input_valid: 'input-val-valid'
-            , input_default: 'input-val-default'
+            , field_error: 'field-error'
+            , field_valid: 'field-valid'
+            , field_default: 'field-default'
+            , input_error: 'input-error'
+            , input_valid: 'input-valid'
+            , input_default: 'input-default'
         };
 
         var Messages = {
@@ -136,7 +136,7 @@
         var FuncManager = new (function () {
             var Funcs = {};
             var ShotName = {};
-            this.getfunc = function (name) {
+            this.getFunc = function (name) {
                 return Funcs[name] || null;
             };
             this.getOirName = function (shotname) {
@@ -144,7 +144,7 @@
                     return ShotName[shotname];
                 return shotname;
             };
-            var regfunc = this.regfunc = function (name, fn, defmsg) {
+            var regFunc = this.regFunc = function (name, fn, defmsg) {
                 if (typeof (fn) === 'function') {
                     Funcs[name] = fn;
                     if (typeof (defmsg) !== 'undefined') {
@@ -154,7 +154,7 @@
                     ShotName[name] = fn;
                 }
             };
-            regfunc('required', function (val, bwo) {
+            regFunc('required', function (val, bwo) {
                 if (val === null) {
                     return false;
                 }
@@ -167,71 +167,71 @@
                 }
                 return !(val === null || val === '' || val.length === 0);
             });
-            regfunc('email', function (val) {
+            regFunc('email', function (val) {
                 return /^([a-zA-Z0-9]+[-|_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[-|_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,4}([\.][a-zA-Z]{2})?$/.test(val);
             });
-            regfunc('number', function (val) {
+            regFunc('number', function (val) {
                 return /^[\-\+]?((\d+(\.\d*)?)|(\.\d+))$/.test(val);
             });
-            regfunc('integer', function (val) {
+            regFunc('integer', function (val) {
                 return /^[\-\+]?\d+$/.test(val);
             });
-            regfunc('max', function (val, num, noeq) {
+            regFunc('max', function (val, num, noeq) {
                 if (noeq === true)
                     return val < Number(num);
                 else
                     return val <= Number(num);
             });
-            regfunc('min', function (val, num, noeq) {
+            regFunc('min', function (val, num, noeq) {
                 if (noeq === true)
                     return val > Number(num);
                 else
                     return val >= Number(num);
             });
-            regfunc('range', function (val, num1, num2, noeq) {
+            regFunc('range', function (val, num1, num2, noeq) {
                 if (noeq === false) {
                     return val > Number(num1) && val < Number(num2);
                 } else {
                     return val >= Number(num1) && val <= Number(num2);
                 }
             });
-            regfunc("minlength", function (val, len) {
+            regFunc("minlength", function (val, len) {
                 return val.length >= len;
             });
-            regfunc("maxlength", function (val, len) {
+            regFunc("maxlength", function (val, len) {
                 return val.length <= len;
             });
-            regfunc("rangelength", function (val, len1, len2) {
+            regFunc("rangelength", function (val, len1, len2) {
                 return val.length >= len1 && val.length <= len2;
             });
-            regfunc('money', function (val) {
+            regFunc('money', function (val) {
                 return /^[-]{0,1}\d+[\.]\d{1,2}$/.test(val) || /^[-]{0,1}\d+$/.test(val);
             }, '仅可输入带有2位小数以内的数字及整数');
-            regfunc("date", function (val) {
+            regFunc("date", function (val) {
                 return /^\d{4}-\d{1,2}-\d{1,2}(\s\d{1,2}(:\d{1,2}(:\d{1,2})?)?)?$/.test(val);
             });
-            regfunc("url", function (val, jh) {
+            regFunc("url", function (val, jh) {
                 if (jh && val == '#') {
                     return true;
                 }
                 return /^(http|https|ftp):\/\/\w+\.\w+/i.test(val);
             });
-            regfunc("equal", function (val, str) {
+            regFunc("equal", function (val, str) {
                 return val === str;
             });
-            regfunc("notequal", function (val, str) {
+            regFunc("notequal", function (val, str) {
                 return val !== str;
             });
-            regfunc("equalto", function (val, str) {
+            regFunc("equalto", function (val, str) {
                 return val === $(str).val();
             });
-            regfunc("mobile", function (val) {
+            regFunc("mobile", function (val) {
                 return /^1[34578]\d{9}$/.test(val);
             });
-            regfunc("idcard", function (val) {
+            regFunc("idcard", function (val) {
                 return /^[1-9]\d{5}(19|20)\d{2}(((0[13578]|1[02])([0-2]\d|30|31))|((0[469]|11)([0-2]\d|30))|(02[0-2][0-9]))\d{3}(\d|X|x)$/.test(val);
             });
-            regfunc("user", function (val, num1, num2) {
+            regFunc("user", function (val, num1, num2) {
                 var r = /^[a-zA-Z]\w+$/.test(val);
                 if (num1 !== undefined && isNaN(parseInt(num1)))
                     r = r && val.length >= parseInt(num1);
@@ -239,20 +239,20 @@
                     r = r && val.length <= parseInt(num2);
                 return r;
             }, '请使用英文之母开头的字母下划线数字组合');
-            regfunc("regex", function (val, str) {
+            regFunc("regex", function (val, str) {
                 var re = new RegExp(str).exec(val);
                 return (re && (re.index === 0) && (re[0].length === val.length));
             });
-            regfunc('num', 'number');
-            regfunc('r', 'required');
-            regfunc('int', 'integer');
-            regfunc('digits', 'integer');
-            regfunc('minlen', 'minlength');
-            regfunc('maxlen', 'maxlength');
-            regfunc('rangelen', 'rangelength');
-            regfunc('eqto', 'equalto');
-            regfunc('eq', 'equal');
-            regfunc('neq', 'notequal');
+            regFunc('num', 'number');
+            regFunc('r', 'required');
+            regFunc('int', 'integer');
+            regFunc('digits', 'integer');
+            regFunc('minlen', 'minlength');
+            regFunc('maxlen', 'maxlength');
+            regFunc('rangelen', 'rangelength');
+            regFunc('eqto', 'equalto');
+            regFunc('eq', 'equal');
+            regFunc('neq', 'notequal');
         })();
         //获得控件标签
         var getInfoLabel = function (elem) {
@@ -557,7 +557,7 @@
                     }
                     continue;
                 }
-                var func = FuncManager.getfunc(key);
+                var func = FuncManager.getFunc(key);
                 if (!func || typeof (func) !== 'function') {
                     continue;
                 }
@@ -681,7 +681,7 @@
                 if (!data.pass) {
                     var msg = data.msgs[data.erropt] || '';
                     msg = StringFormat(msg, data.rules[data.erropt]);
-                    errItems.push({elem: elem, msg: msg});
+                    errItems.push({elem: elem, msg: msg, data: data});
                 } else {
                     setValid(elem, data.msg_valid, false);
                 }
@@ -698,6 +698,13 @@
                 if ($(form).triggerHandler('displayAllError', [errItems]) !== false) {
                     $(errItems).each(function () {
                         setError(this.elem, this.msg, false);
+                        /*
+                        if (this.data.events == '') {
+                            this.data.events = 'blur';
+                            this.elem.off('blur', elem_chcek);
+                            this.elem.on('blur', elem_chcek);
+                        }
+                        */
                     });
                 }
 
@@ -774,8 +781,8 @@
         return {
             checkForm: checkForm,
             initValidator: initValidator,
-            regfunc: FuncManager.regfunc,
-            getfunc: FuncManager.getfunc,
+            regFunc: FuncManager.regFunc,
+            getFunc: FuncManager.getFunc,
             setError: function (selector, msg, force) {
                 $(selector).each(function () {
                     var elem = $(this);

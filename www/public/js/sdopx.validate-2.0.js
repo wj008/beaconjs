@@ -6,19 +6,19 @@
 
     var NotPlaceholderSupport = !('placeholder' in document.createElement('input'));
     if (NotPlaceholderSupport) {
-        $.fn.sdopx_oldPlaceholderSupportVal = $.fn.val;
+        $.fn.yee_oldPlaceholderSupportVal = $.fn.val;
         $.fn.val = function (value) {
             var that = this;
             if (value === undefined) {
                 if (that[0] && (that.is(':text[placeholder],textarea[placeholder]'))) {
                     var holder = that.attr('placeholder');
-                    if (holder && that.sdopx_oldPlaceholderSupportVal() == holder) {
+                    if (holder && that.yee_oldPlaceholderSupportVal() == holder) {
                         return '';
                     }
                 }
-                return that.sdopx_oldPlaceholderSupportVal();
+                return that.yee_oldPlaceholderSupportVal();
             }//读
-            return that.sdopx_oldPlaceholderSupportVal(value);
+            return that.yee_oldPlaceholderSupportVal(value);
         };
     }
 

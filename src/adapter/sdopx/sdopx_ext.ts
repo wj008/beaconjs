@@ -79,5 +79,4 @@ Sdopx.registerPlugin('asset', function (params, out, sdopx) {
     } else {
         sdopx.context.addAsset(name);
     }
-
 });

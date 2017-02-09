@@ -1,0 +1,52 @@
+{extends file='form_layout'}
+{block name="title"}管理员{/block}
+{block name="caption"}<a class="s-back" href="goods.php?act=list&amp;uselastfilter=1"><i class="icofont icofont-reply"></i></a> 管理员-添加管理员{/block}
+{block name="form"}
+<form method="post" yee-module="validate">
+
+    <div class="form-panel">
+        <div class="panel-title">
+            <i class="icofont icofont-pencil-alt-3"></i>
+            <h3>通用信息</h3>
+        </div>
+        <div class="panel-content">
+            <div class="form-group">
+                <label class="form-label">用户名：</label>
+                <div class="form-box">
+                    <input name="name" id="name" class="form-inp text" type="text"/>
+                    <span id="name_info" class="field-info"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><em/>用户名：</label>
+                <div class="form-box">
+                    <input name="name" id="name2" class="form-inp text" type="text"/>
+                    <span id="name2_info" class="field-info"></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-submit" >
+            <label class="form-label"></label>
+            <div class="form-box">
+            <input type="submit" class="btn submit" value="提交"/>
+            <a class="btn back" href="{uri ctl='manage'}">返回</a>
+            <input value="{uri ctl='manage'}" name="_BACKURL_" type="hidden"/>
+            </div>
+        </div>
+    </div>
+</form>
+{literal}
+<script>
+    $('#name').data({
+        'val': {r: true},
+        'val-msg': {r: '请填写用户名.'},
+        'val-valid': '填写正确.',
+        'val-info': '请填写6-20位字母或、数字、下划线组合',
+    });
+    $('#name2').data({
+        'val': {r: true},
+        'val-msg': {r: '请填写用户名.'}
+    });
+</script>
+{/literal}
+{/block}
