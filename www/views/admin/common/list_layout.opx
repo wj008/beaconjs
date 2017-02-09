@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{block name="title"}{/block}</title>
+    <link rel="stylesheet" type="text/css" href="/css/base.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/yeeui.css">
+    <link rel="stylesheet" href="/icofont/css/icofont.css">
+</head>
+
+<body>
+<div class="yeeui-caption">{block name="caption"}{/block}</div>
+<div class="yeeui-content">
+    {block name='toptags'}{/block}
+    <div class="yeeui-list">
+
+        <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" class="yeeui-list-table">
+            <tr>
+                {block name=table_ths}{/block}
+            </tr>
+
+            {foreach from=$list item=rs}
+            <tr>1
+                {block name='table_tds'}{/block}
+            </tr>
+            {/foreach}
+
+            {block name='allopts'}{/block}
+        </table>
+        {block name='pagebar'}{/block}
+    </div>
+</div>
+</body>
+</html>
