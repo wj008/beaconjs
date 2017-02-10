@@ -38,7 +38,7 @@ export class PageList {
         if (this.info != null) {
             return this.info;
         }
-        let page = this.page = ctl.get(this.keyname + ':n', 1);
+        this.page = ctl.get(this.keyname + ':n', 1);
         let query = (function () {
             let temps = ctl.get();
             let items = [];
@@ -63,16 +63,16 @@ export class PageList {
         if (this.page_count == -1) {
             this.page_count = this.getPageCount(this.only_count, this.page_size);
         }
-        if (page <= 0) {
-            page = 1;
+        if (this.page <= 0) {
+            this.page = 1;
         }
-        if (page > this.page_count) {
-            page = this.page_count;
+        if (this.page > this.page_count) {
+            this.page = this.page_count;
         }
         this.info = {
             keyname: this.keyname,
             query: query,
-            page: page,
+            page: this.page,
             page_count: this.page_count,
             records_count: this.records_count,
             only_count: this.only_count,
