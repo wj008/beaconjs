@@ -20,7 +20,7 @@
             </tr>
 
             {foreach from=$list item=rs}
-            <tr>1
+            <tr>
                 {block name='table_tds'}{/block}
             </tr>
             {/foreach}
