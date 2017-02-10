@@ -10,7 +10,8 @@ export class Manage extends AdminController {
 
     public async checkNameAction() {
         let username = this.param('username', '');
-        let row = await this.db.getRow('select id from @pf_manage where `name`=?', username);
+        let id = this.param('id', 0);
+        let row = await this.db.getRow('select id from @pf_manage where `name`=? and id<>?', [username, id]);
         if (row) {
             this.fail('用户名已经存在');
         }
@@ -42,6 +43,50 @@ export class Manage extends AdminController {
             await this.db.insert('@pf_manage', vals);
             this.success('添加账号成功');
         }
+    }
+
+    public async editAction() {
+        let id = this.param('id:n', 0);
+        if (!id) {
+            this.fail('参数有误');
+        }
+        if (this.isGet()) {
+            let row = await this.db.getRow('select `id`,`name`,`type` from @pf_manage where id=?', id);
+            this.assign('info', row);
+            this.display('manage_edit.form');
+            return;
+        }
+        if (this.isPost()) {
+            let {username = '', password = '', type = 1}=this.post();
+            if (username == '') {
+                this.fail('用户名不可为空');
+            }
+            let row = await this.db.getRow('select id from @pf_manage where `name`=? and id<>?', [username, id]);
+            if (row) {
+                this.fail('用户名已经存在');
+            }
+            let vals: any = {
+                name: username,
+                type: 1
+            }
+            if (password) {
+                vals.pwd = Beacon.md5(password);
+            }
+            await this.db.update('@pf_manage', vals, id);
+            this.success('编辑账号成功');
+        }
+    }
+
+    public async delAction() {
+        let id = this.param('id:n', 0);
+        if (!id) {
+            this.fail('参数有误');
+        }
+        if (id == 1) {
+            this.fail('最高管理员不可删除');
+        }
+        await this.db.delete('@pf_manage', id);
+        this.success('删除账号成功');
     }
 
     //修改账号密码
