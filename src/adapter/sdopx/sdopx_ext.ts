@@ -85,6 +85,9 @@ Sdopx.registerPlugin('asset', function (params, out, sdopx) {
 
 //注册资源引用
 Sdopx.registerPlugin('pagebar', function (params, out, sdopx) {
+    if (!sdopx.context) {
+        return;
+    }
     let config = Beacon.getConfig('pagebar:*') || {};
     if (params.data === void 0 || !Beacon.isObject(params.data)) {
         sdopx.addError(`pagebar: missing 'data' parameter`);
@@ -98,6 +101,7 @@ Sdopx.registerPlugin('pagebar', function (params, out, sdopx) {
         show_prev: 1,
         show_next: 1,
         show_nbpage: 1,
+        show_input: 1,
         nbpage_size: 10,
         first: '首页',
         last: '尾页',
@@ -170,7 +174,6 @@ Sdopx.registerPlugin('pagebar', function (params, out, sdopx) {
         }
     }
 
-
     //显示下一页
     if (config.show_next == 2) {
         let p_page = page + 1;
@@ -196,6 +199,14 @@ Sdopx.registerPlugin('pagebar', function (params, out, sdopx) {
         code = code.replace(/#max_page#/g, data.page_count);
         code = code.replace(/#page_size#/g, data.page_size);
         ctext = `<div class="pagebar_info">${code}</div>`;
+    }
+
+    if (config.show_input == 1) {
+        sdopx.context.addAsset('jquery');
+        let id = Beacon.uuid(10);
+        html.push(`<input id="${id}" type="text" class="inp" value="${page}"/><a class="gopage" data-url="${pagelink.replace('#page#', '#gopage#')}" href="javascript:;">GO</a>`);
+        html.push("<script>$('#" + id + "').on('keyup',function(e){if(e.keyCode==13){ var t=$(this).next().click();window.location.href=t.attr('href');}}).next()" +
+            ".on('click',function(){var t=$(this),v=t.prev().val()||1;t.attr('href',(t.data('url')||'').replace('#gopage#',/^\\d+$/.test(v)?v:1));return !0;});</script>");
     }
     let outhtml = `<div class="pagebar">${html.join("\n")}</div>` + ctext;
     out.raw(outhtml);
