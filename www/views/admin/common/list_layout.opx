@@ -11,7 +11,7 @@
 <body>
 <div class="yeeui-caption">{block name="caption"}{/block}</div>
 <div class="yeeui-content">
-    {block name='toptags'}{/block}
+    {block name='list_head'}{/block}
     <div class="yeeui-list">
 
         <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" class="yeeui-list-table">
@@ -19,11 +19,8 @@
                 {block name=table_ths}{/block}
             </tr>
 
-            {foreach from=$list item=rs}
-            <tr>
                 {block name='table_tds'}{/block}
-            </tr>
-            {/foreach}
+
 
             {block name='allopts'}{/block}
         </table>
