@@ -379,17 +379,17 @@
                     } else {
                         if (ret.status === true) {
                             data.pass = true;
-                            data.remote_valid = ret.success || null;
+                            data.remote_valid = ret.message || null;
                         } else {
-                            data.remote_msg = ret.error;
+                            data.remote_msg = ret.message;
                             data.pass = false;
                             data.erropt = 'remote';
                         }
                         elem.data('yee-ajax-cache', {
                             val: value,
                             pass: data.pass,
-                            remote_msg: ret.error || null,
-                            remote_valid: ret.success || null
+                            remote_msg: (ret.status == false ? ret.message : null),
+                            remote_valid: (ret.status == true ? ret.message : null)
                         });
                         fn(data);
                     }
@@ -699,12 +699,12 @@
                     $(errItems).each(function () {
                         setError(this.elem, this.msg, false);
                         /*
-                        if (this.data.events == '') {
-                            this.data.events = 'blur';
-                            this.elem.off('blur', elem_chcek);
-                            this.elem.on('blur', elem_chcek);
-                        }
-                        */
+                         if (this.data.events == '') {
+                         this.data.events = 'blur';
+                         this.elem.off('blur', elem_chcek);
+                         this.elem.on('blur', elem_chcek);
+                         }
+                         */
                     });
                 }
 
