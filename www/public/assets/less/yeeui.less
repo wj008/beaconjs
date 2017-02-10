@@ -219,7 +219,6 @@ input.input-valid {
 
 .yeeui-list {
   margin-bottom: 15px;
-  background: #fff;
   padding: 0;
   color: #606060;
   -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, .05);
@@ -298,5 +297,62 @@ input.input-valid {
         color: #31b4e1;
       }
     }
+  }
+}
+
+.yeeui-pagebar {
+  transition: all .15s ease-in;
+  width: 100%;
+  padding: 10px 0;
+  height: 24px;
+  .pagebar {
+    float: left;
+    a, b, .break {
+      text-decoration: none;
+      color: #666;
+      display: inline-block;
+      height: 20px;
+      line-height: 20px;
+      float: left;
+      margin-right: 3px;
+      padding: 0 6px;
+      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
+      border-radius: 3px;
+      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+      cursor: pointer;
+    }
+    input.inp {
+      height: 20px;
+      line-height: 20px;
+      float: left;
+      width: 40px;
+      text-align: center;
+      border-radius: 3px;
+      border: 1px solid #999;
+      margin-right: 3px;
+    }
+    .break {
+      background: none;
+      cursor: default
+    }
+    a {
+      border: 1px solid #999;
+      background-color: #FFF;
+    }
+    a:hover {
+      box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+    }
+    b {
+      border: 1px solid #666;
+      background: none;
+      background-color: #666;
+      color: #FFF;
+    }
+  }
+  .pagebar_info {
+    float: right;
+    line-height: 22px;
   }
 }
