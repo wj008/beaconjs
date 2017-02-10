@@ -55,7 +55,7 @@ export class Manage extends AdminController {
         }
         if (this.isGet()) {
             let row = await this.db.getRow('select `id`,`name`,`type` from @pf_manage where id=?', id);
-            this.assign('info', row);
+            this.assign('row', row);
             this.display('manage_edit.form');
             return;
         }
@@ -96,7 +96,7 @@ export class Manage extends AdminController {
     public async modifyPassAction() {
 
         if (this.isGet()) {
-            this.assign('info', this.getSession());
+            this.assign('row', this.getSession());
             this.display('modify_pass.form');
             return;
         }
