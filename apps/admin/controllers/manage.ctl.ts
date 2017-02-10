@@ -5,6 +5,7 @@ export class Manage extends AdminController {
     public async indexAction() {
         let list = await this.db.getList('select * from @pf_manage order by id asc');
         this.assign('list', list);
+        this.assign('pdata', {query: '?aaa=33&page=3&',page_count:50,page:1,page_size:20,records_count:120});
         this.display('manage');
     }
 
