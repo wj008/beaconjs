@@ -1,1 +1,40 @@
 {extends file='common/list_layout'}
+{block name="title"}管理员{/block}
+{block name="caption"} 管理员-账号管理{/block}
+
+{block name='list_head'}
+<div class="yeeui-list-optbtns">
+    <a href="{uri act='add'}" class="yee-btn add"><i class="icofont icofont-ui-add"></i>添加账号</a>
+</div>
+{/block}
+
+{block name=table_ths}
+<th width="40" align="center">ID</th>
+<th width="80">账号名称</th>
+<th align="left">真实姓名</th>
+<th width="100" align="center">电子邮箱</th>
+<th width="80">类型</th>
+<th width="80">状态</th>
+<th width="180" align="center">上次登录时间</th>
+<th width="180" align="center">上次登录IP</th>
+<th width="180" align="center">操作</th>
+{/block}
+
+{block name='table_tds'}
+{foreach from=$list item='rs'}
+<tr class="toggle">
+    <td>{$rs.id}</td>
+    <td>{$rs.name}</td>
+    <td></td>
+    <td>{$rs.email}</td>
+    <td>{$rs.type|option:{1:'后台管理员',2:'普通管理员'},'其他管理员'}</td>
+    <td>{$rs.islock|option:{1:'锁定'},'正常'}</td>
+    <td>{$rs.lasttime|date_format}</td>
+    <td>{$rs.lastip}</td>
+    <td>
+        <a href="#" class="yee-btn small edit"><i class="icofont icofont-edit"></i>编辑</a>
+        <a href="#" class="yee-btn small del"><i class="icofont icofont-bin"></i>删除</a>
+    </td>
+</tr>
+{/foreach}
+{/block}
