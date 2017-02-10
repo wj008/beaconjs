@@ -50,9 +50,9 @@
 {literal}
 <script>
     $('#username').data({
-        'val': {r: true, minlen: 6, maxlen: 20, remote: ['{@uri act="check_name"@}']},
-        'val-msg': {r: '请输入账号名称', minlen: '账号名称至少是6个字符以上', maxlen: '账号名称过长，不可超过20个字符'},
-        'val-events': 'blur'
+        'val': {r: true, minlen: 5, maxlen: 20, remote: ['{@uri act="check_name"@}']},
+        'val-msg': {r: '请输入账号名称', minlen: '账号名称至少是5个字符以上', maxlen: '账号名称过长，不可超过20个字符'},
+        'val-events': 'blur',
     });
     $('#password').data({
         'val': {r: true, minlen: 6, maxlen: 20},
