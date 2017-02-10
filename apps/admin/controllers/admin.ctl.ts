@@ -16,10 +16,6 @@ export class AdminController extends Beacon.Controller {
             let ret: any = {};
             ret.message = message;
             ret.status = false;
-            ret.timeout = timeout;
-            if (jump !== void 0) {
-                ret.jump = jump;
-            }
             if (code !== void 0) {
                 ret.code = code;
             }
@@ -47,10 +43,6 @@ export class AdminController extends Beacon.Controller {
             let ret: any = {};
             ret.message = message;
             ret.status = true;
-            ret.timeout = timeout;
-            if (jump !== void 0) {
-                ret.jump = jump;
-            }
             if (code !== void 0) {
                 ret.code = code;
             }

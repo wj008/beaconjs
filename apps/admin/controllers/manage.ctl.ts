@@ -8,6 +8,42 @@ export class Manage extends AdminController {
         this.display('manage');
     }
 
+    public async checkNameAction() {
+        let username = this.param('username', '');
+        let row = await this.db.getRow('select id from @pf_manage where `name`=?', username);
+        if (row) {
+            this.fail('用户名已经存在');
+        }
+        this.success('用户名可以使用');
+    }
+
+    public async addAction() {
+        if (this.isGet()) {
+            this.display('manage_add.form');
+            return;
+        }
+        if (this.isPost()) {
+            let {username = '', password = '', type = 1}=this.post();
+            if (username == '') {
+                this.fail('用户名不可为空');
+            }
+            if (password == '') {
+                this.fail('密码不可为空');
+            }
+            let row = await this.db.getRow('select id from @pf_manage where `name`=?', username);
+            if (row) {
+                this.fail('用户名已经存在');
+            }
+            let vals = {
+                name: username,
+                pwd: Beacon.md5(password),
+                type: 1
+            }
+            await this.db.insert('@pf_manage', vals);
+            this.success('添加账号成功');
+        }
+    }
+
     //修改账号密码
     public async modifyPassAction() {
 
