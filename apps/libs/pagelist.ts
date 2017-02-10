@@ -22,7 +22,7 @@ export class PageList {
     }
 
     private getPageCount(count: number, size: number) {
-        let pagecount = 0;
+        let pagecount: number = 1;
         if ((count % size) == 0) {
             pagecount = (count / size);
         } else {
@@ -46,15 +46,15 @@ export class PageList {
                 items.push(key + '=' + encodeURIComponent(temps[key]));
             }
             return items.join('&');
-        });
+        })();
         if (this.records_count == -1) {
-            let sql = null;
+            let sql: string = null;
             if (this.sql.toLowerCase().indexOf(' from ') === this.sql.toLowerCase().lastIndexOf(' from ')) {
                 sql = this.sql.replace(/^select\s+(distinct\s+[a-z][a-z0-9]+\s*,)?(.*)\s+from\s+/i, 'select $1count(1) as temp_count from ');
             } else {
                 sql = 'select count(1) as temp_count  from (' + this.sql + ') tempTable';
             }
-            let row = ctl.db.getRow(sql, this.args, 'temp_count');
+            let row = await ctl.db.getRow(sql, this.args);
             this.records_count = row.temp_count;
         }
         if (this.only_count == -1 || this.only_count > this.records_count) {
@@ -87,8 +87,8 @@ export class PageList {
         if (start < 0) {
             start = 0;
         }
-        let sql = this.sql + ' limit ' + start + ' , ' + this.page_size;
-        let list = ctl.db.getList(sql, this.args);
+        let sql: string = this.sql + ' limit ' + start + ' , ' + this.page_size;
+        let list = await ctl.db.getList(sql, this.args);
         return list;
     }
 
