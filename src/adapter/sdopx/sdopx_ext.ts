@@ -170,6 +170,7 @@ Sdopx.registerPlugin('pagebar', function (params, out, sdopx) {
         }
     }
 
+
     //显示下一页
     if (config.show_next == 2) {
         let p_page = page + 1;
