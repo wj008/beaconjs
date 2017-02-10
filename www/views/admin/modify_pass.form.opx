@@ -14,7 +14,7 @@
             <div class="form-group">
                 <label class="form-label">用户名：</label>
                 <div class="form-box">
-                    <span class="field-text">{$info.amdinName}</span>
+                    <span class="field-text">{$row.amdinName}</span>
                 </div>
             </div>
 

@@ -15,7 +15,7 @@
             <div class="form-group">
                 <label class="form-label">账号名称：</label>
                 <div class="form-box">
-                    <span><input name="username" id="username" value="{$info.name}" class="form-inp text"
+                    <span><input name="username" id="username" value="{$row.name}" class="form-inp text"
                                  type="text"/></span>
                     <p class="field-tips">请输入管理员账号名称，5-20位字母数字组合</p>
                 </div>
@@ -45,6 +45,7 @@
                 <input type="submit" class="btn submit" value="提交"/>
                 <a href="{uri ctl='manage'}" class="btn back">返回</a>
                 <input type="hidden" name="__BACK__" value="{uri ctl='manage'}"/>
+                <input type="hidden" name="id" value="{$row.id}"/>
             </div>
         </div>
 
