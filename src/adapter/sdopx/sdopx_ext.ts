@@ -1,5 +1,5 @@
 import {Sdopx} from "sdopx";
-
+//Sdopx.create_runfile=true;
 //替换更目录
 Sdopx.registerFilter('pre', function (content: string, sdopx: Sdopx) {
     if (sdopx.context) {
