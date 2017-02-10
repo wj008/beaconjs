@@ -18,10 +18,7 @@
             <tr>
                 {block name=table_ths}{/block}
             </tr>
-
-                {block name='table_tds'}{/block}
-
-
+            {block name='table_tds'}{/block}
             {block name='allopts'}{/block}
         </table>
         {block name='pagebar'}{/block}
