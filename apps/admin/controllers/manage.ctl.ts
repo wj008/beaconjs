@@ -1,11 +1,13 @@
 import {AdminController} from "./admin.ctl";
 import {Beacon} from "../../../src/core/beacon";
+import {PageList} from "../../libs/pagelist";
 export class Manage extends AdminController {
 
     public async indexAction() {
-        let list = await this.db.getList('select * from @pf_manage order by id asc');
+        let plist = new PageList('select * from @pf_manage order by id asc');
+        let {info, list} = await plist.getData(this);
         this.assign('list', list);
-        this.assign('pdata', {query: '?aaa=33&page=3&',page_count:50,page:1,page_size:20,records_count:120});
+        this.assign('pdata', info);
         this.display('manage');
     }
 
