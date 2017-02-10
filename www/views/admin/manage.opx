@@ -40,3 +40,7 @@
 </tr>
 {/foreach}
 {/block}
+
+{block name='pagebar'}
+{pagebar data=$pdata} 111
+{/block}
