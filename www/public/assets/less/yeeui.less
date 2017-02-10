@@ -142,7 +142,7 @@ html, body {
     background: #ec5151;
 
   }
-  .back,.reset {
+  .back, .reset {
     border: 1px solid #ec5151;
     background-color: #fff;
     color: #ec5151;
@@ -212,5 +212,91 @@ input.input-valid {
   color: #909090;
 }
 
+.yeeui-list-optbtns {
+  line-height: 40px;
+  padding: 10px 0;
+}
 
+.yeeui-list {
+  margin-bottom: 15px;
+  background: #fff;
+  padding: 0;
+  color: #606060;
+  -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, .05);
+  -moz-box-shadow: 0 0 2px rgba(0, 0, 0, .05);
+  box-shadow: 0 0 2px rgba(0, 0, 0, .05);
 
+}
+
+.yeeui-list-table {
+  th {
+    border-top: 2px solid #dbdbdb;
+    background: #f9f9f9;
+    line-height: 26px;
+    padding: 5px;
+    font-weight: bold;
+    border-bottom: 1px solid #eaeaea;
+    color: #333;
+  }
+  td {
+    padding: 5px;
+    line-height: 20px;
+    border-bottom: 1px solid #eaeaea;
+    word-break: keep-all;
+  }
+  tr.toggle {
+    &:hover td {
+      background: #f5faff;
+    }
+  }
+}
+
+.yee-btn {
+  font-size: 12px;
+  line-height: 20px;
+  height: 20px;
+  display: inline-block;
+  padding: 2px 7px;
+  border: solid 1px #e1e1e1;
+  border-radius: 4px;
+  margin: 0;
+  background-color: #FFF;
+  color: #777;
+  i {
+    margin-right: 3px;
+  }
+  &.add {
+    color: #ec5051;
+    border: solid 1px #ec5051;
+    background-color: #FFFFFF;
+  }
+  &:hover {
+    background: #f1f1f1;
+    &.add {
+      background: #ffe7e7;
+    }
+  }
+  &.small {
+    line-height: 18px;
+    height: 18px;
+    &.show, &.del, &.edit {
+      border: solid 1px #e1e1e1;
+      background-color: #FFF;
+      color: #777;
+    }
+    &:hover {
+      &.show {
+        border: solid 1px #29c25f;
+        color: #29c25f;
+      }
+      &.del {
+        border: solid 1px #ec5051;
+        color: #ec5051;
+      }
+      &.edit {
+        border: solid 1px #31b4e1;
+        color: #31b4e1;
+      }
+    }
+  }
+}
