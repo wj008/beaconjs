@@ -42,5 +42,5 @@
 {/block}
 
 {block name='pagebar'}
-{pagebar data=$pdata} 111
+<div class="yeeui-pagebar">{pagebar data=$pdata}</div>
 {/block}
