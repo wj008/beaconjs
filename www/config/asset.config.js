@@ -12,11 +12,13 @@ module.exports = {
         'yee-validate': 'yee.validate-2.0.1',
         'layer': '../layer/layer',
         'yee-confirm': 'yee.confirm',
+        'yee-ajaxlink': 'yee.ajaxlink',
     },
     depends: {
         'jquery-ui': ['../jquery-ui/custom.css', 'jquery'],
         'yee': ['jquery'],
         'yee-validate': ['yee'],
         'yee-confirm': ['yee', 'layer'],
+        'yee-ajaxlink': ['yee', 'layer'],
     }
 };
