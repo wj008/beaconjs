@@ -28,14 +28,14 @@
 
         var qem = $(elem);
         var send = function (url) {
-            //防止误触
+            //防止误触双击
             if (!fromTimeout) {
                 return false;
             }
             fromTimeout = false;
             setTimeout(function () {
                 fromTimeout = true;
-            }, 2000);
+            }, 1000);
 
             var args = parseURL(url);
             qem.triggerHandler('commit', [url]);
