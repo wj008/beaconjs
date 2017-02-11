@@ -19,8 +19,8 @@
 {/block}
 
 {block name='table_tds'}
-{foreach from=$list item='rs'}
 {asset src='yee-confirm'}
+{foreach from=$list item='rs'}
 <tr class="toggle">
     <td align="center">{$rs.id}</td>
     <td align="center">{if $rs.icon}<i class="{$rs.icon}"></i>{/if}</td>
