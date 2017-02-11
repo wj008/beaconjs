@@ -24,7 +24,7 @@
     }
 
     //AJAX提交连接
-    sdopx.extend('a', 'ajaxlink', function (elem) {
+    Yee.extend('a', 'ajaxlink', function (elem) {
 
         var qem = $(elem);
         var send = function (url) {
@@ -38,11 +38,10 @@
             }, 2000);
 
             var args = parseURL(url);
-            send.triggerHandler('commit', [url]);
+            qem.triggerHandler('commit', [url]);
             var option = $.extend({
                 method: 'get',
             }, qem.data() || {});
-
             $.ajax({
                 type: option.method,
                 url: args.path,
