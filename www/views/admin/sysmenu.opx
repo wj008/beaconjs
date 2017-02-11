@@ -19,7 +19,6 @@
 {/block}
 
 {block name='table_tds'}
-{asset src='yee-confirm'}
 {foreach from=$list item='rs'}
 <tr class="toggle">
     <td align="center">{$rs.id}</td>
@@ -36,3 +35,5 @@
 </tr>
 {/foreach}
 {/block}
+
+{block name='foot'}{asset src='yee-confirm'}{/block}
