@@ -29,14 +29,14 @@ export class Manage extends AdminController {
         if (this.isPost()) {
             let {username = '', password = '', type = 1}=this.post();
             if (username == '') {
-                this.fail('用户名不可为空');
+                this.fail('用户名不可为空', {username: '用户名不可为空'});
             }
             if (password == '') {
-                this.fail('密码不可为空');
+                this.fail('密码不可为空', {password: '密码不可为空'});
             }
             let row = await this.db.getRow('select id from @pf_manage where `name`=?', username);
             if (row) {
-                this.fail('用户名已经存在');
+                this.fail('用户名已经存在', {username: '密码不可为空'});
             }
             let vals = {
                 name: username,
@@ -62,11 +62,11 @@ export class Manage extends AdminController {
         if (this.isPost()) {
             let {username = '', password = '', type = 1}=this.post();
             if (username == '') {
-                this.fail('用户名不可为空');
+                this.fail('用户名不可为空', {username: '用户名不可为空'});
             }
             let row = await this.db.getRow('select id from @pf_manage where `name`=? and id<>?', [username, id]);
             if (row) {
-                this.fail('用户名已经存在');
+                this.fail('用户名已经存在', {username: '用户名已经存在'});
             }
             let vals: any = {
                 name: username,
@@ -104,17 +104,17 @@ export class Manage extends AdminController {
         if (this.isPost()) {
             let {oldpass = '', newpass = ''}=this.post();
             if (oldpass == '') {
-                this.fail('旧密码不可为空');
+                this.fail('旧密码不可为空', {oldpass: '旧密码不可为空'});
             }
             if (newpass == '') {
-                this.fail('新密码不可为空');
+                this.fail('新密码不可为空', {newpass: '新密码不可为空'});
             }
             let row = await this.db.getRow('select * from @pf_manage where id=?', this.adminId);
             if (row == null) {
                 this.fail('用户不存在');
             }
             if (Beacon.md5(oldpass) != row.pwd) {
-                this.fail('旧密码不正确，请重新输入');
+                this.fail('旧密码不正确，请重新输入', {oldpass: '旧密码不正确，请重新输入'});
             }
             newpass = Beacon.md5(newpass);
             await this.db.update('@pf_manage', {pwd: newpass}, this.adminId);
