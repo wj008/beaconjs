@@ -20,6 +20,7 @@
 
 {block name='table_tds'}
 {foreach from=$list item='rs'}
+{asset src='yee-confirm'}
 <tr class="toggle">
     <td align="center">{$rs.id}</td>
     <td align="center">{if $rs.icon}<i class="{$rs.icon}"></i>{/if}</td>
@@ -30,7 +31,7 @@
     <td align="right">
         {if $rs.create}<a href="{uri act='add' args={pid:$rs.id}}" class="yee-btn small add"><i class="icofont icofont-ui-add"></i>添加子项</a>{/if}
         <a href="{uri act='edit' args={id:$rs.id}}" class="yee-btn small edit"><i class="icofont icofont-edit"></i>编辑</a>
-        <a href="{uri act='del' args={id:$rs.id}}" class="yee-btn small del"><i class="icofont icofont-bin"></i>删除</a>
+        <a href="{uri act='del' args={id:$rs.id}}" yee-module="confirm" data-confirm="确定要删除该菜单了吗？" class="yee-btn small del"></a>
     </td>
 </tr>
 {/foreach}
