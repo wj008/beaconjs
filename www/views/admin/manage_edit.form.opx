@@ -3,7 +3,8 @@
 {block name="caption"}<a href="{uri ctl='manage'}" class="s-back"><i
         class="icofont icofont-reply"></i></a> 管理员-账号设置{/block}
 {block name="form"}
-<form method="post" yee-module="validate">
+{asset src="yee-ajaxform"}
+<form method="post" yee-module="validate ajaxform">
 
     <div class="form-panel">
         <div class="panel-title">
