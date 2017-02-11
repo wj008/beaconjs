@@ -325,7 +325,7 @@ export class HttpContext {
     }
 
     public iGet(name: string, def: number = 0) {
-        let value = (this._get[name] === void 0 ? '' : this._get[name]).trim();
+        let value = (this._get[name] === void 0 ? '' : String(this._get[name])).trim();
         if (/^[+-]?\d+(\.\d+)?$/.test(value)) {
             let ivalue = parseInt(value);
             return ivalue === NaN ? def : ivalue;
@@ -334,7 +334,7 @@ export class HttpContext {
     }
 
     public nGet(name: string, def: number = 0) {
-        let value = (this._get[name] === void 0 ? '' : this._get[name]).trim();
+        let value = (this._get[name] === void 0 ? '' : String(this._get[name])).trim();
         if (/^[+-]?\d+(\.\d+)?$/.test(value)) {
             let ivalue = Number(value);
             return ivalue === NaN ? def : ivalue;
@@ -343,7 +343,7 @@ export class HttpContext {
     }
 
     public bGet(name: string, def: boolean = false) {
-        let value = (this._get[name] === void 0 ? '' : this._get[name]).trim();
+        let value = (this._get[name] === void 0 ? '' : String(this._get[name])).trim();
         if (value === '') {
             return def;
         }
@@ -354,7 +354,7 @@ export class HttpContext {
     }
 
     public dGet(name: string, def: Date = new Date()) {
-        let value = (this._get[name] === void 0 ? '' : this._get[name]).trim();
+        let value = (this._get[name] === void 0 ? '' : String(this._get[name])).trim();
         let date = new Date(value);
         if (date == null || date.toString() == 'Invalid Date' || isNaN(date.getTime())) {
             return def;
@@ -375,8 +375,8 @@ export class HttpContext {
     }
 
     public iPost(name: string, def: number = 0) {
-        let value = (this._post[name] === void 0 ? '' : this._post[name]).trim();
-        if (/^[+-]\d+(\.\d+)?$/.test(value)) {
+        let value = (this._post[name] === void 0 ? '' : String(this._post[name])).trim();
+        if (/^[+-]?\d+(\.\d+)?$/.test(value)) {
             let ivalue = parseInt(value);
             return ivalue === NaN ? def : ivalue;
         }
@@ -384,8 +384,8 @@ export class HttpContext {
     }
 
     public nPost(name: string, def: number = 0) {
-        let value = (this._post[name] === void 0 ? '' : this._post[name]).trim();
-        if (/^[+-]\d+(\.\d+)?$/.test(value)) {
+        let value = (this._post[name] === void 0 ? '' : String(this._post[name])).trim();
+        if (/^[+-]?\d+(\.\d+)?$/.test(value)) {
             let ivalue = Number(value);
             return ivalue === NaN ? def : ivalue;
         }
@@ -393,7 +393,7 @@ export class HttpContext {
     }
 
     public bPost(name: string, def: boolean = false) {
-        let value = (this._post[name] === void 0 ? '' : this._post[name]).trim();
+        let value = (this._post[name] === void 0 ? '' : String(this._post[name])).trim();
         if (value === '') {
             return def;
         }
@@ -404,7 +404,7 @@ export class HttpContext {
     }
 
     public dPost(name: string, def: Date = new Date()) {
-        let value = (this._post[name] === void 0 ? '' : this._post[name]).trim();
+        let value = (this._post[name] === void 0 ? '' : String(this._post[name])).trim();
         let date = new Date(value);
         if (date == null || date.toString() == 'Invalid Date' || isNaN(date.getTime())) {
             return def;
