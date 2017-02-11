@@ -1,0 +1,37 @@
+{extends file='common/list_layout'}
+{block name="title"}系统菜单{/block}
+{block name="caption"} 系统-菜单管理{/block}
+
+{block name='list_head'}
+<div class="yeeui-list-optbtns">
+    <a href="{uri act='add'}" class="yee-btn add"><i class="icofont icofont-ui-add"></i>添加栏目</a>
+</div>
+{/block}
+
+{block name=table_ths}
+<th width="40">ID</th>
+<th width="40">ICON</th>
+<th align="left">菜单名称</th>
+<th width="100">路径</th>
+<th width="80">排序</th>
+<th width="80">状态</th>
+<th width="250">操作</th>
+{/block}
+
+{block name='table_tds'}
+{foreach from=$list item='rs'}
+<tr class="toggle">
+    <td align="center">{$rs.id}</td>
+    <td align="center">{if $rs.icon}<i class="{$rs.icon}"></i>{/if}</td>
+    <td>{$rs.title|raw}</td>
+    <td>{$rs.url}</td>
+    <td align="center">{$rs.sort}</td>
+    <td align="center">{$rs.allow|option:{1:'<span class="ifont green">&#xefad;</span>'},'<span class="ifont">&#xefb8;</span>'|raw}</td>
+    <td align="right">
+        {if $rs.create}<a href="{uri act='add' args={pid:$rs.id}}" class="yee-btn small add"><i class="icofont icofont-ui-add"></i>添加子项</a>{/if}
+        <a href="{uri act='edit' args={id:$rs.id}}" class="yee-btn small edit"><i class="icofont icofont-edit"></i>编辑</a>
+        <a href="{uri act='del' args={id:$rs.id}}" class="yee-btn small del"><i class="icofont icofont-bin"></i>删除</a>
+    </td>
+</tr>
+{/foreach}
+{/block}
