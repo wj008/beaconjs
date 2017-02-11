@@ -3,7 +3,8 @@
 {block name="caption"}<a href="{uri ctl='sysmenu'}" class="s-back"><i
         class="icofont icofont-reply"></i></a> 系统-菜单管理{/block}
 {block name="form"}
-<form method="post" yee-module="validate">
+{asset src='yee-confirm'}
+<form method="post" yee-module="validate confirm" data-confirm="确定要提交了吗？">
 
     <div class="form-panel">
         <div class="panel-title">
