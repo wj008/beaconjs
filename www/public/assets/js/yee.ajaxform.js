@@ -6,7 +6,6 @@
         var timer = null;
         //延迟100毫秒 让提交是最后的监听
         setTimeout(function () {
-
             qem.on('submit', function (ev) {
                 var that = $(this);
                 //防止误触
@@ -17,19 +16,16 @@
                 setTimeout(function () {
                     fromTimeout = true;
                 }, 1000);
-
                 if (ev.result === false) {
                     return false;
                 }
                 if (that.data('confirm_prevent')) {
                     return false;
                 }
-
                 var rt = that.triggerHandler('before');
                 if (rt === false) {
                     return;
                 }
-
                 var action = that.attr('action') || window.location.href;
                 var back = that.data('back') || '';
                 if (back == '' && that.find(":input[name='__BACK__']").length > 0) {
@@ -133,6 +129,6 @@
                 });
                 return false;
             });
-        }, 100);
+        }, 10);
     });
 })(jQuery, Yee, layer);
