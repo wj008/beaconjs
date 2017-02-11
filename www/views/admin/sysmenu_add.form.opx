@@ -3,9 +3,8 @@
 {block name="caption"}<a href="{uri ctl='sysmenu'}" class="s-back"><i
         class="icofont icofont-reply"></i></a> 系统-菜单管理{/block}
 {block name="form"}
-{asset src=["yee-ajaxform",'yee-confirm']}
-<form method="post" yee-module="validate ajaxform confirm" data-confirm="确定要提交了吗？">
-
+{asset src='yee-ajaxform'}
+<form method="post" yee-module="validate ajaxform">
     <div class="form-panel">
         <div class="panel-title">
             <i class="icofont icofont-pencil-alt-3"></i>
