@@ -87,7 +87,9 @@
 
     </div>
 </form>
-{literal}
+{/block}
+
+{block name="foot"}{literal}
 <script>
     $('#name').data({
         'val': {r: true},
@@ -98,5 +100,4 @@
         'val-msg': {r: '请输入排序值', int: '排序值必须是数值形式'},
     });
 </script>
-{/literal}
-{/block}
+{/literal}{/block}

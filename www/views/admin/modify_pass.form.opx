@@ -54,7 +54,9 @@
 
     </div>
 </form>
-{literal}
+{/block}
+
+{block name="foot"}{literal}
 <script>
     $('#oldpass').data({
         'val': {r: true},
@@ -69,5 +71,4 @@
         'val-msg': {r: '请再次输入新密码', eqto: '两次输入的密码不一致'},
     });
 </script>
-{/literal}
-{/block}
+{/literal}{/block}

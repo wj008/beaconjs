@@ -46,7 +46,7 @@
                 <label class="form-label">ICON样式：</label>
                 <div class="form-box">
                     <span><input name="icon" id="icon" value="{$row.icon}" class="form-inp text" type="text"/></span>
-                    <p class="field-tips">图标样式，仅菜单项需要输入 <a href="http://icofont.com/icons/" target="_blank">打开icon参考链接</a> </p>
+                    <p class="field-tips">图标样式，仅菜单项需要输入 <a href="http://icofont.com/icons/" target="_blank">打开icon参考链接</a></p>
                 </div>
             </div>
 
@@ -87,7 +87,9 @@
 
     </div>
 </form>
-{literal}
+{/block}
+
+{block name="foot"}{literal}
 <script>
     $('#name').data({
         'val': {r: true},
@@ -98,5 +100,4 @@
         'val-msg': {r: '请输入排序值', int: '排序值必须是数值形式'},
     });
 </script>
-{/literal}
-{/block}
+{/literal}{/block}

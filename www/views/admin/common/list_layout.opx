@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="/css/base.css">
     <link rel="stylesheet" type="text/css" href="/assets/css/yeeui.css">
     <link rel="stylesheet" href="/icofont/css/icofont.css">
+    {asset}
 </head>
 
 <body>
@@ -24,5 +25,6 @@
         {block name='pagebar'}{/block}
     </div>
 </div>
+{block name='foot'}{/block}
 </body>
 </html>

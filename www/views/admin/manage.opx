@@ -45,3 +45,15 @@
 {block name='pagebar'}
 <div class="yeeui-pagebar">{pagebar data=$pdata}</div>
 {/block}
+
+{block name='foot'}
+{literal}
+<script>
+    $('a.yee-btn.del').on('back', function (ev, ret) {
+        if (ret.status) {
+            window.location.reload();
+        }
+    });
+</script>
+{/literal}
+{/block}

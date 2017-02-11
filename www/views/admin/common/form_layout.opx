@@ -16,5 +16,6 @@
         {block name="form"}{/block}
     </div>
 </div>
+{block name='foot'}{/block}
 </body>
 </html>
