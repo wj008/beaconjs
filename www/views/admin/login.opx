@@ -53,7 +53,7 @@
                 <table border="0" align="center" style="width:300px" cellpadding="0" cellspacing="0">
                     <tr>
                         <th height="44">
-                            <input type="submit" value="登录"/>
+                            <input type="submit" value="登录"/> <span style="color: #222222">默认账号/密码 admin/123456</span>
                         </th>
                     </tr>
                 </table>
