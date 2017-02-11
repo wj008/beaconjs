@@ -55,13 +55,13 @@
                 var attrval = qem.attr(key);
                 if (attrval) {
                     if (key == "class") {
-                        attrval = attrval.replace('input-validation-error', '');
+                        attrval = attrval.replace('input-error', '');
                     }
                     box.attr(key, attrval);
                 }
             });
 
-            $.each(['header', 'val', 'val-msg', 'val-info', 'val-passed'], function (i, key) {
+            $.each(['header', 'val', 'val-msg', 'val-info', 'val-valid'], function (i, key) {
                 var data_name = key + lev.toString();
                 var data_val = qem.data(data_name) || null;
                 if ((key == 'val' || key == 'val-msg') && val_group && val_group.rule) {
