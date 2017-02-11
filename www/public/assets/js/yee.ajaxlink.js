@@ -38,7 +38,10 @@
             }, 1000);
 
             var args = parseURL(url);
-            qem.triggerHandler('commit', [url]);
+            var rt = qem.triggerHandler('before', [url]);
+            if (rt === false) {
+                return;
+            }
             var option = $.extend({
                 method: 'get',
             }, qem.data() || {});
