@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es2016",
-    "outDir": "E:\\node\\beacon\\www",
+    "outDir": "./www",
     "types": [
       "node"
     ],
