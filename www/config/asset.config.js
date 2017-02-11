@@ -11,6 +11,7 @@ module.exports = {
         'yee': 'yee',
         'yee-validate': 'yee.validate-2.0.1',
         'layer': '../layer/layer',
+        'yee-layer': 'yee.layer',
         'yee-confirm': 'yee.confirm',
         'yee-ajaxlink': 'yee.ajaxlink',
     },
@@ -18,7 +19,7 @@ module.exports = {
         'jquery-ui': ['../jquery-ui/custom.css', 'jquery'],
         'yee': ['jquery'],
         'yee-validate': ['yee'],
-        'yee-confirm': ['yee', 'layer'],
-        'yee-ajaxlink': ['yee', 'layer'],
+        'yee-confirm': ['yee', 'yee-layer'],
+        'yee-ajaxlink': ['yee', 'yee-layer'],
     }
 };
