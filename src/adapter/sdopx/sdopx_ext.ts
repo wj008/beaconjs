@@ -73,6 +73,7 @@ Sdopx.registerPlugin('asset', function (params, out, sdopx) {
     }
     if (sdopx.context._asset == null) {
         out.raw('<!--#asset#-->');
+        sdopx.context._asset = {};
     }
     if (!params.src && typeof(params.src) != 'string') {
         return;
