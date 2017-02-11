@@ -4,13 +4,13 @@ Navicat MySQL Data Transfer
 Source Server         : mysql
 Source Server Version : 50633
 Source Host           : localhost:3306
-Source Database       : node
+Source Database       : tests
 
 Target Server Type    : MYSQL
 Target Server Version : 50633
 File Encoding         : 65001
 
-Date: 2017-02-11 21:08:27
+Date: 2017-02-11 21:12:54
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -38,7 +38,7 @@ CREATE TABLE `sl_manage` (
 -- ----------------------------
 -- Records of sl_manage
 -- ----------------------------
-INSERT INTO `sl_manage` VALUES ('1', 'admin', '96e79218965eb72c92a549dd5a330112', '1', '0', '1999-01-01', '2017-02-11 20:15:07', '2017-02-11 20:01:13', '127.0.0.1', '127.0.0.1', '0', '');
+INSERT INTO `sl_manage` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '1', '0', '1999-01-01', '2017-02-11 21:12:20', '2017-02-11 20:15:07', '127.0.0.1', '127.0.0.1', '0', '');
 INSERT INTO `sl_manage` VALUES ('2', 'zongshuxian', 'e10adc3949ba59abbe56e057f20f883e', '1', '0', null, null, null, null, null, '0', 'zongshuxian@51camp.cn');
 INSERT INTO `sl_manage` VALUES ('3', 'EDIT', '96e79218965eb72c92a549dd5a330112', '3', '0', null, '2015-06-18 16:18:01', '2015-06-18 16:13:09', '123.123.4.94', '123.123.4.94', '0', 'chaijiexiu@51camp.cn');
 INSERT INTO `sl_manage` VALUES ('4', 'test', 'e10adc3949ba59abbe56e057f20f883e', '2', '0', null, '2015-06-24 00:18:25', null, '123.121.83.229', null, '0', '');
