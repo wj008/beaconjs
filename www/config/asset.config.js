@@ -17,6 +17,7 @@ module.exports = {
     },
     depends: {
         'jquery-ui': ['../jquery-ui/custom.css', 'jquery'],
+        'layer': ['jquery'],
         'yee': ['jquery'],
         'yee-validate': ['yee'],
         'yee-confirm': ['yee', 'yee-layer'],
