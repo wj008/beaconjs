@@ -4,6 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="/admin/css/login.css"/>
     <title>登录系统</title>
+    <script>if(window.top!=window)window.top.location.href=window.location.href;</script>
 </head>
 <body>
 <table width="591" class="table" height="392" align="center" border="0" cellpadding="0" cellspacing="0">
