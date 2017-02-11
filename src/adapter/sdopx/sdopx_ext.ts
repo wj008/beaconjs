@@ -26,6 +26,9 @@ Sdopx.registerFilter('output', function (content: string, sdopx: Sdopx) {
             content = content.replace(/<!--#asset#-->/, html.join("\n"));
         }
         else if (/(<\/head>)/i.test(content)) {
+            if (html.length == 0) {
+                return content;
+            }
             content = content.replace(/<\/head>/i, function ($0) {
                 return html.join("\n") + "\n" + $0;
             });
