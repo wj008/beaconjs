@@ -3,10 +3,6 @@
 
     Yee.extend('form', 'ajaxform', function (elem) {
         var qem = $(elem);
-        var temp = function (ev) {
-            return false;
-        }
-        qem.on('submit', temp);//防止页面快速提交
         var timer = null;
         //延迟100毫秒 让提交是最后的监听
         setTimeout(function () {
@@ -79,21 +75,16 @@
                         }
                         //如果存在错误
                         if (ret.status === false) {
-                            if (ret.error) {
-                                if (typeof (ret.error) === 'object') {
-                                    if (that.data('yee-form-init')) {
-                                        that.showError(ret.error);
-                                    }
+                            if (ret.error && typeof (ret.error) === 'object' && that.data('yee-validate-init')) {
+                                that.showError(ret.error);
+                            }
+                            if (ret.message && typeof (ret.message) === 'string') {
+                                if (alert) {
+                                    layer.alert(ret.message, {icon: 7}, function (idx) {
+                                        layer.close(idx);
+                                    });
                                 } else {
-                                    if (ret.message && typeof (ret.message) === 'string') {
-                                        if (alert) {
-                                            layer.alert(ret.message, {icon: 7}, function (idx) {
-                                                layer.close(idx);
-                                            });
-                                        } else {
-                                            layer.msg(ret.message, {icon: 1, time: 2000});
-                                        }
-                                    }
+                                    layer.msg(ret.message, {icon: 0, time: 2000});
                                 }
                             }
                         }
@@ -133,7 +124,6 @@
                 });
                 return false;
             });
-            qem.off('submit', temp);
         }, 50);
     });
 })(jQuery, Yee, layer);

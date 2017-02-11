@@ -587,10 +587,10 @@
         };
 
         var initElem = function (elem) {
-            if (elem.data('yee-form-init')) {
+            if (elem.data('yee-validate-init')) {
                 return;
             }
-            elem.data('yee-form-init', true);
+            elem.data('yee-validate-init', true);
             var data = getElemData(elem);
             if (data && data.msg_default) {
                 setDefault(elem, data.msg_default);
@@ -628,6 +628,7 @@
         var initValidator = function (form) {
             FormSubmitState = false;
             var qform = $(form);
+            qform.data('yee-validate-init', true);
             var init = function () {
                 qform.on('update', function () {
                     var inputs = getFormElems(qform[0]);
