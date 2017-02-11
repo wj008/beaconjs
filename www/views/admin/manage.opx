@@ -21,8 +21,6 @@
 {/block}
 
 {block name='table_tds'}
-{asset src='yee-confirm'}
-{asset src='yee-ajaxlink'}
 {foreach from=$list item='rs'}
 <tr class="toggle">
     <td align="center">{$rs.id}</td>
@@ -47,6 +45,8 @@
 {/block}
 
 {block name='foot'}
+{asset src='yee-confirm'}
+{asset src='yee-ajaxlink'}
 {literal}
 <script>
     $('a.yee-btn.del').on('back', function (ev, ret) {
