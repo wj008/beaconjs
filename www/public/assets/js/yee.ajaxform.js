@@ -3,6 +3,10 @@
 
     sdopx.extend('form', 'ajaxform', function (elem) {
         var qem = $(elem);
+        var temp = function (ev) {
+            return false;
+        }
+        qem.on('submit', temp);//防止页面快速提交
         var timer = null;
         //延迟100毫秒 让提交是最后的监听
         setTimeout(function () {
@@ -129,6 +133,7 @@
                 });
                 return false;
             });
-        }, 10);
+            qem.off('submit', temp);
+        }, 50);
     });
 })(jQuery, Yee, layer);
