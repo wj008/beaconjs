@@ -3,7 +3,8 @@
 {block name="caption"}<a href="{uri ctl='sysmenu'}" class="s-back"><i
         class="icofont icofont-reply"></i></a> 系统-菜单管理{/block}
 {block name="form"}
-<form method="post" yee-module="validate" data-confirm="确定要提交了吗？">
+{asset src=["yee-ajaxform",'yee-confirm']}
+<form method="post" yee-module="validate ajaxform confirm" data-confirm="确定要提交了吗？">
 
     <div class="form-panel">
         <div class="panel-title">
@@ -15,7 +16,7 @@
             <div class="form-group">
                 <label class="form-label">菜单名称：</label>
                 <div class="form-box">
-                    <span><input name="name" id="name"  class="form-inp text" type="text"/></span>
+                    <span><input name="name" id="name" class="form-inp text" type="text"/></span>
                     <p class="field-tips">请输入系统菜单名称</p>
                 </div>
             </div>
@@ -23,7 +24,7 @@
             <div class="form-group">
                 <label class="form-label"><em></em>是否启用：</label>
                 <div class="form-box">
-                    <span><input name="allow" id="allow" class="form-inp" type="checkbox" checked="checked" value="1" /></span>
+                    <span><input name="allow" id="allow" class="form-inp" type="checkbox" checked="checked" value="1"/></span>
                     <p class="field-tips">勾选启用菜单</p>
                 </div>
             </div>
@@ -46,14 +47,14 @@
                 <label class="form-label">ICON样式：</label>
                 <div class="form-box">
                     <span><input name="icon" id="icon" class="form-inp text" type="text"/></span>
-                    <p class="field-tips">图标样式，仅菜单项需要输入 <a href="http://icofont.com/icons/" target="_blank">打开icon参考链接</a> </p>
+                    <p class="field-tips">图标样式，仅菜单项需要输入 <a href="http://icofont.com/icons/" target="_blank">打开icon参考链接</a></p>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="form-label">连接：</label>
                 <div class="form-box">
-                    <span><input name="url" id="url"  class="form-inp text" type="text"/></span>
+                    <span><input name="url" id="url" class="form-inp text" type="text"/></span>
                     <p class="field-tips">连接地址,仅最后一层需要输入</p>
                 </div>
             </div>
@@ -65,7 +66,7 @@
                     <p class="field-tips">越小越靠前</p>
                 </div>
             </div>
-            
+
             <div class="form-group">
                 <label class="form-label">备注信息：</label>
                 <div class="form-box">

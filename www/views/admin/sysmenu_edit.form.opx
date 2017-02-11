@@ -3,7 +3,7 @@
 {block name="caption"}<a href="{uri ctl='sysmenu'}" class="s-back"><i
         class="icofont icofont-reply"></i></a> 系统-菜单管理{/block}
 {block name="form"}
-<form method="post" yee-module="validate">
+<form method="post" yee-module="validate ajaxform">
 
     <div class="form-panel">
         <div class="panel-title">
