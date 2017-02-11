@@ -3,10 +3,11 @@ html, body {
   padding: 0;
   background: #F9F9F9;
 }
-
+a{color: #333;}
+a:hover{color: #E84C3D;}
 .yeeui-content {
   position: relative;
-  padding: 20px 30px;
+  padding: 20px 20px;
 }
 
 .yeeui-caption {
@@ -153,9 +154,8 @@ html, body {
 .form-inp {
   border: 1px solid #dbdbdb;
   border-radius: 2px;
-  height: 28px;
-  line-height: 28px;
-  padding: 0 10px;
+  line-height: 18px;
+  padding: 5px 10px;
   -o-transition: all .2s;
   -moz-transition: all .2s;
   -webkit-transition: all .2s;
@@ -164,6 +164,19 @@ html, body {
   &:focus {
     border: 1px solid #62b3ff;
   }
+  &.number {
+    width: 100px;
+  }
+  &.text {
+    width: 240px;
+  }
+  &.stext {
+    width: 160px;
+  }
+  &.ltext {
+    width: 380px;
+  }
+  &.textarea{ width:420px;}
 }
 
 .field-error {
@@ -213,8 +226,8 @@ input.input-valid {
 }
 
 .yeeui-list-optbtns {
-  line-height: 40px;
-  padding: 10px 0;
+  line-height: 30px;
+  padding:0 0 8px 0;
 }
 
 .yeeui-list {
@@ -233,7 +246,7 @@ input.input-valid {
     border-top: 2px solid #dbdbdb;
     background: #f9f9f9;
     line-height: 18px;
-    padding:10px 5px;
+    padding: 10px 5px;
     font-weight: bold;
     border-bottom: 1px solid #eaeaea;
     color: #333;
@@ -357,4 +370,8 @@ input.input-valid {
     float: right;
     line-height: 22px;
   }
+}
+
+.ifont {
+  font-family: 'IcoFont' !important;
 }
