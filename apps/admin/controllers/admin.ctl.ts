@@ -11,7 +11,7 @@ export class AdminController extends Beacon.Controller {
         this.template_dirs = path.join(Beacon.VIEW_PATH, 'admin') + '/';
     }
 
-    public fail(message: any, error: any, jump?: any, code?: any, timeout: number = 3) {
+    public fail(message: any, error?: any, jump?: any, code?: any, timeout: number = 3) {
         if (Beacon.isObject(error)) {
             timeout = code;
             code = jump;
