@@ -1,7 +1,7 @@
 (function ($, Yee, layer) {
     var fromTimeout = true;
 
-    sdopx.extend('form', 'ajaxform', function (elem) {
+    Yee.extend('form', 'ajaxform', function (elem) {
         var qem = $(elem);
         var temp = function (ev) {
             return false;
@@ -91,14 +91,14 @@
                                                 layer.close(idx);
                                             });
                                         } else {
-                                            layer.msg(ret.message, {icon: 1, time: 1000});
+                                            layer.msg(ret.message, {icon: 1, time: 2000});
                                         }
                                     }
                                 }
                             }
                         }
                         //提交成功
-                        if (data.status === true) {
+                        if (ret.status === true) {
                             if (ret.message && typeof (ret.message) === 'string') {
                                 layer.msg(ret.message, {icon: 1, time: 1000});
                             }
@@ -107,14 +107,14 @@
                             }
                         }
                         //页面跳转
-                        if (typeof (data.jump) !== 'undefined' && data.jump !== null) {
+                        if (typeof (ret.jump) !== 'undefined' && ret.jump !== null) {
                             window.setTimeout(function () {
-                                if (data.jump === 0) {
+                                if (ret.jump === 0) {
                                     window.location.reload();
-                                } else if (typeof (data.jump) === 'number') {
-                                    window.history.go(data.jump);
+                                } else if (typeof (ret.jump) === 'number') {
+                                    window.history.go(ret.jump);
                                 } else {
-                                    window.location.href = data.jump;
+                                    window.location.href = ret.jump;
                                 }
                             }, 1000);
                         }
