@@ -11,20 +11,11 @@ export class AdminController extends Beacon.Controller {
         this.template_dirs = path.join(Beacon.VIEW_PATH, 'admin') + '/';
     }
 
-    public fail(message: any, error?: any, jump?: any, code?: any, timeout: number = 3) {
-        if (Beacon.isObject(error)) {
-            timeout = code;
-            code = jump;
-            jump = error;
-            error = null;
-        }
+    public fail(message: any, jump?: any, code?: any, timeout: number = 3) {
         if (this.isAjax()) {
             let ret: any = {};
             ret.message = message;
             ret.status = false;
-            if (error) {
-                ret.error = error;
-            }
             if (code !== void 0) {
                 ret.code = code;
             }
