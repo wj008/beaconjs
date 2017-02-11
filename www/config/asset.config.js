@@ -14,6 +14,7 @@ module.exports = {
         'yee-layer': 'yee.layer',
         'yee-confirm': 'yee.confirm',
         'yee-ajaxlink': 'yee.ajaxlink',
+        'yee-ajaxform': 'yee.ajaxform',
     },
     depends: {
         'jquery-ui': ['../jquery-ui/custom.css', 'jquery'],
@@ -22,5 +23,6 @@ module.exports = {
         'yee-validate': ['yee'],
         'yee-confirm': ['yee', 'yee-layer'],
         'yee-ajaxlink': ['yee', 'yee-layer'],
+        'yee-ajaxform': ['yee', 'yee-layer'],
     }
 };
