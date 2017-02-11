@@ -88,6 +88,9 @@ export class Mysql {
         if (this._inTransaction > 0 && this.conn == null) {
             throw new Error('mysql is disconnect');
         }
+        if (typeof args === 'number' || (typeof args == 'string' && args.length == 0) || (typeof args == 'boolean' && args === false)) {
+            args = [args];
+        }
         let conn = await this.getConnection();
         return await new Promise(function (resolve, reject) {
                 if (args === void 0 || args === null) {
@@ -239,6 +242,9 @@ export class Mysql {
             else if (Beacon.isBoolean(item)) {
                 vals.push(item ? 1 : 0);
             }
+            else if (Beacon.isNumber(item)) {
+                vals.push(item);
+            }
             else if (item === null) {
                 vals.push('NULL');
             }
@@ -280,6 +286,9 @@ export class Mysql {
             else if (Beacon.isBoolean(item)) {
                 vals.push(item ? 1 : 0);
             }
+            else if (Beacon.isNumber(item)) {
+                vals.push(item);
+            }
             else if (item === null) {
                 vals.push('NULL');
             }
@@ -318,6 +327,9 @@ export class Mysql {
             }
             else if (Beacon.isBoolean(item)) {
                 sets.push('`' + key + '`=' + (item ? 1 : 0));
+            }
+            else if (Beacon.isNumber(item)) {
+                sets.push('`' + key + '`=' + item);
             }
             else if (item === null) {
                 sets.push('`' + key + '`=' + 'NULL');
