@@ -273,7 +273,19 @@ export class Controller {
         return await this.context.parsePayload(encoding);
     }
 
-    public addAsset(name: string, depend?: any) {
+    public addAsset(name: any, depend?: any) {
+        if (typeof name != 'string') {
+            if (Beacon.isArray(name)) {
+                for (var i = 0; i < name.length; i++) {
+                    if (i == 0) {
+                        this.addAsset(name[i], depend);
+                    } else {
+                        this.addAsset(name[i]);
+                    }
+                }
+            }
+            return;
+        }
         this._asset = this._asset || {};
         if (this._asset[name]) {
             return;

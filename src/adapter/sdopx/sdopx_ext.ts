@@ -75,7 +75,7 @@ Sdopx.registerPlugin('asset', function (params, out, sdopx) {
         out.raw('<!--#asset#-->');
         sdopx.context._asset = {};
     }
-    if (!params.src && typeof(params.src) != 'string') {
+    if (!params.src && !(typeof(params.src) == 'string' || params.src instanceof Array)) {
         return;
     }
     let name = params.src;
