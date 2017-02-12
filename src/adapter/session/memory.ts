@@ -56,7 +56,6 @@ export class MemorySession implements SessionBase {
     }
 
     public async flush() {
-        console.log(this._data, this._cookie);
         let store = MemorySession.store;
         if (this._data == null) {
             delete store[this._cookie];
