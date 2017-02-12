@@ -20,14 +20,18 @@ export class StartCity extends AdminController {
             return;
         }
         if (this.isPost()) {
-            let {name = ''}=this.post();
+            let {name = '', address = ''}=this.post();
             let sort = this.post('sort:n', 0);
             if (name == '') {
                 this.fail('出发城市不可为空', {name: '出发城市不可为空'});
             }
+            if (address == '') {
+                this.fail('详细地址不可为空', {address: '详细地址不可为空'});
+            }
             let vals = {
                 name: name,
                 sort: sort,
+                address: address
             }
             await this.db.insert('@pf_start_city', vals);
             this.success('添加出发城市成功');
@@ -46,14 +50,18 @@ export class StartCity extends AdminController {
             return;
         }
         if (this.isPost()) {
-            let {name = ''}=this.post();
+            let {name = '', address = ''}=this.post();
             let sort = this.post('sort:n', 0);
             if (name == '') {
                 this.fail('出发城市不可为空', {name: '出发城市不可为空'});
             }
+            if (address == '') {
+                this.fail('详细地址不可为空', {address: '详细地址不可为空'});
+            }
             let vals = {
                 name: name,
-                sort: sort
+                sort: sort,
+                address: address
             }
             await this.db.update('@pf_start_city', vals, id);
             this.success('编辑出发城市成功');
