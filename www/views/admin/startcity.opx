@@ -1,0 +1,45 @@
+{extends file='common/list_layout'}
+{block name="title"}出发地点{/block}
+{block name="caption"} 字典-出发地点{/block}
+
+{block name='list_head'}
+<div class="yeeui-list-optbtns">
+    <a href="{uri act='add'}" class="yee-btn add"><i class="icofont icofont-ui-add"></i>添加地点</a>
+    <a href="javascript:window.location.reload()" title="刷新" class="yee-btn"><i class="icofont icofont-refresh"></i>刷新</a>
+</div>
+{/block}
+
+{block name=table_ths}
+<th width="40">ID</th>
+<th align="left">地点名称</th>
+<th width="80">排序</th>
+<th width="250">操作</th>
+{/block}
+
+{block name='table_tds'}
+{foreach from=$list item='rs'}
+<tr class="toggle">
+    <td align="center">{$rs.id}</td>
+    <td>{$rs.name}</td>
+    <td align="center"><input class="form-inp small tc snumber" value="{$rs.sort}" yee-module="editbox" data-href="{uri act='sort' args={id:$rs.id,sort:'#value#'}}"/></td>
+    <td align="right">
+        {if $rs.create}<a href="{uri act='add' args={pid:$rs.id}}" class="yee-btn small add"><i class="icofont icofont-ui-add"></i>添加子项</a>{/if}
+        <a href="{uri act='edit' args={id:$rs.id}}" class="yee-btn small edit"><i class="icofont icofont-edit"></i>编辑</a>
+        <a href="{uri act='del' args={id:$rs.id}}" yee-module="confirm ajaxlink" data-confirm="确定要删除该菜单了吗？" class="yee-btn small del"><i class="icofont icofont-bin"></i>删除</a>
+    </td>
+</tr>
+{/foreach}
+{/block}
+
+{block name='foot'}
+{asset src=['yee-confirm','yee-editbox','yee-ajaxlink']}
+{literal}
+<script>
+    $('a.yee-btn.del').on('back', function (ev, ret) {
+        if (ret.status) {
+            window.location.reload();
+        }
+    });
+</script>
+{/literal}
+{/block}
