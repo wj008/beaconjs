@@ -161,19 +161,21 @@ var PageObject = function (url, title) {
         });
         $('#content iframe').hide();
         frame = $('<iframe scrolling="auto" frameborder="0" width="100%" height="100%" style="display: none"></iframe>').appendTo('#content');
-        frame.load(function () {
-            frame.fadeIn(500, function () {
+        frame.on('load', function () {
+            frame.fadeIn(100, function () {
                 frame.show();
             });
             try {
                 var doc = this.contentWindow.document;
                 yesdomain = true;
                 lable.text(doc.title);
+                $(this.contentWindow).on('unload', function () {
+                    frame.hide();
+                });
             } catch (e) {
                 yesdomain = false;
                 lable.text(title);
             }
-            frame.show();
             update();
         });
         frame.attr('src', url);
@@ -264,7 +266,7 @@ $(function () {
         return false;
     });
 
-    $('#move-left').on('mousedown',function () {
+    $('#move-left').on('mousedown', function () {
         if (Timer != null) {
             window.clearInterval(Timer);
             Timer = null;
