@@ -18,6 +18,15 @@
                     <p class="field-tips">请输入出发聚集地点</p>
                 </div>
             </div>
+
+            <div class="form-group">
+                <label class="form-label">详细地址：</label>
+                <div class="form-box">
+                    <span><input name="addrss" id="addrss" value="{$row.addrss}" class="form-inp text" type="text"/></span>
+                    <p class="field-tips">请输入聚集详细地址</p>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label class="form-label">排序：</label>
                 <div class="form-box">
@@ -46,6 +55,10 @@
     $('#name').data({
         'val': {r: true},
         'val-msg': {r: '请输入出发地点名称'},
+    });
+    $('#addrss').data({
+        'val': {r: true},
+        'val-msg': {r: '请输入聚集详细地址'},
     });
     $('#sort').data({
         'val': {r: true, int: true},
