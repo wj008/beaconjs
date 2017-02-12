@@ -13,7 +13,7 @@
                 $(m).each(function () {
                     var ma = this.match(/^(\w+)(?:=([^&]*))?$/);
                     if (ma) {
-                        prams[ma[1]] = ma[2] || '';
+                        prams[ma[1]] = decodeURIComponent(ma[2] || '');
                     }
                 });
             }
@@ -24,21 +24,26 @@
     //分页插件
     Yee.extend('input,textarea', 'editbox', function (elem) {
         var qem = $(elem);
-        var option = $.extend({
-            method: 'get',
-        }, qem.data() || {});
         var oldval = qem.val();
 
-        var send = function (url) {
-            var args = parseURL(url);
-
+        var send = function () {
+            var option = $.extend({
+                method: 'get',
+                href: '',
+            }, qem.data() || {});
+            var val = qem.val();
+            var args = parseURL(option.href);
+            for (var key in args.prams) {
+                if (args.prams[key] == '#value#') {
+                    args.prams[key] = val;
+                }
+            }
             $.ajax({
                 type: option.method,
                 url: args.path,
                 data: args.prams,
                 cache: false,
                 dataType: 'json',
-
                 success: function (ret) {
                     var rt = qem.triggerHandler('back', [ret]);
                     if (rt === false) {
@@ -61,8 +66,8 @@
             });
         };
 
-        qem.on('send', function (ev, url) {
-            send(url);
+        qem.on('send', function (ev) {
+            send();
         });
 
         qem.on('focus', function () {
@@ -86,9 +91,7 @@
             if (val == oldval) {
                 return;
             }
-            var url = $(this).data('href');
-            url = url.replace(/#value#/, val);
-            send(url);
+            send();
             return false;
         });
     });

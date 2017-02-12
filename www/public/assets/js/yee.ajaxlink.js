@@ -15,7 +15,7 @@
                 $(m).each(function () {
                     var ma = this.match(/^(\w+)(?:=([^&]*))?$/);
                     if (ma) {
-                        prams[ma[1]] = ma[2] || '';
+                        prams[ma[1]] = decodeURIComponent(ma[2] || '');
                     }
                 });
             }
