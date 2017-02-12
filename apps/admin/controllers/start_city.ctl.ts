@@ -9,6 +9,7 @@ export class StartCity extends AdminController {
         this.assign('list', list);
         this.assign('pdata', info);
         this.display('startcity');
+        console.log(Date.now() - this.context.startTime);
     }
 
     public async addAction() {
@@ -35,6 +36,7 @@ export class StartCity extends AdminController {
             }
             await this.db.insert('@pf_start_city', vals);
             this.success('添加出发城市成功');
+            console.log(Date.now() - this.context.startTime);
         }
     }
 
