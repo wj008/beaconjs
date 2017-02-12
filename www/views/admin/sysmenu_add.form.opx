@@ -69,7 +69,7 @@
             <div class="form-group">
                 <label class="form-label">备注信息：</label>
                 <div class="form-box">
-                    <span><textarea name="sort" id="remark" yee-module="integer" class="form-inp textarea"></textarea></span>
+                    <span><textarea name="remark" id="remark" yee-module="integer" class="form-inp textarea"></textarea></span>
                 </div>
             </div>
 
