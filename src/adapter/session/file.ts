@@ -49,7 +49,7 @@ export class FileSession implements SessionBase {
                     if (err) {
                         return resolve(null);
                     }
-                    if (stat == null || stat.mtime.getTime() + FileSession.timeout * 1000 > now) {
+                    if (stat == null) {
                         return resolve(null);
                     }
                     let expire = stat.mtime.getTime() + FileSession.timeout * 1000;
@@ -114,6 +114,7 @@ export class FileSession implements SessionBase {
     }
 
     public async flush() {
+        console.log(this._data, this._cookie);
         let filepath = path.join(FileSession._save_path, this._cookie + '.json');
         let that = this;
         //如果为空删除

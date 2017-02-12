@@ -101,7 +101,6 @@ export class MysqlSession implements SessionBase {
             return null;
         }
         let time = Math.round(Date.now() / 1000);
-        // console.log(this._data);
         if (this._data.expire < time) {
             this._data = null;
             return null;
@@ -140,9 +139,9 @@ export class MysqlSession implements SessionBase {
     }
 
     public async flush() {
+        console.log(this._data, this._cookie);
         let cookie = this._cookie;
         let row = await Mysql.getDBInstance().getRow('select `longv` from @pf_session where sid=?', cookie);
-        console.log(row, this._data, this._cookie);
         //如果为空删除
         if (this._data == null) {
             if (row == null) {
@@ -152,7 +151,6 @@ export class MysqlSession implements SessionBase {
                 await Mysql.getDBInstance().delete('@pf_session_long', 'sid=?', cookie);
             }
             await Mysql.getDBInstance().delete('@pf_session', 'sid=?', cookie);
-            console.log('delete_session', this._cookie);
             return;
         }
         //如果没有更改仅修改时间即可
@@ -164,13 +162,10 @@ export class MysqlSession implements SessionBase {
                     await Mysql.getDBInstance().update('@pf_session_long', {expire: this._data.expire}, 'sid=?', cookie);
                 }
             }
-            console.log('update_session', this._cookie);
             return;
         }
         let text = JSON.stringify(this._data.data || {});
         if (row != null) {
-
-            console.log('save_session', this._cookie);
             //长度小于250
             if (text.length <= 250) {
                 await Mysql.getDBInstance().update('@pf_session', {
@@ -205,7 +200,6 @@ export class MysqlSession implements SessionBase {
         }
 
         if (text.length <= 250) {
-            console.log('insert_session', this._cookie);
             await Mysql.getDBInstance().insert('@pf_session', {
                 sid: cookie,
                 value: text,
