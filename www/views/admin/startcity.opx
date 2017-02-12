@@ -25,9 +25,8 @@
     <td>{$rs.address}</td>
     <td align="center"><input class="form-inp small tc snumber" value="{$rs.sort}" yee-module="editbox" data-href="{uri act='sort' args={id:$rs.id,sort:'#value#'}}"/></td>
     <td align="right">
-        {if $rs.create}<a href="{uri act='add' args={pid:$rs.id}}" class="yee-btn small add"><i class="icofont icofont-ui-add"></i>添加子项</a>{/if}
         <a href="{uri act='edit' args={id:$rs.id}}" class="yee-btn small edit"><i class="icofont icofont-edit"></i>编辑</a>
-        <a href="{uri act='del' args={id:$rs.id}}" yee-module="confirm ajaxlink" data-confirm="确定要删除该菜单了吗？" class="yee-btn small del"><i class="icofont icofont-bin"></i>删除</a>
+        <a href="{uri act='del' args={id:$rs.id}}" yee-module="confirm ajaxlink" data-confirm="确定要删除该地点了吗？" class="yee-btn small del"><i class="icofont icofont-bin"></i>删除</a>
     </td>
 </tr>
 {/foreach}
