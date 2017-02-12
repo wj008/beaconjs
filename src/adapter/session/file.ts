@@ -42,19 +42,23 @@ export class FileSession implements SessionBase {
             //文件是否存在
             fs.access(filepath, fs.constants.R_OK | fs.constants.W_OK, (err) => {
                 if (err) {
+                    console.log(1, err);
                     return resolve(null);
                 }
                 //获取状态
                 fs.stat(filepath, function (err, stat) {
                     if (err) {
+                        console.log(2, err);
                         return resolve(null);
                     }
                     if (stat == null) {
+                        console.log(3);
                         return resolve(null);
                     }
                     let expire = stat.mtime.getTime() + FileSession.timeout * 1000;
                     fs.readFile(filepath, 'utf8', (err, text) => {
                         if (err) {
+                            console.log(4, err);
                             return resolve(null);
                         }
                         return resolve({text: text, expire: expire});
@@ -62,13 +66,18 @@ export class FileSession implements SessionBase {
                 });
             });
         });
-        try {
-            let json = JSON.parse(String(fdata.text));
-            this._data = {data: json || {}, expire: fdata.expire};
-            this._isInit = true;
-        } catch (e) {
 
+        try {
+            if (fdata) {
+                let json = JSON.parse(String(fdata.text));
+                this._data = {data: json || {}, expire: fdata.expire || 0};
+            } else {
+                this._data = {data: {}, expire: 0};
+            }
+        } catch (e) {
+            this._data = {data: {}, expire: 0};
         }
+        this._isInit = true;
     }
 
     public get(name?: string) {
