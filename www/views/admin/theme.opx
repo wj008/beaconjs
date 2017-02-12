@@ -4,7 +4,7 @@
 
 {block name='list_head'}
 <div class="yeeui-list-optbtns">
-    <a href="{uri act='add'}" class="yee-btn add"><i class="icofont icofont-ui-add"></i>添加地点</a>
+    <a href="{uri act='add'}" class="yee-btn add"><i class="icofont icofont-ui-add"></i>添加主题</a>
     <a href="javascript:window.location.reload()" title="刷新" class="yee-btn"><i class="icofont icofont-refresh"></i>刷新</a>
 </div>
 {/block}
