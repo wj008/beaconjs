@@ -120,4 +120,16 @@ export class Sysmenu extends AdminController {
         this.success('删除菜单成功');
     }
 
+    public async sortAction() {
+        let id = this.param('id:n', 0);
+        if (!id) {
+            this.fail('参数有误');
+        }
+        let sort = this.param('sort:n', 0);
+        await this.db.update('@pf_sysmenu', {
+            sort: sort
+        }, id);
+        this.success('更新排序成功');
+    }
+
 }
