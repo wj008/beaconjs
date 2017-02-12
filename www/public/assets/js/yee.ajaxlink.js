@@ -51,21 +51,21 @@
                 data: args.prams,
                 cache: false,
                 dataType: 'json',
-                success: function (data) {
-                    var rt = qem.triggerHandler('back', [data]);
+                success: function (ret) {
+                    var rt = qem.triggerHandler('back', [ret]);
                     if (rt === false) {
                         return;
                     }
                     //拉取数据成功
-                    if (data.status === true) {
-                        if (data.message && typeof (data.message) === 'string') {
-                            layer.msg(data.message, {icon: 1, time: 1000});
+                    if (ret.status === true) {
+                        if (ret.message && typeof (ret.message) === 'string') {
+                            layer.msg(ret.message, {icon: 1, time: 1000});
                         }
                     }
                     //拉取数据错误
-                    if (data.status === false) {
-                        if (data.message && typeof (data.message) === 'string') {
-                            layer.msg(data.message, {icon: 0, time: 2000});
+                    if (ret.status === false) {
+                        if (ret.message && typeof (ret.message) === 'string') {
+                            layer.msg(ret.message, {icon: 0, time: 2000});
                         }
                         return;
                     }
