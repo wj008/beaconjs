@@ -1,0 +1,56 @@
+{extends file='common/form_layout'}
+{block name="title"}活动类型{/block}
+{block name="caption"}<a href="{uri ctl='camp_type'}" class="s-back"><i class="icofont icofont-reply"></i></a> 字典-活动类型{/block}
+{block name="form"}
+{asset src="yee-ajaxform"}
+<form method="post" yee-module="validate ajaxform">
+
+    <div class="form-panel">
+        <div class="panel-title">
+            <i class="icofont icofont-pencil-alt-3"></i>
+            <h3>编辑活动类型</h3>
+        </div>
+        <div class="panel-content">
+            <div class="form-group">
+                <label class="form-label">类型名称：</label>
+                <div class="form-box">
+                    <span><input name="name" id="name" value="{$row.name}" class="form-inp text" type="text"/></span>
+                    <p class="field-tips">请输入活动类型名称</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">排序：</label>
+                <div class="form-box">
+                    <span><input name="sort" id="sort" yee-module="integer" value="{$row.sort}" class="form-inp number" type="text"/></span>
+                    <p class="field-tips">越小越靠前</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-submit">
+            <label class="form-label"></label>
+            <div class="form-box">
+                <input type="submit" class="btn submit" value="提交"/>
+                <a href="{uri ctl='camp_type'}" class="btn back">返回</a>
+                <input type="hidden" name="__BACK__" value="{uri ctl='camp_type'}"/>
+                <input type="hidden" name="id" value="{$row.id}"/>
+            </div>
+        </div>
+
+    </div>
+</form>
+{/block}
+
+{block name="foot"}{literal}
+<script>
+    $('#name').data({
+        'val': {r: true},
+        'val-msg': {r: '请输入活动类型名称'},
+    });
+    $('#sort').data({
+        'val': {r: true, int: true},
+        'val-msg': {r: '请输入排序值', int: '排序值必须是数值形式'},
+    });
+</script>
+{/literal}{/block}
