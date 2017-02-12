@@ -5,6 +5,7 @@
 {block name='list_head'}
 <div class="yeeui-list-optbtns">
     <a href="{uri act='add'}" class="yee-btn add"><i class="icofont icofont-ui-add"></i>添加栏目</a>
+    <a href="javascript:window.location.reload()" title="刷新" class="yee-btn"><i class="icofont icofont-refresh"></i>刷新</a>
 </div>
 {/block}
 
@@ -25,7 +26,7 @@
     <td align="center">{if $rs.icon}<i class="{$rs.icon}"></i>{/if}</td>
     <td>{$rs.title|raw}</td>
     <td>{$rs.url}</td>
-    <td align="center">{$rs.sort}</td>
+    <td align="center"><input class="form-inp small tc snumber" value="{$rs.sort}" yee-module="editbox" data-href="{uri act='sort' args={id:$rs.id,sort:'#value#'}}"/></td>
     <td align="center">{$rs.allow|option:{1:'<span class="ifont green">&#xefad;</span>'},'<span class="ifont">&#xefb8;</span>'|raw}</td>
     <td align="right">
         {if $rs.create}<a href="{uri act='add' args={pid:$rs.id}}" class="yee-btn small add"><i class="icofont icofont-ui-add"></i>添加子项</a>{/if}
@@ -36,4 +37,4 @@
 {/foreach}
 {/block}
 
-{block name='foot'}{asset src='yee-confirm'}{/block}
+{block name='foot'}{asset src=['yee-confirm','yee-editbox']}{/block}
