@@ -4,7 +4,7 @@ import {PageList} from "../../libs/pagelist";
 export class Theme extends AdminController {
 
     public async indexAction() {
-        let plist = new PageList('select * from @pf_start_city order by sort asc');
+        let plist = new PageList('select * from @pf_theme order by sort asc');
         let {info, list} = await plist.getData(this);
         this.assign('list', list);
         this.assign('pdata', info);
