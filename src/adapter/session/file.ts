@@ -38,22 +38,33 @@ export class FileSession implements SessionBase {
         this._cookie = cookie;
         this._isUpdate = false;
         let filepath = path.join(FileSession._save_path, this._cookie + '.json');
-        let text = await new Promise(function (resolve, reject) {
+        let fdata: any = await new Promise(function (resolve, reject) {
+            //文件是否存在
             fs.access(filepath, fs.constants.R_OK | fs.constants.W_OK, (err) => {
                 if (err) {
                     return resolve(null);
                 }
-                fs.readFile(filepath, 'utf8', (err, text) => {
+                //获取状态
+                fs.stat(filepath, function (err, stat) {
                     if (err) {
                         return resolve(null);
                     }
-                    return resolve(text);
+                    if (stat == null || stat.mtime.getTime() + FileSession.timeout * 1000 > now) {
+                        return resolve(null);
+                    }
+                    let expire = stat.mtime.getTime() + FileSession.timeout * 1000;
+                    fs.readFile(filepath, 'utf8', (err, text) => {
+                        if (err) {
+                            return resolve(null);
+                        }
+                        return resolve({text: text, expire: expire});
+                    });
                 });
             });
         });
         try {
-            let json = JSON.parse(String(text));
-            this._data = json || {data: {}, expire: 0};
+            let json = JSON.parse(String(fdata.text));
+            this._data = {data: json || {}, expire: fdata.expire};
             this._isInit = true;
         } catch (e) {
 
@@ -79,7 +90,7 @@ export class FileSession implements SessionBase {
         if (!this._isInit) {
             return;
         }
-        this._data = this._data || {data: {}, expire: 0};
+        this._data = this._data || {data: {}, expire: Date.now() + FileSession.timeout * 1000};
         if (this._isUpdate === false) {
             let oldval = this._data.data[name] === void 0 ? null : this._data.data[name];
             let oldtext = JSON.stringify(oldval);
@@ -90,9 +101,7 @@ export class FileSession implements SessionBase {
                 this._isUpdate = true;
             }
         }
-
         this._data.data[name] = value;
-        this._data.expire = Date.now() + FileSession.timeout * 1000;
     }
 
     public delete(name?: string) {
@@ -105,7 +114,6 @@ export class FileSession implements SessionBase {
     }
 
     public async flush() {
-
         let filepath = path.join(FileSession._save_path, this._cookie + '.json');
         let that = this;
         //如果为空删除
@@ -126,7 +134,6 @@ export class FileSession implements SessionBase {
             });
             return;
         }
-
         let now = Date.now() / 1000;
         //如果没有更改仅修改时间即可
         if (!this._isUpdate) {
@@ -139,7 +146,7 @@ export class FileSession implements SessionBase {
             return;
         }
 
-        let text = JSON.stringify(that._data);
+        let text = JSON.stringify(that._data.data);
         //如果修改了就写入内容
         await new Promise(function (resolve, reject) {
             fs.writeFile(filepath, text, 'utf8', (err) => {

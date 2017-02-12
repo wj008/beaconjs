@@ -61,6 +61,7 @@ export class MemorySession implements SessionBase {
             delete store[this._cookie];
             return;
         }
+        this._data.expire = Date.now() + this.timeout * 1000;
         store[this._cookie] = this._data;
     }
 
