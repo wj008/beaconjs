@@ -33,6 +33,10 @@
 {/foreach}
 {/block}
 
+{block name='pagebar'}
+<div class="yeeui-pagebar">{pagebar data=$pdata}</div>
+{/block}
+
 {block name='foot'}
 {asset src=['yee-confirm','yee-editbox','yee-ajaxlink']}
 {literal}
