@@ -22,7 +22,7 @@
             <div class="form-group">
                 <label class="form-label">详细地址：</label>
                 <div class="form-box">
-                    <span><input name="addrss" id="addrss" value="{$row.addrss}" class="form-inp text" type="text"/></span>
+                    <span><input name="addrss" id="addrss" value="{$row.addrss}" class="form-inp ltext" type="text"/></span>
                     <p class="field-tips">请输入聚集详细地址</p>
                 </div>
             </div>
