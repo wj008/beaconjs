@@ -81,4 +81,16 @@ export class Theme extends AdminController {
         this.success('更新排序成功');
     }
 
+    public async nameAction() {
+        let id = this.param('id:n', 0);
+        if (!id) {
+            this.fail('参数有误');
+        }
+        let name = this.param('name:s', '');
+        await this.db.update('@pf_start_city', {
+            sort: name
+        }, id);
+        this.success('更新名称成功');
+    }
+
 }
