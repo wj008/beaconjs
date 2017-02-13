@@ -87,7 +87,7 @@ export class Theme extends AdminController {
             this.fail('参数有误');
         }
         let name = this.param('name:s', '');
-        await this.db.update('@pf_start_city', {
+        await this.db.update('@pf_theme', {
             sort: name
         }, id);
         this.success('更新名称成功');
