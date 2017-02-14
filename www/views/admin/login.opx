@@ -44,7 +44,7 @@
                                 <tr>
                                     <th width="80" height="40">验&nbsp;证&nbsp;码：</th>
                                     <td width="68"><input type="text" name="code" class="model-text" style="width:60px;"/></td>
-                                    <td width="60"><img id="codeimg" src="/service/code" alt="看不清楚点击刷新！" onclick="this.src = '/service/code?r=' + Math.random();"/></td>
+                                    <td width="60"><img id="codeimg" src="/service/code?r={Math.random()}" alt="看不清楚点击刷新！" onclick="this.src = '/service/code?r=' + Math.random();"/></td>
                                     <td width="92"><a href="#" onclick="document.getElementById('codeimg').src = '/service/code?r=' + Math.random();return false;">看不清?</a></td>
                                 </tr>
                             </table>

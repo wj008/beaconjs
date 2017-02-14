@@ -11,7 +11,6 @@
             <h3>添加管理员账号</h3>
         </div>
         <div class="panel-content">
-
             <div class="form-group">
                 <label class="form-label">账号名称：</label>
                 <div class="form-box">
