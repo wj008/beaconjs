@@ -27,7 +27,7 @@
     <td>{$rs.title|raw}</td>
     <td>{$rs.url}</td>
     <td align="center"><input class="form-inp small tc snumber" value="{$rs.sort}" yee-module="editbox" data-href="{uri act='sort' args={id:$rs.id,sort:'#value#'}}"/></td>
-    <td align="center">{$rs.allow|option:{1:'<span class="ifont green">&#xefad;</span>'},'<span class="ifont">&#xefb8;</span>'|raw}</td>
+    <td align="center">{$rs.allow|option:{1:'<span class="ifont green">&#xed27;</span>'},'<span class="ifont">&#xed2b;</span>'|raw}</td>
     <td align="right">
         {if $rs.create}<a href="{uri act='add' args={pid:$rs.id}}" class="yee-btn small add"><i class="icofont icofont-ui-add"></i>添加子项</a>{/if}
         <a href="{uri act='edit' args={id:$rs.id}}" class="yee-btn small edit"><i class="icofont icofont-edit"></i>编辑</a>
