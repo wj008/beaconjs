@@ -1,0 +1,144 @@
+{extends file='common/form_layout'}
+{block name="title"}会员信息{/block}
+{block name="caption"}<a href="{uri ctl='member'}" class="s-back"><i class="icofont icofont-reply"></i></a> 会员-会员信息{/block}
+{block name="form"}
+{asset src="yee-ajaxform"}
+<form method="post" yee-module="validate ajaxform">
+
+    <div class="form-panel">
+        <div class="panel-title">
+            <i class="icofont icofont-pencil-alt-3"></i>
+            <h3>编辑会员信息</h3>
+        </div>
+        <div class="panel-content">
+            <div class="form-group">
+                <label class="form-label">会员名称：</label>
+                <div class="form-box">
+                    <span class="field-text">{$row.username}</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">身份：</label>
+                <div class="form-box">
+                    <span>
+                        <select id="type" name="type" class="form-inp">
+                            <option value="">请选择用户身份</option>
+                            <option value="1" {if $row.type==1} selected="selected"{/if}>普通会员</option>
+                            <option value="2" {if $row.type==2} selected="selected"{/if}>领队</option>
+                        </select>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">邮箱：</label>
+                <div class="form-box">
+                    <span><input name="email" id="email" value="{$row.email}" class="form-inp text" type="text"/></span>
+                    <p class="field-tips">请输入电子邮箱</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">手机号码：</label>
+                <div class="form-box">
+                    <span><input name="mobile" id="mobile" value="{$row.mobile}" class="form-inp stext" type="text"/></span>
+                    <p class="field-tips">请输入在用的手机号码</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">登录错误次数：</label>
+                <div class="form-box">
+                    <span class="field-text">{$row.errtice}</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">登录错误时间：</label>
+                <div class="form-box">
+                    <span class="field-text">{$row.errtime|date_format:'yyyy-MM-dd HH:mm:ss'}</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">上次登录时间：</label>
+                <div class="form-box">
+                    <span class="field-text">{$row.last_login_time|date_format:'yyyy-MM-dd HH:mm:ss'}</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">注册时间：</label>
+                <div class="form-box">
+                    <span class="field-text">{$row.regtime|date_format:'yyyy-MM-dd HH:mm:ss'}</span>
+                </div>
+            </div>
+
+
+
+            <div class="form-group">
+                <label class="form-label">是否锁定：</label>
+                <div class="form-box">
+                    <span class="field-text">{$row.lock|option:{1:'锁定',0:'正常'}}</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">是否绑定邮箱：</label>
+                <div class="form-box">
+                    <span class="field-text">{$row.auth_email|option:{1:'已绑定',0:'未绑定'}}</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">是否绑定电话：</label>
+                <div class="form-box">
+                    <span class="field-text">{$row.auth_mobile|option:{1:'已绑定',0:'未绑定'}}</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">积分：</label>
+                <div class="form-box">
+                    <span class="field-text">{$row.score}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-submit">
+            <label class="form-label"></label>
+            <div class="form-box">
+                <input type="submit" class="btn submit" value="提交"/>
+                <a href="{uri ctl='member'}" class="btn back">返回</a>
+                <input type="hidden" name="__BACK__" value="{uri ctl='member'}"/>
+                <input type="hidden" name="id" value="{$row.id}"/>
+            </div>
+        </div>
+
+    </div>
+</form>
+{/block}
+
+{block name="foot"}{literal}
+<script>
+    $('#name').data({
+        'val': {r: true},
+        'val-msg': {r: '请输入会员信息名称'},
+    });
+    $('#type').data({
+        'val': {r: true},
+        'val-msg': {r: '请选择会员身份'},
+    });
+    $('#email').data({
+        'val': {r: true, email: true},
+        'val-msg': {r: '请输入电子邮箱', email: '电子邮箱格式不正确'},
+    });
+
+    $('#mobile').data({
+        'val': {r: true, mobile: true},
+        'val-msg': {r: '请输入手机号码', mobile: '手机号码格式不正确'},
+    });
+</script>
+{/literal}{/block}
