@@ -1,7 +1,7 @@
 {
   "name": "beacon",
   "version": "0.0.1",
-  "main": "app.js",
+  "main": "./www/app.js",
   "license": "Apache-2.0",
   "description": "Embedded JavaScript templates",
   "keywords": [
