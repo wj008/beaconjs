@@ -168,7 +168,7 @@
                 return !(val === null || val === '' || val.length === 0);
             });
             regFunc('email', function (val) {
-                return /^([a-zA-Z0-9]+[-|_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[-|_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,4}([\.][a-zA-Z]{2})?$/.test(val);
+                return /^([a-zA-Z0-9]+[-|_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[-|_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,8}([\.][a-zA-Z]{2,8})?$/.test(val);
             });
             regFunc('number', function (val) {
                 return /^[\-\+]?((\d+(\.\d*)?)|(\.\d+))$/.test(val);
