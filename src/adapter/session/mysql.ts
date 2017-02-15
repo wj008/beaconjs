@@ -18,6 +18,8 @@ export class MysqlSession implements SessionBase {
     private _isInit = false;
     private _cookie = null;
     private _isUpdate = false;
+    private _row = null;
+
 
     public constructor() {
         if (MysqlSession.timeout != null) {
@@ -64,6 +66,7 @@ export class MysqlSession implements SessionBase {
             this._isInit = true;
             return;
         } else {
+            this._row = row;
             if (row.longv == 1) {
                 row = await Mysql.getDBInstance().getRow('select value,expire from @pf_session_long where sid=? and expire>?', [cookie, time]);
                 if (row == null) {
@@ -141,7 +144,7 @@ export class MysqlSession implements SessionBase {
 
     public async flush() {
         let cookie = this._cookie;
-        let row = await Mysql.getDBInstance().getRow('select `longv` from @pf_session where sid=?', cookie);
+        let row = this._row;
         //如果为空删除
         if (this._data == null) {
             if (row == null) {
@@ -156,7 +159,7 @@ export class MysqlSession implements SessionBase {
         //如果没有更改仅修改时间即可
         if (!this._isUpdate) {
             this._data.expire = Math.round(Date.now() / 1000) + MysqlSession.timeout;
-            if (row != null) {
+            if (row != null && row.expire + 10 < this._data.expire) {
                 await Mysql.getDBInstance().update('@pf_session', {expire: this._data.expire}, 'sid=?', cookie);
                 if (row.longv == 1) {
                     await Mysql.getDBInstance().update('@pf_session_long', {expire: this._data.expire}, 'sid=?', cookie);
