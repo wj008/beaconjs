@@ -633,20 +633,17 @@ export class HttpContext {
             obj += '';
         }
         return this.res.write(obj, encoding);
-
     }
 
     private _end() {
         this.sendCookie();
         this.res.end();
         if (this._session) {
-            if (Beacon.isPromise(this._session.flush)) {
-                this._session.flush().then(function () {
-                }).catch(function (e) {
+            let p = this._session.flush();
+            if (Beacon.isPromise(p)) {
+                p.then(function () {}).catch(function (e) {
                     throw e;
                 });
-            } else {
-                this._session.flush();
             }
         }
     }
