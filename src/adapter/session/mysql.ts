@@ -115,7 +115,7 @@ export class MysqlSession implements SessionBase {
         if (!this._isInit) {
             return;
         }
-        this._data = this._data || {data: {}, expire: Math.round(Date.now() / 1000) + MysqlSession.timeout};
+        this._data = this._data || {data: {}, expire: 0};
         if (this._isUpdate === false) {
             let oldval = this._data.data[name] === void 0 ? null : this._data.data[name];
             let oldtext = JSON.stringify(oldval);
@@ -127,6 +127,7 @@ export class MysqlSession implements SessionBase {
             }
         }
         this._data.data[name] = value;
+        this._data.expire = Math.round(Date.now() / 1000) + MysqlSession.timeout;
     }
 
     public delete(name?: string) {
@@ -139,7 +140,6 @@ export class MysqlSession implements SessionBase {
     }
 
     public async flush() {
-        //console.log(this._data,this._cookie);
         let cookie = this._cookie;
         let row = await Mysql.getDBInstance().getRow('select `longv` from @pf_session where sid=?', cookie);
         //如果为空删除
@@ -228,8 +228,7 @@ export class MysqlSession implements SessionBase {
             Mysql.getDBInstance().delete('@pf_session', 'expire<=?', time),
             Mysql.getDBInstance().delete('@pf_session_long', 'expire<=?', time)
         ]).catch(function (e) {
-
-        })
+        });
     }
 }
 
