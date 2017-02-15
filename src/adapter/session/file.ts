@@ -95,7 +95,7 @@ export class FileSession implements SessionBase {
         if (!this._isInit) {
             return;
         }
-        this._data = this._data || {data: {}, expire: Date.now() + FileSession.timeout * 1000};
+        this._data = this._data || {data: {}, expire: 0};
         if (this._isUpdate === false) {
             let oldval = this._data.data[name] === void 0 ? null : this._data.data[name];
             let oldtext = JSON.stringify(oldval);
@@ -107,6 +107,7 @@ export class FileSession implements SessionBase {
             }
         }
         this._data.data[name] = value;
+        this._data.expire = Date.now() + FileSession.timeout * 1000;
     }
 
     public delete(name?: string) {
