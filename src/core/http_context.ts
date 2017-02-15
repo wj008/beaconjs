@@ -641,7 +641,8 @@ export class HttpContext {
         this.res.end();
         if (this._session) {
             if (Beacon.isPromise(this._session.flush)) {
-                this._session.flush().catch(function (e) {
+                this._session.flush().then(function () {
+                }).catch(function (e) {
                     throw e;
                 });
             } else {
