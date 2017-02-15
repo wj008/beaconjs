@@ -25,7 +25,6 @@ export class Sysmenu extends AdminController {
         }
         this.assign('list', items);
         this.display('sysmenu');
-        console.log(Date.now() - this.context.startTime);
     }
 
     public async getOptions(id: number) {
