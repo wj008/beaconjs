@@ -83,9 +83,9 @@ export class AdminController extends Beacon.Controller {
     }
 
     public async checkLogin() {
+        console.log(this.getSession(),'---------');
         this.adminId = this.getSession('adminId') || 0;
         this.adminName = this.getSession('adminName') || '';
-
         if (!Beacon.isEmpty(this.adminId)) {
             return;
         }
