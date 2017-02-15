@@ -10,11 +10,15 @@ import fs=require('fs');
 export class FileSession implements SessionBase {
 
     public static timeout = null;
+    public static nextCheckTime = 0;
+    public static checkTime = 300;
     public static store = {};
+
     private _data = null;
     private _isInit = false;
     private _cookie = null;
     private _isUpdate = false;
+    private _expire = 0;
     private static _save_path = null;
 
     public constructor() {
@@ -23,6 +27,7 @@ export class FileSession implements SessionBase {
         }
         let options = Beacon.getConfig('session:*');
         FileSession.timeout = options.timeout || 3600;
+        FileSession.checkTime = options.checkTime || 300;
         let save_path = Beacon.getConfig('session:save_path') || null;
         if (!save_path) {
             save_path = path.join(os.tmpdir(), 'beacon/session');
@@ -73,6 +78,7 @@ export class FileSession implements SessionBase {
         } catch (e) {
             this._data = {data: {}, expire: 0};
         }
+        this._expire = this._data.expire;
         this._isInit = true;
     }
 
@@ -80,7 +86,6 @@ export class FileSession implements SessionBase {
         if (!this._isInit || !this._data) {
             return null;
         }
-        //console.log(this._data);
         if (this._data.expire < Date.now()) {
             this._data = null;
             return null;
@@ -133,30 +138,28 @@ export class FileSession implements SessionBase {
                         if (err) {
                             return resolve(null);
                         }
-                        // console.log('删除了文件:' , filepath);
                         return resolve(null);
                     });
                 });
             });
             return;
         }
-        let now = Date.now() / 1000;
+        let now = Date.now();
         //如果没有更改仅修改时间即可
         if (!this._isUpdate) {
-            await new Promise(function (resolve, reject) {
-                fs.utimes(filepath, now, now, (err) => {
-                    // console.log('更新sesslin[' + that._cookie + ']的时间');
-                    return resolve(null);
+            if (this._expire + 10000 < now + FileSession.timeout * 1000) {
+                await new Promise(function (resolve, reject) {
+                    fs.utimes(filepath, now, now, (err) => {
+                        return resolve(null);
+                    });
                 });
-            });
+            }
             return;
         }
 
         let text = JSON.stringify(that._data.data);
-        //如果修改了就写入内容
         await new Promise(function (resolve, reject) {
             fs.writeFile(filepath, text, 'utf8', (err) => {
-                // console.log('写入新的sesslin[' + that._cookie + ']的时间');
                 return resolve(null);
             });
         });
@@ -164,12 +167,16 @@ export class FileSession implements SessionBase {
     }
 
     public static gc() {
+        let now = Date.now();
+        if (FileSession.nextCheckTime > now) {
+            return;
+        }
+        FileSession.nextCheckTime = now + FileSession.checkTime * 1000;
         let removeFile = function (filepath) {
             fs.stat(filepath, function (err, stat) {
                 if (err) {
                     return;
                 }
-                //console.log('判断时间', stat);
                 if (stat == null || stat.mtime.getTime() + FileSession.timeout * 1000 > now) {
                     return;
                 }
@@ -178,7 +185,6 @@ export class FileSession implements SessionBase {
                 });
             });
         }
-        let now = Date.now();
         let files = Beacon.getFiles(FileSession._save_path, null, function (file) {
             return /\.json$/.test(file);
         });
