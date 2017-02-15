@@ -12,6 +12,9 @@ import fs=require('fs');
 export class MysqlSession implements SessionBase {
 
     public static timeout = null;
+    public static checkTime = 300;
+    public static nextCheckTime = 0;
+
     public static init = false;
     public static store = {};
     private _data = null;
@@ -27,6 +30,7 @@ export class MysqlSession implements SessionBase {
         }
         let options = Beacon.getConfig('session:*');
         MysqlSession.timeout = options.timeout || 3600;
+        MysqlSession.checkTime = options.checkTime || 300;
     }
 
     public async init(cookie: string) {
@@ -227,6 +231,10 @@ export class MysqlSession implements SessionBase {
 
     public static gc() {
         let time = Math.round(Date.now() / 1000);
+        if (MysqlSession.nextCheckTime > time) {
+            return;
+        }
+        MysqlSession.nextCheckTime = time + MysqlSession.checkTime;
         Promise.all([
             Mysql.getDBInstance().delete('@pf_session', 'expire<=?', time),
             Mysql.getDBInstance().delete('@pf_session_long', 'expire<=?', time)
