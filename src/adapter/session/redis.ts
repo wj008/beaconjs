@@ -12,6 +12,7 @@ export class RedisSession implements SessionBase {
     private _isInit = false;
     private _cookie = null;
     private _isUpdate = false;
+    private _expire = 0;
     private redis: Redis = null;
 
     public  constructor() {
@@ -30,6 +31,7 @@ export class RedisSession implements SessionBase {
         this._isUpdate = false;
         this._isInit = true;
         this._data = (await this.redis.get('session_' + cookie)) || {data: {}, expire: 0};
+        this._expire = this._data.expire;
     }
 
     public get(name?: string) {
@@ -84,7 +86,10 @@ export class RedisSession implements SessionBase {
         }
         //如果没有更改仅修改时间即可
         if (!this._isUpdate) {
-            await this.redis.expire(name, RedisSession.timeout);
+            let expire = Date.now() + RedisSession.timeout * 1000;
+            if (this._expire + 10000 < expire) {
+                await this.redis.expire(name, RedisSession.timeout);
+            }
             return;
         }
         await this.redis.set(name, that._data, RedisSession.timeout);
