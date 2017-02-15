@@ -139,6 +139,7 @@ export class MysqlSession implements SessionBase {
     }
 
     public async flush() {
+        //console.log(this._data,this._cookie);
         let cookie = this._cookie;
         let row = await Mysql.getDBInstance().getRow('select `longv` from @pf_session where sid=?', cookie);
         //如果为空删除
