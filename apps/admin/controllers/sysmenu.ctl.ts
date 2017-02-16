@@ -24,7 +24,9 @@ export class Sysmenu extends AdminController {
             }
         }
         this.assign('list', items);
+        let time=Date.now();
         this.display('sysmenu');
+        console.log('渲染模板',Date.now() - time);
     }
 
     public async getOptions(id: number) {
