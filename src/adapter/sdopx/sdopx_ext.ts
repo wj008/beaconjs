@@ -1,6 +1,7 @@
 import {Sdopx} from "sdopx";
 import {Beacon} from "../../core/beacon";
 import impurl = require('url');
+//Sdopx.compile_check=false;
 //Sdopx.create_runfile=true;
 //替换更目录
 Sdopx.registerFilter('pre', function (content: string, sdopx: Sdopx) {
