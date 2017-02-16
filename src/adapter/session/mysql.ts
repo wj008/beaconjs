@@ -4,10 +4,6 @@
 declare var Beacon: any;
 import {SessionBase} from "../../core/session_base";
 import {Mysql} from "../db/mysql";
-import path=require('path');
-import os=require('os');
-import fs=require('fs');
-
 
 export class MysqlSession implements SessionBase {
 
