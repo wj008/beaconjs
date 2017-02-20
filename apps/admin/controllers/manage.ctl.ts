@@ -49,7 +49,7 @@ export class Manage extends AdminController {
     }
 
     public async editAction() {
-        let id = this.param('id:n', 0);
+        let id = this.param('id:i', 0);
         if (!id) {
             this.fail('参数有误');
         }
@@ -81,7 +81,7 @@ export class Manage extends AdminController {
     }
 
     public async delAction() {
-        let id = this.param('id:n', 0);
+        let id = this.param('id:i', 0);
         if (!id) {
             this.fail('参数有误');
         }

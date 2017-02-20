@@ -21,7 +21,7 @@ export class Destination extends AdminController {
         }
         if (this.isPost()) {
             let {name = '', address = ''}=this.post();
-            let sort = this.post('sort:n', 0);
+            let sort = this.post('sort:i', 0);
             if (name == '') {
                 this.fail('目的地不可为空', {name: '目的地不可为空'});
             }
@@ -35,7 +35,7 @@ export class Destination extends AdminController {
     }
 
     public async editAction() {
-        let id = this.param('id:n', 0);
+        let id = this.param('id:i', 0);
         if (!id) {
             this.fail('参数有误');
         }
@@ -47,7 +47,7 @@ export class Destination extends AdminController {
         }
         if (this.isPost()) {
             let {name = '', address = ''}=this.post();
-            let sort = this.post('sort:n', 0);
+            let sort = this.post('sort:i', 0);
             if (name == '') {
                 this.fail('目的地不可为空', {name: '目的地不可为空'});
             }
@@ -61,7 +61,7 @@ export class Destination extends AdminController {
     }
 
     public async delAction() {
-        let id = this.param('id:n', 0);
+        let id = this.param('id:i', 0);
         if (!id) {
             this.fail('参数有误');
         }
@@ -70,11 +70,11 @@ export class Destination extends AdminController {
     }
 
     public async sortAction() {
-        let id = this.param('id:n', 0);
+        let id = this.param('id:i', 0);
         if (!id) {
             this.fail('参数有误');
         }
-        let sort = this.param('sort:n', 0);
+        let sort = this.param('sort:i', 0);
         await this.db.update('@pf_destination', {
             sort: sort
         }, id);
@@ -82,7 +82,7 @@ export class Destination extends AdminController {
     }
 
     public async nameAction() {
-        let id = this.param('id:n', 0);
+        let id = this.param('id:i', 0);
         if (!id) {
             this.fail('参数有误');
         }

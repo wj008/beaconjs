@@ -11,7 +11,7 @@ export class Index extends AdminController {
     }
 
     public async leftAction() {
-        let pid = this.get('pid:n', 0);
+        let pid = this.get('pid:i', 0);
         let info = await this.db.getRow('select * from @pf_sysmenu where id=?', pid);
         this.assign('info', info);
         let rows = await this.db.getList('select * from @pf_sysmenu where pid=? and allow=1 order by sort asc', pid);

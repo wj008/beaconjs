@@ -43,7 +43,7 @@ export class Sysmenu extends AdminController {
     }
 
     public async addAction() {
-        let pid = this.param('pid:n', 0);
+        let pid = this.param('pid:i', 0);
         if (this.isGet()) {
             let row = await this.db.getRow('select `sort` from @pf_sysmenu  where pid=? order by `sort` desc limit 0,1', pid);
             let sort = row ? row.sort + 10 : 10;
@@ -56,7 +56,7 @@ export class Sysmenu extends AdminController {
         if (this.isPost()) {
             let {name = '', url = '', icon = '', remark = ''}=this.post();
             let allow = this.post('allow:b', false);
-            let sort = this.post('sort:n', 0);
+            let sort = this.post('sort:i', 0);
             if (name == '') {
                 this.fail('菜单不可为空');
             }
@@ -75,7 +75,7 @@ export class Sysmenu extends AdminController {
     }
 
     public async editAction() {
-        let id = this.param('id:n', 0);
+        let id = this.param('id:i', 0);
         if (!id) {
             this.fail('参数有误');
         }
@@ -90,8 +90,8 @@ export class Sysmenu extends AdminController {
         if (this.isPost()) {
             let {name = '', url = '', icon = '', remark = ''}=this.post();
             let allow = this.post('allow:b', false);
-            let sort = this.post('sort:n', 0);
-            let pid = this.post('pid:n', 0);
+            let sort = this.post('sort:i', 0);
+            let pid = this.post('pid:i', 0);
             if (name == '') {
                 this.fail('菜单不可为空');
             }
@@ -110,7 +110,7 @@ export class Sysmenu extends AdminController {
     }
 
     public async delAction() {
-        let id = this.param('id:n', 0);
+        let id = this.param('id:i', 0);
         if (!id) {
             this.fail('参数有误');
         }
@@ -123,11 +123,11 @@ export class Sysmenu extends AdminController {
     }
 
     public async sortAction() {
-        let id = this.param('id:n', 0);
+        let id = this.param('id:i', 0);
         if (!id) {
             this.fail('参数有误');
         }
-        let sort = this.param('sort:n', 0);
+        let sort = this.param('sort:i', 0);
         await this.db.update('@pf_sysmenu', {
             sort: sort
         }, id);
