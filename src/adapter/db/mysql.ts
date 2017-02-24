@@ -182,7 +182,7 @@ export class Mysql {
 
     public async getRow(sql: string, args?: any) {
         if (this.prefix) {
-            sql = sql.replace('@pf_', this.prefix);
+            sql = sql.replace(/@pf_/g, this.prefix);
         }
         let rows = await this.query(sql, args);
         if (!rows || !rows[0]) {
@@ -193,14 +193,14 @@ export class Mysql {
 
     public async getList(sql: string, args?: any): Promise<any> {
         if (this.prefix) {
-            sql = sql.replace('@pf_', this.prefix);
+            sql = sql.replace(/@pf_/g, this.prefix);
         }
         return await this.query(sql, args);
     }
 
     public async getOne(sql: string, args?: any, name?: string) {
         if (this.prefix) {
-            sql = sql.replace('@pf_', this.prefix);
+            sql = sql.replace(/@pf_/g, this.prefix);
         }
         let row = await this.getRow(sql, args);
         if (!row) {
@@ -215,14 +215,14 @@ export class Mysql {
 
     public sqlBlock(sql: string, args: any) {
         if (this.prefix) {
-            sql = sql.replace('@pf_', this.prefix);
+            sql = sql.replace(/@pf_/g, this.prefix);
         }
         return new SqlBlock(sql, args);
     }
 
     public async insert(tbname: string, values: any) {
         if (this.prefix) {
-            tbname = tbname.replace('@pf_', this.prefix);
+            tbname = tbname.replace(/@pf_/g, this.prefix);
         }
         if (!Beacon.isObject(values)) {
             return null;
@@ -267,7 +267,7 @@ export class Mysql {
 
     public async replace(tbname: string, values: any) {
         if (this.prefix) {
-            tbname = tbname.replace('@pf_', this.prefix);
+            tbname = tbname.replace(/@pf_/g, this.prefix);
         }
         if (!Beacon.isObject(values)) {
             return null;
@@ -311,7 +311,7 @@ export class Mysql {
 
     public async update(tbname: string, values: any, where?: any, args?: any) {
         if (this.prefix) {
-            tbname = tbname.replace('@pf_', this.prefix);
+            tbname = tbname.replace(/@pf_/g, this.prefix);
         }
         if (!Beacon.isObject(values)) {
             return null;
@@ -361,7 +361,7 @@ export class Mysql {
 
     public async delete(tbname: string, where?: any, args?: any) {
         if (this.prefix) {
-            tbname = tbname.replace('@pf_', this.prefix);
+            tbname = tbname.replace(/@pf_/g, this.prefix);
         }
         let excsql = `DELETE  FROM ${tbname}`;
         if (typeof where == 'number' && /^\d+$/.test(String(where)) && args == void 0) {
@@ -378,14 +378,14 @@ export class Mysql {
 
     public async getFields(tbname: string): Promise<any> {
         if (this.prefix) {
-            tbname = tbname.replace('@pf_', this.prefix);
+            tbname = tbname.replace(/@pf_/g, this.prefix);
         }
         return await this.query(`desc ${tbname};`);
     }
 
     public async existsField(tbname: string, name: string) {
         if (this.prefix) {
-            tbname = tbname.replace('@pf_', this.prefix);
+            tbname = tbname.replace(/@pf_/g, this.prefix);
         }
         let row = await this.getRow(`describe ${tbname} \`${name}\`;`);
         return row !== null;
@@ -393,7 +393,7 @@ export class Mysql {
 
     public async addField(tbname: string, name: string, options: any = {}) {
         if (this.prefix) {
-            tbname = tbname.replace('@pf_', this.prefix);
+            tbname = tbname.replace(/@pf_/g, this.prefix);
         }
         options = Object.assign({
             type: 'VARCHAR',
@@ -433,7 +433,7 @@ export class Mysql {
 
     public async modifyField(tbname: string, name: string, options: any = {}) {
         if (this.prefix) {
-            tbname = tbname.replace('@pf_', this.prefix);
+            tbname = tbname.replace(/@pf_/g, this.prefix);
         }
         if (!await this.existsField(tbname, name)) {
             return await this.addField(tbname, name, options);
@@ -476,7 +476,7 @@ export class Mysql {
 
     public async updateField(tbname: string, oldname: string, newname: string, options: any = {}) {
         if (this.prefix) {
-            tbname = tbname.replace('@pf_', this.prefix);
+            tbname = tbname.replace(/@pf_/g, this.prefix);
         }
         //一样的
         if (oldname == newname) {
@@ -528,7 +528,7 @@ export class Mysql {
 
     public async dropField(tbname: string, name: string) {
         if (this.prefix) {
-            tbname = tbname.replace('@pf_', this.prefix);
+            tbname = tbname.replace(/@pf_/g, this.prefix);
         }
         if (await this.existsField(tbname, name)) {
             let excSql = `ALTER TABLE ${tbname} DROP \`${name}\` ;`;
@@ -539,7 +539,7 @@ export class Mysql {
 
     public async existsTable(tbname: string) {
         if (this.prefix) {
-            tbname = tbname.replace('@pf_', this.prefix);
+            tbname = tbname.replace(/@pf_/g, this.prefix);
         }
         let row = await this.getRow('SHOW TABLES LIKE ?;', tbname);
         return row != null;
@@ -547,7 +547,7 @@ export class Mysql {
 
     public async dropTable(tbname: string) {
         if (this.prefix) {
-            tbname = tbname.replace('@pf_', this.prefix);
+            tbname = tbname.replace(/@pf_/g, this.prefix);
         }
         let row = await this.getRow('DROP TABLE IF EXISTS ?;', tbname);
         return row != null;
