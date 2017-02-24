@@ -1,4 +1,6 @@
 import {Beacon} from "../../src/core/beacon";
+import {Mysql} from "../../src/adapter/db/mysql";
+import {PageList} from "./pagelist";
 class SqlItem {
     public text = '';
     public args = null;
@@ -241,7 +243,7 @@ export class Selector {
     }
 
     public limit(offset: number = 0, len: number = 0) {
-        if (offset == 0 || len == 0) {
+        if (offset == 0 && len == 0) {
             return this;
         }
         if (len == 0) {
@@ -336,8 +338,43 @@ export class Selector {
         return {sql: sqla.join(' '), args: args};
     }
 
-    public createCountSql() {
 
+    public async getCount(db: Mysql) {
+        let {sql = '', args = null}=this.createSql(2);
+        let count = await db.getOne(sql, args);
+        if (count === null) {
+            return -1;
+        }
+        let ret = parseInt(count);
+        return ret;
     }
+
+    public getPageList(size: number = 20, keyname: string = 'page', count: any = -1, only_count: number = -1) {
+        let that = this;
+        if (count == -1) {
+            count = function (db) {
+                return that.getCount(db);
+            };
+        }
+        let plist = new PageList('', null, size, keyname, count, only_count);
+        plist.getList = async function (ctl) {
+            let info = await this.getInfo(ctl);
+            let start = (this.page - 1) * this.page_size;
+            if (start < 0) {
+                start = 0;
+            }
+            that.limit(start, this.page_size);
+            let {sql = '', args = null}=that.createSql(1);
+            let list = await ctl.db.getList(sql, this.args);
+            return list;
+        }
+        return plist;
+    }
+
+    public getList(db: Mysql): Promise<any> {
+        let {sql = '', args = null}=this.createSql(0);
+        return db.getList(sql, args);
+    }
+
 
 }

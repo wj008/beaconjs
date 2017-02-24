@@ -1,3 +1,4 @@
+import {Beacon} from "../../src/core/beacon";
 export class PageList {
 
     private sql: string;
@@ -10,7 +11,7 @@ export class PageList {
     private info: any;
     private page: number;
 
-    public constructor(sql: string, args: any = null, size: number = 20, keyname: string = 'page', count: number = -1, only_count: number = -1) {
+    public constructor(sql: string, args: any = null, size: number = 20, keyname: string = 'page', count: any = -1, only_count: number = -1) {
         this.sql = sql;
         this.page_size = Math.floor(size);
         this.keyname = keyname;
@@ -47,7 +48,7 @@ export class PageList {
             }
             return items.join('&');
         })();
-        if (this.records_count == -1) {
+        if (this.records_count === -1) {
             let sql: string = null;
             if (this.sql.toLowerCase().indexOf(' from ') === this.sql.toLowerCase().lastIndexOf(' from ')) {
                 sql = this.sql.replace(/^select\s+(distinct\s+[a-z][a-z0-9]+\s*,)?(.*)\s+from\s+/i, 'select $1count(1) as temp_count from ');
@@ -56,6 +57,16 @@ export class PageList {
             }
             let row = await ctl.db.getRow(sql, this.args);
             this.records_count = row.temp_count;
+        } else {
+            if (typeof this.records_count == 'string' && !Beacon.isNumeric(this.records_count)) {
+                this.records_count = await ctl.db.getOne(this.records_count);
+            }
+            if (typeof this.records_count == 'function') {
+                this.records_count = this.records_count(ctl.db);
+            }
+            if (Beacon.isPromise(this.records_count)) {
+                this.records_count = await  this.records_count;
+            }
         }
         if (this.only_count == -1 || this.only_count > this.records_count) {
             this.only_count = this.records_count;
