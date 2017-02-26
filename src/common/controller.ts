@@ -6,7 +6,6 @@ import {Sdopx} from "sdopx";
 declare var Beacon: any;
 require('../adapter/sdopx/sdopx_ext');
 
-
 export class ControllerError extends Error {
     public code = '';
 
@@ -205,21 +204,7 @@ export class Controller {
             code = app;
             app = this.route('app');
         }
-        if (uri.length == 0) {
-            return;
-        }
-        if (uri[0] == '~') {
-            let touri = uri.substring(1);
-            let info = url.parse(touri, true, true);
-            if (query != null && Beacon.isObject(query)) {
-                query = Object.assign(info.query, query);
-            }
-            touri = this.url(info.pathname, query, app);
-            this.context.redirect(touri, code);
-            return;
-        }
-        let appuri = this.route('uri', '');
-        uri = uri.replace(/__APPROOT__/g, appuri);
+        uri = this.url(uri, query, app);
         this.context.redirect(uri, code);
     }
 
@@ -232,7 +217,7 @@ export class Controller {
         return this.context.write(obj, encoding);
     }
 
-    public url(pathname: string = '', query?: any, app?: string) {
+    public execUrl(pathname: string = '', query?: any, app?: string) {
         if (typeof query == 'string' && app === void 0) {
             app = query;
             query = null;
@@ -243,6 +228,31 @@ export class Controller {
             pathname = '/' + this.route('ctl') + '/' + pathname;
         }
         return Beacon.Route.resolve(app, pathname, query);
+    }
+
+    public url(uri, query?: any, app?: any) {
+        if (typeof query == 'string' && app === void 0) {
+            app = query;
+            query = null;
+        }
+        if (!app) {
+            app = this.route('app');
+        }
+        if (uri.length == 0) {
+            return;
+        }
+        if (uri[0] == '~') {
+            let touri = uri.substring(1);
+            let info = url.parse(touri, true, true);
+            if (query != null && Beacon.isObject(query)) {
+                query = Object.assign(info.query, query);
+            }
+            touri = this.execUrl(info.pathname, query, app);
+            return touri;
+        }
+        let appuri = this.route('uri', '');
+        uri = uri.replace(/__APPROOT__/g, appuri);
+        return uri;
     }
 
     public end(obj = null, encoding = null) {

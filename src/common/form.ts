@@ -1,12 +1,13 @@
-import {Controller} from "./controller";
-import {Beacon} from "../core/beacon";
-
+declare var Beacon: any;
+import {Controller} from "../common/controller";
+import path=require('path');
+import fs=require('fs');
 export interface BoxBase {
+    code (field: Field, attr: {[key: string]: any}, out: {echo: Function, raw: Function}, sdopx: any);
     assign (field: Field, params: {[key: string]: any});
     fill(field: Field, vals: {[key: string]: any});
     init(field: Field, vals: {[key: string]: any});
 }
-
 export class Validate {
 
     //字符串格式化输出
@@ -275,7 +276,6 @@ export class Validate {
     }
 
 }
-
 export class Field {
     private _form: Form = null;
     public label: string = '';
@@ -331,6 +331,24 @@ export class Field {
         return data;
     }
 
+    public getBoxAttr() {
+        let data = {};
+        for (let key in this) {
+            if (/^box_(.*)$/.test(key)) {
+                let val = this[key];
+                let nkey = key.replace(/^box_/, '');
+                nkey = nkey.replace(/_/g, '-');
+                if (typeof val != 'function' && val !== null) {
+                    data[nkey] = val;
+                }
+            }
+        }
+        if (this.value !== null && String(this.value).length > 0) {
+            data['value'] = this.value;
+        }
+        return data;
+    }
+
 }
 export class Form {
 
@@ -338,18 +356,24 @@ export class Form {
     static ADD = 1;
     static EDIT = 2;
 
-    static formBox: {[key: string]: BoxBase} = {};
+    static boxInstance: {[key: string]: BoxBase} = {};
 
+    public title = '';
+    public caption = '';
+    public back_uri = '';
     public ctl: Controller = null;
     public type: number = Form.NONE;
-    private _init = false;
     public use_tab: boolean = false;
     public tabs: {[key: string]: string} = {};
     public tab_index: string = '';
     public tab_split: boolean = false;
     public fields: {[key: string]: Field} = {};
+
+
+    private _init = false;
     private _using_fields: {[key: string]: Field} = null;
     protected _load: {[key: string]: any} = {};
+
 
     public constructor(ctl: Controller, type: number = Form.NONE) {
         this.ctl = ctl;
@@ -358,13 +382,14 @@ export class Form {
 
     public async init() {
         if (this._init) {
-            return;
+            return this;
         }
         this._init = true;
         let fields = await this.load();
         for (let name in fields) {
             this.addField(name, fields[name]);
         }
+        return this;
     }
 
     public async load(fields: {[key: string]: any} = null) {
@@ -471,7 +496,7 @@ export class Form {
     /**
      * 获取表单使用的字段
      */
-    public getUsingFields(): {[key: string]: Field} {
+    public  getUsingFields(): {[key: string]: Field} {
         if (this._using_fields) {
             return this._using_fields;
         }
@@ -480,6 +505,7 @@ export class Form {
             let temp: {[key: string]: Field} = this._using_fields = {};
             for (let key in this.fields) {
                 let field = this.fields[key];
+                field.box_name = field.box_name || field.name;
                 if (field.view_tab_shared || this.tab_index == field.tab_index) {
                     temp[key] = field;
                 }
@@ -490,6 +516,7 @@ export class Form {
             let temp: {[key: string]: Field} = this._using_fields = {};
             for (let key in this.fields) {
                 let field = this.fields[key];
+                field.box_name = field.box_name || field.name;
                 if (field.view_tab_shared || ('' != field.tab_index && this.tabs[field.tab_index])) {
                     temp[key] = field;
                 }
@@ -500,8 +527,51 @@ export class Form {
         return this._using_fields;
     }
 
+    public async getValues() {
+        let vals: {[key: string]: any} = {};
+        let fields = this.getUsingFields();
+        for (let key in fields) {
+            let field = fields[key];
+            if (this.type == Form.EDIT && field.offedit) {
+                continue;
+            }
+            if (field.close) {
+                continue;
+            }
+            if (Form.boxInstance[field.type] && typeof Form.boxInstance[field.type].fill == 'function') {
+                let p = Form.boxInstance[field.type].fill(field, vals);
+                if (Beacon.isPromise(p)) {
+                    await p;
+                }
+            } else {
+                vals[field.name] = field.value;
+            }
+        }
+        return vals;
+    }
+
+    public async initValues(vals: {[key: string]: any} = {}, force: boolean = false) {
+        let fields = this.getUsingFields();
+        for (let key in fields) {
+            let field = fields[key];
+            if (field.close) {
+                continue;
+            }
+            if (!force && field.value !== null) {
+                continue;
+            }
+            if (Form.boxInstance[field.type] && typeof Form.boxInstance[field.type].init == 'function') {
+                let p = Form.boxInstance[field.type].init(field, vals);
+                if (Beacon.isPromise(p)) {
+                    await p;
+                }
+            } else {
+                field.value = vals[field.name] || null;
+            }
+        }
+    }
+
     public async autoComplete(params: any = null, valid: boolean = null) {
-        await this.init();
         let fields = this.getUsingFields();
         if (valid == null && typeof params == 'boolean') {
             valid = params;
@@ -526,14 +596,13 @@ export class Form {
                 field.value = field.default;
                 continue;
             }
-            if (Form.formBox[field.type] && typeof Form.formBox[field.type].assign == 'function') {
-                field.value = Form.formBox[field.type].assign(field, params);
-            } else {
-                if (field.box_name.length == 0) {
-                    field.value = params[field.name] || field.default;
-                } else {
-                    field.value = params[field.box_name] || field.default;
+            if (Form.boxInstance[field.type] && typeof Form.boxInstance[field.type].assign == 'function') {
+                let p = Form.boxInstance[field.type].assign(field, params);
+                if (Beacon.isPromise(p)) {
+                    await p;
                 }
+            } else {
+                field.value = params[field.box_name] || field.default;
                 switch (field.var_type) {
                     case 'i':
                         let ivalue = field.value == null ? '' : String(field.value);
@@ -573,48 +642,7 @@ export class Form {
         return vals;
     }
 
-    public async getValues() {
-        await this.init();
-        let vals: {[key: string]: any} = {};
-        let fields = this.getUsingFields();
-        for (let key in fields) {
-            let field = fields[key];
-            if (this.type == Form.EDIT && field.offedit) {
-                continue;
-            }
-            if (field.close) {
-                continue;
-            }
-            if (Form.formBox[field.type] && typeof Form.formBox[field.type].fill == 'function') {
-                Form.formBox[field.type].fill(field, vals);
-            } else {
-                vals[field.name] = field.value;
-            }
-        }
-        return vals;
-    }
-
-    public async initValues(vals: {[key: string]: any} = {}, force: boolean = false) {
-        await this.init();
-        let fields = this.getUsingFields();
-        for (let key in fields) {
-            let field = fields[key];
-            if (field.close) {
-                continue;
-            }
-            if (!force && field.value !== null) {
-                continue;
-            }
-            if (Form.formBox[field.type] && typeof Form.formBox[field.type].init == 'function') {
-                Form.formBox[field.type].init(field, vals);
-            } else {
-                field.value = vals[field.name] || null;
-            }
-        }
-    }
-
     public async validation() {
-        await this.init();
         let fields = this.getUsingFields();
         let result = true;
         for (let key in fields) {
@@ -637,7 +665,20 @@ export class Form {
         return result;
     }
 
-    public assignFormScript(name: string = 'form_script') {
+    public async insert(tbname: string) {
+        let vals = await this.autoComplete(true);
+        await this.ctl.db.insert(tbname, vals);
+    }
+
+    public async update(tbname: string, id: number) {
+        let vals = await this.autoComplete(true);
+        await this.ctl.db.update(tbname, vals, id);
+    }
+
+    public getScript() {
+        if (!this._init) {
+            return '';
+        }
         let fields = this.getUsingFields();
         let codes = [];
         for (let key in fields) {
@@ -649,18 +690,67 @@ export class Form {
             let code = `$('#${field.box_id}').data(${JSON.stringify(data)});`;
             codes.push(code);
         }
-        let script = codes.join("\n");
-        this.ctl.assign(name, script);
+        let script = '<script>' + codes.join("\n") + '</script>';
+        return script;
     }
 
-    public async insert(tbname: string) {
-        let vals = await this.autoComplete(true);
-        await this.ctl.db.insert(tbname, vals);
+    public display(tplname: string = 'common/form') {
+        if (!this._init) {
+            return;
+        }
+        this.ctl.assign('form', this);
+        this.ctl.display(tplname);
     }
 
-    public async update(tbname: string, id: number) {
-        let vals = await this.autoComplete(true);
-        await this.ctl.db.update(tbname, vals, id);
+    public static regPlugin(name: string, instance: BoxBase) {
+        if (name.length > 0) {
+            Form.boxInstance[name] = instance;
+        }
     }
 
+    public static addPluginDir(dirname: string) {
+        if (dirname.length == 0) {
+            return;
+        }
+        if (dirname[0] == '.' && dirname[1] == '/') {
+            dirname = path.join(Beacon.RUNTIME_PATH, dirname.substring(2));
+            console.log(dirname);
+        }
+        if (fs.existsSync(dirname)) {
+            var files = fs.readdirSync(dirname);
+            let result = [];
+            files.forEach(function (item) {
+                let file = path.join(dirname, item);
+                var stat = fs.statSync(file);
+                if (stat.isFile() && /\.box\.js$/i.test(file)) {
+                    result.push(item);
+                }
+            });
+            for (let item of result) {
+                let fname = item.replace(/\.box\.js$/, '');
+                if (fname == '') {
+                    continue;
+                }
+                let file = path.join(dirname, item);
+                let pick = require(file);
+                try {
+                    let className = Beacon.toCamel(fname) + 'Box';
+                    if (pick[className]) {
+                        let classInterfaces = new pick[className]();
+                        this.regPlugin(fname, classInterfaces);
+                    }
+                } catch (e) {
+
+                }
+            }
+        }
+    }
+
+    public static hasPlugin(name: string) {
+        return Form.boxInstance[name] !== void 0;
+    }
+
+    public static getPlugin(name: string) {
+        return Form.boxInstance[name] || null;
+    }
 }

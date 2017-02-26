@@ -5,6 +5,7 @@ import {Controller} from "../common/controller";
 import {MemorySession} from "../adapter/session/memory";
 import {FileSession} from "../adapter/session/file";
 import {Sdopx} from "sdopx";
+import {Form} from "../common/form";
 import fs = require("fs");
 /**
  * 核心框架类
@@ -64,10 +65,10 @@ export class Beacon extends Beaconkit {
         Beacon.Config = new Config(Beacon.CONFIG_PATH);
         Beacon.Config.gload('Beacon');
         let {Route} = require('./route');
+        Form.addPluginDir(path.join(Beacon.BEACON_LIB_PATH, 'adapter/plugin'));
         Beacon.Route = Route;
         return this;
     }
-
 
     //获取http对象
     public static async run(req, res) {

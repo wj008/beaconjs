@@ -1,5 +1,6 @@
 import {Sdopx} from "sdopx";
 import {Beacon} from "../../core/beacon";
+import {Form} from "../../common/form";
 import impurl = require('url');
 //Sdopx.compile_check=false;
 //Sdopx.create_runfile=true;
@@ -59,11 +60,11 @@ Sdopx.registerPlugin('uri', function (params, out, sdopx) {
         if (act.length > 0) {
             url += '/' + act;
         }
-        out.raw(sdopx.context.url(url, args, app));
+        out.raw(sdopx.context.execUrl(url, args, app));
         return;
     }
     url = url.substring(1);
-    out.raw(sdopx.context.url(url, args, app));
+    out.raw(sdopx.context.execUrl(url, args, app));
     return;
 });
 
@@ -216,4 +217,40 @@ Sdopx.registerPlugin('pagebar', function (params, out, sdopx) {
     let outhtml = `<div class="pagebar">${html.join("\n")}</div>` + ctext;
     out.raw(outhtml);
 
+});
+
+//表单插件函数
+Sdopx.registerPlugin('box', function (params, out, sdopx) {
+    let field = params.field || null;
+    let type = params.type || null;
+    if (field == null && type == null) {
+        sdopx.addError(`uri: missing 'field','type' parameter`);
+        return;
+    }
+    if (field) {
+        type = field.type || type;
+    }
+    if (Form.hasPlugin(type)) {
+        let box = Form.getPlugin(type);
+        if (box == null) {
+            sdopx.addError(`can not found ${type} plugin.`);
+            return;
+        }
+        delete params.field;
+        delete params.type;
+        for (let key in params) {
+            if (key[0] == '@') {
+                if (field) {
+                    let nkey = key.substring(1);
+                    field[nkey] = params[key];
+                }
+                delete params[key];
+            }
+        }
+        box.code(field, params, out, sdopx);
+    }
+    else {
+        sdopx.addError(`can not found ${type} plugin.`);
+        return;
+    }
 });
