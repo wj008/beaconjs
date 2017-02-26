@@ -11,73 +11,8 @@ export class AdminController extends Beacon.Controller {
         this.template_dirs = path.join(Beacon.VIEW_PATH, 'admin') + '/';
     }
 
-    public fail(message: any, error?: any, jump?: any, code?: any, timeout: number = 3) {
-        if (!Beacon.isObject(error)) {
-            timeout = code;
-            code = jump;
-            jump = error;
-            error = null;
-        }
-        if (this.isAjax()) {
-            let ret: any = {};
-            ret.message = message;
-            ret.status = false;
-            if (error) {
-                ret.error = error;
-            }
-            if (code !== void 0) {
-                ret.code = code;
-            }
-            this.returnJson(ret);
-        }
-        if (jump === void 0) {
-            jump = this.getReferrer();
-        }
-        else if (jump == false) {
-            jump = 'javascript:history.go(-1);';
-        }
-        this.assign('message', message);
-        this.assign('jump', jump);
-        this.assign('timeout', timeout);
-        this.assign('code', code);
-        this.display('common/fail');
-        this.exit();
-    }
-
-    public success(message: any, jump?: any, code?: any, timeout: number = 1) {
-        if (jump === void 0) {
-            jump = this.param('__BACK__', this.getReferrer()) || null;
-        }
-        if (this.isAjax()) {
-            let ret: any = {};
-            ret.message = message;
-            ret.status = true;
-            if (code !== void 0) {
-                ret.code = code;
-            }
-            this.returnJson(ret);
-        }
-        if (jump == false) {
-            jump = 'javascript:history.go(-1);';
-        }
-        this.assign('message', message);
-        this.assign('jump', jump);
-        this.assign('timeout', timeout);
-        this.assign('code', code);
-        this.display('common/success');
-        this.exit();
-    }
-
-    public returnJson(data) {
-        this.setContentType('json');
-        this.end(JSON.stringify(data));
-        this.exit();
-    }
-
     public async init() {
-
         this.initDB('mysql');
-
         await this.initSesion();
         await this.checkLogin();
     }
