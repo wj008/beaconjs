@@ -1,23 +1,21 @@
 import {BoxBase, Field} from "../../common/form";
+import {Helper} from "./helper";
 declare var Beacon: any;
-import utils=require('sdopx/lib/utils');
+
 export class TextBox implements BoxBase {
 
     public code(field: Field, attr: {[key: string]: any}, out: {echo: Function, raw: Function}, sdopx: any) {
         let temp: any = Object.assign(field == null ? {} : field.getBoxAttr(), attr);
         let box_attr = [];
         temp.type = 'text';
-        for (let key in temp) {
-            let val = temp[key];
-            if (val !== '') {
-                box_attr.push(key + '="' + utils.escapeXml(val) + '"');
-            }
-        }
+        let data = field == null ? {} : field.getBoxData();
+        Helper.explodeAttr(box_attr, temp);
+        Helper.explodeData(box_attr, data);
         out.raw('<input ' + box_attr.join(' ') + ' />');
     }
 
     public assign(field: Field, params: {[key: string]: any;}) {
-        field.value = params[field.box_name] || field.default;
+        field.value = params[field.boxName] || field.default;
         field.value = field.value == null ? '' : String(field.value);
         if (field.default !== null && field.value == '') {
             field.value = field.default;

@@ -316,18 +316,32 @@ export class Beaconkit {
     };
 
 
-    public static toUnder(str) {
+    public static toUnder(str, mode = false) {
+        if (!mode) {
+            str = String(str).replace(/[A-Z]/g, function ($0) {
+                return '_' + String($0).toLocaleLowerCase();
+            }).replace(/^_+/, '');
+            return str;
+        }
         str = String(str).replace(/[A-Z]/g, function ($0) {
-            return '_' + String($0).toLocaleLowerCase();
-        }).replace(/^_+/, '');
+            return '-' + String($0).toLocaleLowerCase();
+        }).replace(/^\-+/, '');
         return str;
     }
 
-    public static toCamel(str) {
-        str = String(str).replace(/_+/g, '_').replace(/_[a-z]/g, function ($0) {
+    public static toCamel(str, mode = false) {
+        if (!mode) {
+            str = String(str).replace(/\_+/g, '_').replace(/_[a-z]/g, function ($0) {
+                return String($0).toLocaleUpperCase().substr(1);
+            }).replace(/^[a-z]/, function ($0) {
+                return String($0).toLocaleUpperCase();
+            });
+            return str;
+        }
+        str = String(str).replace(/\-+/g, '-').replace(/\-[a-z]/g, function ($0) {
             return String($0).toLocaleUpperCase().substr(1);
         }).replace(/^[a-z]/, function ($0) {
-            return String($0).toLocaleUpperCase();
+            return String($0).toLocaleLowerCase();
         });
         return str;
     }

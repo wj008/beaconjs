@@ -238,16 +238,20 @@ Sdopx.registerPlugin('box', function (params, out, sdopx) {
         }
         delete params.field;
         delete params.type;
+        let attr = {};
         for (let key in params) {
             if (key[0] == '@') {
                 if (field) {
                     let nkey = key.substring(1);
+                    nkey = Beacon.toCamel(nkey, true);
                     field[nkey] = params[key];
+                    continue;
                 }
-                delete params[key];
             }
+            let nkey = Beacon.toUnder(key, true);
+            attr[nkey] = params[key];
         }
-        box.code(field, params, out, sdopx);
+        box.code(field, attr, out, sdopx);
     }
     else {
         sdopx.addError(`can not found ${type} plugin.`);

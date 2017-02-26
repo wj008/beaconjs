@@ -203,14 +203,14 @@ export class Validate {
         if (field.error) {
             return false;
         }
-        if (field.data_val_off) {
+        if (field.dataValOff) {
             return true;
         }
-        let rules: any = field.data_val;
+        let rules: any = field.dataVal;
         if (rules == null) {
             return true;
         }
-        let errors: any = field.data_val_msg || {};
+        let errors: any = field.dataValMsg || {};
         let tempErrors = {};
         for (let type in errors) {
             let err = errors[type];
@@ -243,7 +243,7 @@ export class Validate {
                 let xargs = args.slice(0);
                 args.unshift(value);
                 if (type == 'remote') {
-                    args.unshift(field.box_name);
+                    args.unshift(field.boxName);
                 }
                 if (type == 'equalto') {
                     let form = field.getForm();
@@ -281,31 +281,31 @@ export class Field {
     public label: string = '';
     public name: string = '';
     public error: string = '';
-    public tab_index: string = '';
-    public view_tab_shared: boolean = false;
+    public tabIndex: string = '';
+    public viewTabShared: boolean = false;
     public close: boolean = false;
-    public offedit: boolean = false;
-    public view_close: boolean = false;
+    public offEdit: boolean = false;
+    public viewClose: boolean = false;
     public value = null;
     public default = null;
     public type = 'text';
-    public var_type = 's';
-    public box_name = '';
-    public box_id = '';
-    public data_val_off: boolean = null;
-    public data_val: {[key: string]: any} = null;
-    public data_val_msg: {[key: string]: string} = null;
+    public varType = 's';
+    public boxName = '';
+    public boxId = '';
+    public dataValOff: boolean = null;
+    public dataVal: {[key: string]: any} = null;
+    public dataValMsg: {[key: string]: string} = null;
 
     public constructor(form: Form, field: {[key: string]: any} = {}) {
         for (let key in field) {
             let val = field[key];
             if (typeof val != 'function') {
-                this[key] = val;
+                let nkey = Beacon.toCamel(key, true);
+                this[nkey] = val;
             }
         }
-        this.box_name = this.box_name || this.name;
-        this.box_id = this.box_id || this.box_name;
-
+        this.boxName = this.boxName || this.name;
+        this.boxId = this.boxId || this.boxName;
         this._form = form;
     }
 
@@ -316,10 +316,10 @@ export class Field {
     public getBoxData() {
         let data = {};
         for (let key in this) {
-            if (/^data_(.*)$/.test(key)) {
+            if (/^data([A-Z].*)$/.test(key)) {
                 let val = this[key];
-                let nkey = key.replace(/^data_/, '');
-                nkey = nkey.replace(/_/g, '-');
+                let nkey = key.replace(/^data/, '');
+                nkey = Beacon.toUnder(nkey, true);
                 if (typeof val != 'function' && val !== null) {
                     data[nkey] = val;
                 }
@@ -334,10 +334,10 @@ export class Field {
     public getBoxAttr() {
         let data = {};
         for (let key in this) {
-            if (/^box_(.*)$/.test(key)) {
+            if (/^box([A-Z].*)$/.test(key)) {
                 let val = this[key];
-                let nkey = key.replace(/^box_/, '');
-                nkey = nkey.replace(/_/g, '-');
+                let nkey = key.replace(/^box/, '');
+                nkey = Beacon.toUnder(nkey, true);
                 if (typeof val != 'function' && val !== null) {
                     data[nkey] = val;
                 }
@@ -365,20 +365,18 @@ export class Form {
 
     public title = '';
     public caption = '';
-    public back_uri = '';
+    public backUri = '';
     public ctl: Controller = null;
     public type: number = Form.NONE;
-    public use_tab: boolean = false;
+    public useTab: boolean = false;
     public tabs: {[key: string]: string} = {};
-    public tab_index: string = '';
-    public tab_split: boolean = false;
+    public tabIndex: string = '';
+    public tabSplit: boolean = false;
     public fields: {[key: string]: Field} = {};
-
 
     private _init = false;
     private _using_fields: {[key: string]: Field} = null;
     protected _load: {[key: string]: any} = {};
-
 
     public constructor(ctl: Controller, type: number = Form.NONE) {
         this.ctl = ctl;
@@ -510,24 +508,24 @@ export class Form {
         if (this._using_fields) {
             return this._using_fields;
         }
-        if (this.use_tab && this.tab_split) {
-            this.tab_index = this.ctl.get('tab_index:s', '');
+        if (this.useTab && this.tabSplit) {
+            this.tabIndex = this.ctl.get('tabIndex:s', '');
             let temp: {[key: string]: Field} = this._using_fields = {};
             for (let key in this.fields) {
                 let field = this.fields[key];
-                field.box_name = field.box_name || field.name;
-                if (field.view_tab_shared || this.tab_index == field.tab_index) {
+                field.boxName = field.boxName || field.name;
+                if (field.viewTabShared || this.tabIndex == field.tabIndex) {
                     temp[key] = field;
                 }
             }
             return temp;
         }
-        if (this.use_tab) {
+        if (this.useTab) {
             let temp: {[key: string]: Field} = this._using_fields = {};
             for (let key in this.fields) {
                 let field = this.fields[key];
-                field.box_name = field.box_name || field.name;
-                if (field.view_tab_shared || ('' != field.tab_index && this.tabs[field.tab_index])) {
+                field.boxName = field.boxName || field.name;
+                if (field.viewTabShared || ('' != field.tabIndex && this.tabs[field.tabIndex])) {
                     temp[key] = field;
                 }
             }
@@ -542,7 +540,7 @@ export class Form {
         let fields = this.getUsingFields();
         for (let key in fields) {
             let field = fields[key];
-            if (this.type == Form.EDIT && field.offedit) {
+            if (this.type == Form.EDIT && field.offEdit) {
                 continue;
             }
             if (field.close) {
@@ -596,13 +594,13 @@ export class Form {
         }
         for (let key in fields) {
             let field = fields[key];
-            if (this.type == Form.EDIT && field.offedit) {
+            if (this.type == Form.EDIT && field.offEdit) {
                 continue;
             }
             if (field.close) {
                 continue;
             }
-            if (field.view_close) {
+            if (field.viewClose) {
                 field.value = field.default;
                 continue;
             }
@@ -612,8 +610,8 @@ export class Form {
                     await p;
                 }
             } else {
-                field.value = params[field.box_name] || field.default;
-                switch (field.var_type) {
+                field.value = params[field.boxName] || field.default;
+                switch (field.varType) {
                     case 'i':
                         let ivalue = field.value == null ? '' : String(field.value);
                         field.value = Beacon.toInt(ivalue.trim(), field.default);
@@ -661,7 +659,7 @@ export class Form {
                 result = false;
                 continue;
             }
-            if (this.type == Form.EDIT && field.offedit) {
+            if (this.type == Form.EDIT && field.offEdit) {
                 continue;
             }
             if (field.close) {
@@ -683,25 +681,6 @@ export class Form {
     public async update(tbname: string, id: number) {
         let vals = await this.autoComplete(true);
         await this.ctl.db.update(tbname, vals, id);
-    }
-
-    public getScript() {
-        if (!this._init) {
-            return '';
-        }
-        let fields = this.getUsingFields();
-        let codes = [];
-        for (let key in fields) {
-            let field = fields[key];
-            let data = field.getBoxData();
-            if (Beacon.isEmpty(data)) {
-                continue;
-            }
-            let code = `$('#${field.box_id}').data(${JSON.stringify(data)});`;
-            codes.push(code);
-        }
-        let script = '<script>' + codes.join("\n") + '</script>';
-        return script;
     }
 
     public display(tplname: string = 'common/form') {
