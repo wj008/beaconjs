@@ -44,7 +44,7 @@ export class CmsController extends AdminController {
         let {info, list} = await plist.getData(this);
         this.assign('list', list);
         this.assign('pdata', info);
-        this.display(this.form.tpl_list);
+        this.display(this.form.tplList);
         console.log(Date.now() - this.context.startTime);
     }
 

@@ -2,7 +2,7 @@ import {Form} from "../../../src/common/form";
 
 export class StartCityForm extends Form {
 
-    public tpl_list = 'startcity';
+    public tplList = 'startcity';
     public title = '出发地点';
     public caption = '字典-出发地点';
     public table = '@pf_start_city';
@@ -10,7 +10,7 @@ export class StartCityForm extends Form {
 
     public constructor(ctl: any, type: number = Form.NONE) {
         super(ctl, type);
-        this.back_uri = ctl.url('~/start_city');
+        this.backUri = ctl.url('~/start_city');
     }
 
     public async load(fields: {[key: string]: any} = null) {
@@ -18,25 +18,25 @@ export class StartCityForm extends Form {
             this._load = {
                 name: {
                     'label': '主题名称',
-                    'data_val': {r: true},
-                    'data_val_msg': {r: '请输入出发地点名称'},
+                    'data-val': {r: true},
+                    'data-val-msg': {r: '请输入出发地点名称'},
                     'tips': '请输入出发聚集地点',
-                    'box_class': 'form-inp text',
+                    'box-class': 'form-inp text',
                 },
                 address: {
                     'label': '详细地址',
-                    'data_val': {r: true},
-                    'data_val_msg': {r: '请输入聚集详细地址'},
+                    'data-val': {r: true},
+                    'data-val-msg': {r: '请输入聚集详细地址'},
                     'tips': '请输入聚集详细地址',
-                    'box_class': 'form-inp text',
+                    'box-class': 'form-inp text',
                 },
                 sort: {
                     'label': '排序',
                     'type': 'integer',
-                    'data_val': {r: true, int: true},
-                    'data_val_msg': {r: '请输入排序值', int: '排序值必须是数值形式'},
+                    'data-val': {r: true, int: true},
+                    'data-val-msg': {r: '请输入排序值', int: '排序值必须是数值形式'},
                     'tips': '越小越靠前',
-                    'box_class': 'form-inp number',
+                    'box-class': 'form-inp number',
                 }
             };
         }
