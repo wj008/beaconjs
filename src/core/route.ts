@@ -110,6 +110,31 @@ export class Route {
         Route.AppCtls[app] = {files: temps, interfaces: {}};
     }
 
+    public static getRouteBase(app) {
+        app = app || 'home';
+        if (Route.AppCtls[app] && Route.AppCtls[app].route) {
+            return Route.AppCtls[app].route;
+        }
+        let apppath = Route.getAppPath(app);
+        if (apppath == null) {
+            Route.AppCtls[app] = null;
+            return null;
+        }
+        if (Route.AppCtls[app] == null) {
+            Route.AppCtls[app] = {};
+        }
+        Route.AppCtls[app].route = null;
+        let file = path.join(apppath, 'route.js');
+        if (fs.existsSync(file)) {
+            let pick = require(file);
+            if (pick.default) {
+                Route.AppCtls[app].route = pick.default;
+            }
+            return pick.default;
+        }
+        return null;
+    }
+
     public static getController(app, ctl) {
         //扫码装载控制器
         if (Route.AppCtls[app] === void 0) {

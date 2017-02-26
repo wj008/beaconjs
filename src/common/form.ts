@@ -364,7 +364,6 @@ export class Form {
     static boxInstance: {[key: string]: BoxBase} = {};
 
     public title = '';
-    public action = '';
     public caption = '';
     public back_uri = '';
     public ctl: Controller = null;

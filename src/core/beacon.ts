@@ -76,7 +76,6 @@ export class Beacon extends Beaconkit {
         let Route = Beacon.Route;
         let args = Route.parseUrl(context.pathname);
         context.parseRouteGet(args);
-        // console.log(args);
         if (args == null || args.ctl == '') {
             Beacon.displayError(context, 404, 'the page url:"' + context.url + '" is not found!');
             return;
@@ -84,8 +83,16 @@ export class Beacon extends Beaconkit {
         try {
             let ctlClass = Route.getController(args.app, args.ctl);
             if (ctlClass == null) {
-                Beacon.displayError(context, 404, 'the page url:"' + context.url + '" is not found!');
-                return;
+                let routeClass = Route.getRouteBase(args.app);
+                if (routeClass == null) {
+                    Beacon.displayError(context, 404, 'the page url:"' + context.url + '" is not found!');
+                    return;
+                }
+                ctlClass = routeClass.route(args.app, args.ctl, context);
+                if (ctlClass == null) {
+                    Beacon.displayError(context, 404, 'the page url:"' + context.url + '" is not found!');
+                    return;
+                }
             }
             let ctlobj = new ctlClass(context);
             await ctlobj.parsePayload(Beacon.getConfig('default_encoding', 'utf-8'));
@@ -124,6 +131,7 @@ export class Beacon extends Beaconkit {
             } else {
                 Beacon.displayError(context, 404, 'the page url:"' + context.url + '" is not found!');
             }
+
         } catch (e) {
             if (e.code && e.code == 'CONTROLLER_EXIT') {
                 return;
