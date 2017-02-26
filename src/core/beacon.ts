@@ -88,6 +88,13 @@ export class Beacon extends Beaconkit {
             }
             let ctlobj = new ctlClass(context);
             await ctlobj.parsePayload(Beacon.getConfig('default_encoding', 'utf-8'));
+            if (ctlClass.auth && Beacon.isArray(ctlClass.auth)) {
+                let name = Beacon.toUnder(args.act || 'index');
+                if (ctlClass.auth.indexOf(name) < 0) {
+                    Beacon.displayError(context, 404, 'the page url:"' + context.url + '" is not found!');
+                    return;
+                }
+            }
             let act = Beacon.lowerFirst(Beacon.toCamel(args.act || 'index')) + 'Action';
             let isInit = false;
             if (ctlobj[act] && Beacon.isFunction(ctlobj[act])) {

@@ -16,7 +16,7 @@ export class ControllerError extends Error {
     }
 }
 export class Controller {
-
+    public static auth: Array<string> = null;
     public context: HttpContext = null;
     public sdopx: Sdopx = null;
     public template_dirs = null;
