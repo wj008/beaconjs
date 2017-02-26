@@ -14,13 +14,12 @@ export class StartCity extends AdminController {
     }
 
     public async addAction() {
-        let form = new StartCityForm(this, StartCityForm.ADD);
+        let form = await new StartCityForm(this, StartCityForm.ADD).init();
         if (this.isGet()) {
             let row = await this.db.getRow('select `sort` from @pf_start_city  order by `sort` desc limit 0,1');
             let sort = row ? row.sort + 10 : 10;
             this.assign('row', {sort: sort});
-            form.assignFormScript();
-            this.display('startcity_add.form');
+            form.display();
             return;
         }
         if (this.isPost()) {
@@ -31,7 +30,7 @@ export class StartCity extends AdminController {
     }
 
     public async editAction() {
-        let form = new StartCityForm(this, StartCityForm.EDIT);
+        let form = await new StartCityForm(this, StartCityForm.EDIT).init();
         let id = this.param('id:i', 0);
         if (!id) {
             this.fail('参数有误');
@@ -39,8 +38,8 @@ export class StartCity extends AdminController {
         if (this.isGet()) {
             let row = await this.db.getRow('select * from @pf_start_city where id=?', id);
             this.assign('row', row);
-            form.assignFormScript();
-            this.display('startcity_edit.form');
+            await form.initValues(row);
+            form.display();
             return;
         }
         if (this.isPost()) {
@@ -81,5 +80,6 @@ export class StartCity extends AdminController {
         }, id);
         this.success('更新名称成功');
     }
+
 
 }
