@@ -9,12 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 class MemorySession {
     constructor() {
-        this.timeout = 3600;
         this._data = null;
         this._isInit = false;
         this._cookie = null;
-        let options = Beacon.getConfig('session:*');
-        this.timeout = options.timeout || 3600;
+        if (!MemorySession.timeout) {
+            let options = Beacon.getConfig('session:*');
+            MemorySession.timeout = options.timeout || 3600;
+            MemorySession.checkTime = options.checkTime || 300;
+        }
     }
     init(cookie) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -43,7 +45,7 @@ class MemorySession {
         }
         this._data = this._data || { data: {}, expire: 0 };
         this._data.data[name] = value;
-        this._data.expire = Date.now() + this.timeout * 1000;
+        this._data.expire = Date.now() + MemorySession.timeout * 1000;
     }
     delete(name) {
         if (name === void 0) {
@@ -59,11 +61,16 @@ class MemorySession {
                 delete store[this._cookie];
                 return;
             }
+            this._data.expire = Date.now() + MemorySession.timeout * 1000;
             store[this._cookie] = this._data;
         });
     }
     static gc() {
         let now = Date.now();
+        if (MemorySession.nextCheckTime > now) {
+            return;
+        }
+        MemorySession.nextCheckTime = now + MemorySession.checkTime * 1000;
         let store = MemorySession.store;
         for (let key in store) {
             let item = store[key];
@@ -73,6 +80,9 @@ class MemorySession {
         }
     }
 }
+MemorySession.timeout = null;
+MemorySession.nextCheckTime = 0;
+MemorySession.checkTime = 300;
 MemorySession.store = {};
 exports.MemorySession = MemorySession;
 //# sourceMappingURL=memory.js.map

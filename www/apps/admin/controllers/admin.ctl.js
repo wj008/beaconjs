@@ -16,14 +16,19 @@ class AdminController extends beacon_1.Beacon.Controller {
         this.adminName = '';
         this.template_dirs = path.join(beacon_1.Beacon.VIEW_PATH, 'admin') + '/';
     }
-    fail(message, jump, code, timeout = 3) {
+    fail(message, error, jump, code, timeout = 3) {
+        if (!beacon_1.Beacon.isObject(error)) {
+            timeout = code;
+            code = jump;
+            jump = error;
+            error = null;
+        }
         if (this.isAjax()) {
             let ret = {};
             ret.message = message;
             ret.status = false;
-            ret.timeout = timeout;
-            if (jump !== void 0) {
-                ret.jump = jump;
+            if (error) {
+                ret.error = error;
             }
             if (code !== void 0) {
                 ret.code = code;
@@ -40,10 +45,10 @@ class AdminController extends beacon_1.Beacon.Controller {
         this.assign('jump', jump);
         this.assign('timeout', timeout);
         this.assign('code', code);
-        this.display('fail');
+        this.display('common/fail');
         this.exit();
     }
-    success(message, jump, code, timeout = 3) {
+    success(message, jump, code, timeout = 1) {
         if (jump === void 0) {
             jump = this.param('__BACK__', this.getReferrer()) || null;
         }
@@ -51,10 +56,6 @@ class AdminController extends beacon_1.Beacon.Controller {
             let ret = {};
             ret.message = message;
             ret.status = true;
-            ret.timeout = timeout;
-            if (jump !== void 0) {
-                ret.jump = jump;
-            }
             if (code !== void 0) {
                 ret.code = code;
             }
@@ -67,7 +68,7 @@ class AdminController extends beacon_1.Beacon.Controller {
         this.assign('jump', jump);
         this.assign('timeout', timeout);
         this.assign('code', code);
-        this.display('success');
+        this.display('common/success');
         this.exit();
     }
     returnJson(data) {
@@ -107,24 +108,24 @@ class AdminController extends beacon_1.Beacon.Controller {
                 this.setSession('code', '');
                 this.fail('验证码有误！');
             }
-            let row = yield this.db.getRow('select * from @pf_manage where `username`=?', username);
+            let row = yield this.db.getRow('select * from @pf_manage where `name`=?', username);
             if (row == null) {
                 this.fail('账号不存在！');
             }
-            if (row.password != beacon_1.Beacon.md5(password)) {
+            if (row.pwd != beacon_1.Beacon.md5(password)) {
                 this.fail('用户密码不正确！');
             }
             this.setSession('adminId', row.id);
-            this.setSession('amdinName', row.username);
+            this.setSession('amdinName', row.name);
             let fields = yield this.db.getFields('@pf_manage');
             let temp = [];
             for (let i = 0; i < fields.length; i++) {
                 temp.push(fields[i]['Field']);
             }
             let vals = {};
-            if (temp.indexOf('thisdate') >= 0 && temp.indexOf('lastdate') >= 0) {
-                vals['thisdate'] = beacon_1.Beacon.getDate();
-                vals['lastdate'] = row.thisdate;
+            if (temp.indexOf('thistime') >= 0 && temp.indexOf('lasttime') >= 0) {
+                vals['thistime'] = new Date();
+                vals['lasttime'] = row.thistime;
             }
             if (temp.indexOf('thisip') >= 0 && temp.indexOf('lastip') >= 0) {
                 vals['thisip'] = this.getIP();

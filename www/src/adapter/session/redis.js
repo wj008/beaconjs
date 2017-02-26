@@ -14,6 +14,7 @@ class RedisSession {
         this._isInit = false;
         this._cookie = null;
         this._isUpdate = false;
+        this._expire = 0;
         this.redis = null;
         this.redis = redis_1.Redis.getRedisInstance();
         if (RedisSession.timeout == null || RedisSession == null) {
@@ -30,6 +31,7 @@ class RedisSession {
             this._isUpdate = false;
             this._isInit = true;
             this._data = (yield this.redis.get('session_' + cookie)) || { data: {}, expire: 0 };
+            this._expire = this._data.expire;
         });
     }
     get(name) {
@@ -83,7 +85,10 @@ class RedisSession {
             }
             //如果没有更改仅修改时间即可
             if (!this._isUpdate) {
-                yield this.redis.expire(name, RedisSession.timeout);
+                let expire = Date.now() + RedisSession.timeout * 1000;
+                if (this._expire + 10000 < expire) {
+                    yield this.redis.expire(name, RedisSession.timeout);
+                }
                 return;
             }
             yield this.redis.set(name, that._data, RedisSession.timeout);

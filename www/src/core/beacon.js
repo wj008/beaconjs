@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const path = require("path");
 const beacon_kit_1 = require("./beacon_kit");
 const http_context_1 = require("./http_context");
-const controller_1 = require("../controllers/controller");
+const controller_1 = require("../common/controller");
 const memory_1 = require("../adapter/session/memory");
 const file_1 = require("../adapter/session/file");
 const sdopx_1 = require("sdopx");
@@ -129,7 +129,7 @@ class Beacon extends beacon_kit_1.Beaconkit {
         sdopx.assign('message', error.message);
         sdopx.assign('status', status);
         sdopx.assign('error', error);
-        let content = sdopx.display('error');
+        let content = sdopx.display(Beacon.getConfig('error_tplname', 'error'));
         context.setStatus(status);
         context.end(content);
         if (status == 500) {

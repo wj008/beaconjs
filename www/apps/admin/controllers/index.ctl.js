@@ -21,7 +21,7 @@ class Index extends admin_ctl_1.AdminController {
     }
     leftAction() {
         return __awaiter(this, void 0, void 0, function* () {
-            let pid = this.get('pid:n', 0);
+            let pid = this.get('pid:i', 0);
             let info = yield this.db.getRow('select * from @pf_sysmenu where id=?', pid);
             this.assign('info', info);
             let rows = yield this.db.getList('select * from @pf_sysmenu where pid=? and allow=1 order by sort asc', pid);

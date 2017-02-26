@@ -307,38 +307,20 @@ class HttpContext {
         return (this._get[name] === void 0 ? def : String(this._get[name]));
     }
     iGet(name, def = 0) {
-        let value = (this._get[name] === void 0 ? '' : this._get[name]).trim();
-        if (/^[+-]?\d+(\.\d+)?$/.test(value)) {
-            let ivalue = parseInt(value);
-            return ivalue === NaN ? def : ivalue;
-        }
-        return def;
+        let value = (this._get[name] === void 0 ? '' : String(this._get[name])).trim();
+        return Beacon.toInt(value, def);
     }
     nGet(name, def = 0) {
-        let value = (this._get[name] === void 0 ? '' : this._get[name]).trim();
-        if (/^[+-]?\d+(\.\d+)?$/.test(value)) {
-            let ivalue = Number(value);
-            return ivalue === NaN ? def : ivalue;
-        }
-        return def;
+        let value = (this._get[name] === void 0 ? '' : String(this._get[name])).trim();
+        return Beacon.toNumber(value, def);
     }
     bGet(name, def = false) {
-        let value = (this._get[name] === void 0 ? '' : this._get[name]).trim();
-        if (value === '') {
-            return def;
-        }
-        if (value == '1' || value == 'true' || value == 'yes') {
-            return true;
-        }
-        return false;
+        let value = (this._get[name] === void 0 ? '' : String(this._get[name])).trim();
+        return Beacon.toBool(value, def);
     }
     dGet(name, def = new Date()) {
-        let value = (this._get[name] === void 0 ? '' : this._get[name]).trim();
-        let date = new Date(value);
-        if (date == null || date.toString() == 'Invalid Date' || isNaN(date.getTime())) {
-            return def;
-        }
-        return date;
+        let value = (this._get[name] === void 0 ? '' : String(this._get[name])).trim();
+        return Beacon.toDate(value, def);
     }
     aGet(name, def = []) {
         let value = (this._get[name] === void 0 ? def : this._get[name]);
@@ -351,38 +333,20 @@ class HttpContext {
         return (this._post[name] === void 0 ? def : String(this._post[name]));
     }
     iPost(name, def = 0) {
-        let value = (this._post[name] === void 0 ? '' : this._post[name]).trim();
-        if (/^[+-]\d+(\.\d+)?$/.test(value)) {
-            let ivalue = parseInt(value);
-            return ivalue === NaN ? def : ivalue;
-        }
-        return def;
+        let value = (this._post[name] === void 0 ? '' : String(this._post[name])).trim();
+        return Beacon.toInt(value, def);
     }
     nPost(name, def = 0) {
-        let value = (this._post[name] === void 0 ? '' : this._post[name]).trim();
-        if (/^[+-]\d+(\.\d+)?$/.test(value)) {
-            let ivalue = Number(value);
-            return ivalue === NaN ? def : ivalue;
-        }
-        return def;
+        let value = (this._post[name] === void 0 ? '' : String(this._post[name])).trim();
+        return Beacon.toNumber(value, def);
     }
     bPost(name, def = false) {
-        let value = (this._post[name] === void 0 ? '' : this._post[name]).trim();
-        if (value === '') {
-            return def;
-        }
-        if (value == '1' || value == 'true' || value == 'yes') {
-            return true;
-        }
-        return false;
+        let value = (this._post[name] === void 0 ? '' : String(this._post[name])).trim();
+        return Beacon.toBool(value, def);
     }
     dPost(name, def = new Date()) {
-        let value = (this._post[name] === void 0 ? '' : this._post[name]).trim();
-        let date = new Date(value);
-        if (date == null || date.toString() == 'Invalid Date' || isNaN(date.getTime())) {
-            return def;
-        }
-        return date;
+        let value = (this._post[name] === void 0 ? '' : String(this._post[name])).trim();
+        return Beacon.toDate(value, def);
     }
     aPost(name, def = []) {
         let value = (this._post[name] === void 0 ? def : this._post[name]);
@@ -594,13 +558,12 @@ class HttpContext {
         this.sendCookie();
         this.res.end();
         if (this._session) {
-            if (Beacon.isPromise(this._session.flush)) {
-                this._session.flush().catch(function (e) {
+            let p = this._session.flush();
+            if (Beacon.isPromise(p)) {
+                p.then(function () {
+                }).catch(function (e) {
                     throw e;
                 });
-            }
-            else {
-                this._session.flush();
             }
         }
     }

@@ -7,7 +7,7 @@
   //账号
   "password": "123456",
   //密码
-  "database": "ytx",
+  "database": "node",
   //数据库
   "prefix":"sl_"
   //表前缀

@@ -14,11 +14,13 @@ class MysqlSession {
         this._isInit = false;
         this._cookie = null;
         this._isUpdate = false;
+        this._row = null;
         if (MysqlSession.timeout != null) {
             return;
         }
         let options = Beacon.getConfig('session:*');
         MysqlSession.timeout = options.timeout || 3600;
+        MysqlSession.checkTime = options.checkTime || 300;
     }
     init(cookie) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -59,6 +61,7 @@ class MysqlSession {
                 return;
             }
             else {
+                this._row = row;
                 if (row.longv == 1) {
                     row = yield mysql_1.Mysql.getDBInstance().getRow('select value,expire from @pf_session_long where sid=? and expire>?', [cookie, time]);
                     if (row == null) {
@@ -97,7 +100,6 @@ class MysqlSession {
             return null;
         }
         let time = Math.round(Date.now() / 1000);
-        // console.log(this._data);
         if (this._data.expire < time) {
             this._data = null;
             return null;
@@ -123,9 +125,8 @@ class MysqlSession {
                 this._isUpdate = true;
             }
         }
-        let time = Math.round(Date.now() / 1000);
         this._data.data[name] = value;
-        this._data.expire = time + MysqlSession.timeout;
+        this._data.expire = Math.round(Date.now() / 1000) + MysqlSession.timeout;
     }
     delete(name) {
         this._isUpdate = true;
@@ -138,7 +139,7 @@ class MysqlSession {
     flush() {
         return __awaiter(this, void 0, void 0, function* () {
             let cookie = this._cookie;
-            let row = yield mysql_1.Mysql.getDBInstance().getRow('select `longv` from @pf_session where sid=?', cookie);
+            let row = this._row;
             //如果为空删除
             if (this._data == null) {
                 if (row == null) {
@@ -152,7 +153,8 @@ class MysqlSession {
             }
             //如果没有更改仅修改时间即可
             if (!this._isUpdate) {
-                if (row != null) {
+                this._data.expire = Math.round(Date.now() / 1000) + MysqlSession.timeout;
+                if (row != null && row.expire + 10 < this._data.expire) {
                     yield mysql_1.Mysql.getDBInstance().update('@pf_session', { expire: this._data.expire }, 'sid=?', cookie);
                     if (row.longv == 1) {
                         yield mysql_1.Mysql.getDBInstance().update('@pf_session_long', { expire: this._data.expire }, 'sid=?', cookie);
@@ -222,6 +224,10 @@ class MysqlSession {
     }
     static gc() {
         let time = Math.round(Date.now() / 1000);
+        if (MysqlSession.nextCheckTime > time) {
+            return;
+        }
+        MysqlSession.nextCheckTime = time + MysqlSession.checkTime;
         Promise.all([
             mysql_1.Mysql.getDBInstance().delete('@pf_session', 'expire<=?', time),
             mysql_1.Mysql.getDBInstance().delete('@pf_session_long', 'expire<=?', time)
@@ -230,6 +236,8 @@ class MysqlSession {
     }
 }
 MysqlSession.timeout = null;
+MysqlSession.checkTime = 300;
+MysqlSession.nextCheckTime = 0;
 MysqlSession.init = false;
 MysqlSession.store = {};
 exports.MysqlSession = MysqlSession;

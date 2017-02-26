@@ -16,11 +16,13 @@ class FileSession {
         this._isInit = false;
         this._cookie = null;
         this._isUpdate = false;
+        this._expire = 0;
         if (!(FileSession.timeout == null || FileSession._save_path == null)) {
             return;
         }
         let options = Beacon.getConfig('session:*');
         FileSession.timeout = options.timeout || 3600;
+        FileSession.checkTime = options.checkTime || 300;
         let save_path = Beacon.getConfig('session:save_path') || null;
         if (!save_path) {
             save_path = path.join(os.tmpdir(), 'beacon/session');
@@ -36,33 +38,50 @@ class FileSession {
             this._cookie = cookie;
             this._isUpdate = false;
             let filepath = path.join(FileSession._save_path, this._cookie + '.json');
-            let text = yield new Promise(function (resolve, reject) {
+            let fdata = yield new Promise(function (resolve, reject) {
+                //文件是否存在
                 fs.access(filepath, fs.constants.R_OK | fs.constants.W_OK, (err) => {
                     if (err) {
                         return resolve(null);
                     }
-                    fs.readFile(filepath, 'utf8', (err, text) => {
+                    //获取状态
+                    fs.stat(filepath, function (err, stat) {
                         if (err) {
                             return resolve(null);
                         }
-                        return resolve(text);
+                        if (stat == null) {
+                            return resolve(null);
+                        }
+                        let expire = stat.mtime.getTime() + FileSession.timeout * 1000;
+                        fs.readFile(filepath, 'utf8', (err, text) => {
+                            if (err) {
+                                return resolve(null);
+                            }
+                            return resolve({ text: text, expire: expire });
+                        });
                     });
                 });
             });
             try {
-                let json = JSON.parse(String(text));
-                this._data = json || { data: {}, expire: 0 };
-                this._isInit = true;
+                if (fdata) {
+                    let json = JSON.parse(String(fdata.text));
+                    this._data = { data: json || {}, expire: fdata.expire || 0 };
+                }
+                else {
+                    this._data = { data: {}, expire: 0 };
+                }
             }
             catch (e) {
+                this._data = { data: {}, expire: 0 };
             }
+            this._expire = this._data.expire;
+            this._isInit = true;
         });
     }
     get(name) {
         if (!this._isInit || !this._data) {
             return null;
         }
-        //console.log(this._data);
         if (this._data.expire < Date.now()) {
             this._data = null;
             return null;
@@ -114,29 +133,27 @@ class FileSession {
                             if (err) {
                                 return resolve(null);
                             }
-                            // console.log('删除了文件:' , filepath);
                             return resolve(null);
                         });
                     });
                 });
                 return;
             }
-            let now = Date.now() / 1000;
+            let now = Date.now();
             //如果没有更改仅修改时间即可
             if (!this._isUpdate) {
-                yield new Promise(function (resolve, reject) {
-                    fs.utimes(filepath, now, now, (err) => {
-                        // console.log('更新sesslin[' + that._cookie + ']的时间');
-                        return resolve(null);
+                if (this._expire + 10000 < now + FileSession.timeout * 1000) {
+                    yield new Promise(function (resolve, reject) {
+                        fs.utimes(filepath, now, now, (err) => {
+                            return resolve(null);
+                        });
                     });
-                });
+                }
                 return;
             }
-            let text = JSON.stringify(that._data);
-            //如果修改了就写入内容
+            let text = JSON.stringify(that._data.data);
             yield new Promise(function (resolve, reject) {
                 fs.writeFile(filepath, text, 'utf8', (err) => {
-                    // console.log('写入新的sesslin[' + that._cookie + ']的时间');
                     return resolve(null);
                 });
             });
@@ -144,12 +161,16 @@ class FileSession {
         });
     }
     static gc() {
+        let now = Date.now();
+        if (FileSession.nextCheckTime > now) {
+            return;
+        }
+        FileSession.nextCheckTime = now + FileSession.checkTime * 1000;
         let removeFile = function (filepath) {
             fs.stat(filepath, function (err, stat) {
                 if (err) {
                     return;
                 }
-                //console.log('判断时间', stat);
                 if (stat == null || stat.mtime.getTime() + FileSession.timeout * 1000 > now) {
                     return;
                 }
@@ -158,7 +179,6 @@ class FileSession {
                 });
             });
         };
-        let now = Date.now();
         let files = Beacon.getFiles(FileSession._save_path, null, function (file) {
             return /\.json$/.test(file);
         });
@@ -169,6 +189,8 @@ class FileSession {
     }
 }
 FileSession.timeout = null;
+FileSession.nextCheckTime = 0;
+FileSession.checkTime = 300;
 FileSession.store = {};
 FileSession._save_path = null;
 exports.FileSession = FileSession;

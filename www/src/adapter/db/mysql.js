@@ -84,6 +84,9 @@ class Mysql {
             if (this._inTransaction > 0 && this.conn == null) {
                 throw new Error('mysql is disconnect');
             }
+            if (typeof args === 'number' || (typeof args == 'string' && args.length == 0) || (typeof args == 'boolean' && args === false)) {
+                args = [args];
+            }
             let conn = yield this.getConnection();
             return yield new Promise(function (resolve, reject) {
                 if (args === void 0 || args === null) {
@@ -180,7 +183,7 @@ class Mysql {
     getRow(sql, args) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.prefix) {
-                sql = sql.replace('@pf_', this.prefix);
+                sql = sql.replace(/@pf_/g, this.prefix);
             }
             let rows = yield this.query(sql, args);
             if (!rows || !rows[0]) {
@@ -192,7 +195,7 @@ class Mysql {
     getList(sql, args) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.prefix) {
-                sql = sql.replace('@pf_', this.prefix);
+                sql = sql.replace(/@pf_/g, this.prefix);
             }
             return yield this.query(sql, args);
         });
@@ -200,7 +203,7 @@ class Mysql {
     getOne(sql, args, name) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.prefix) {
-                sql = sql.replace('@pf_', this.prefix);
+                sql = sql.replace(/@pf_/g, this.prefix);
             }
             let row = yield this.getRow(sql, args);
             if (!row) {
@@ -215,14 +218,14 @@ class Mysql {
     }
     sqlBlock(sql, args) {
         if (this.prefix) {
-            sql = sql.replace('@pf_', this.prefix);
+            sql = sql.replace(/@pf_/g, this.prefix);
         }
         return new SqlBlock(sql, args);
     }
     insert(tbname, values) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.prefix) {
-                tbname = tbname.replace('@pf_', this.prefix);
+                tbname = tbname.replace(/@pf_/g, this.prefix);
             }
             if (!Beacon.isObject(values)) {
                 return null;
@@ -235,11 +238,20 @@ class Mysql {
                 if (Beacon.isObject(item) && item instanceof SqlBlock) {
                     vals.push(mysql.format(item.sql, item.args));
                 }
+                else if (Beacon.isDate(item)) {
+                    vals.push(mysql.escape(Beacon.datetime(item, 'yyyy-MM-dd HH:mm:ss')));
+                }
                 else if (Beacon.isBoolean(item)) {
                     vals.push(item ? 1 : 0);
                 }
+                else if (Beacon.isNumber(item)) {
+                    vals.push(item);
+                }
                 else if (item === null) {
                     vals.push('NULL');
+                }
+                else if (Beacon.isArray(item) || Beacon.isObject(item)) {
+                    vals.push(mysql.escape(JSON.stringify(item)));
                 }
                 else {
                     item = String(item);
@@ -258,7 +270,7 @@ class Mysql {
     replace(tbname, values) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.prefix) {
-                tbname = tbname.replace('@pf_', this.prefix);
+                tbname = tbname.replace(/@pf_/g, this.prefix);
             }
             if (!Beacon.isObject(values)) {
                 return null;
@@ -271,11 +283,20 @@ class Mysql {
                 if (Beacon.isObject(item) && item instanceof SqlBlock) {
                     vals.push(mysql.format(item.sql, item.args));
                 }
+                else if (Beacon.isDate(item)) {
+                    vals.push(mysql.escape(Beacon.datetime(item, 'yyyy-MM-dd HH:mm:ss')));
+                }
                 else if (Beacon.isBoolean(item)) {
                     vals.push(item ? 1 : 0);
                 }
+                else if (Beacon.isNumber(item)) {
+                    vals.push(item);
+                }
                 else if (item === null) {
                     vals.push('NULL');
+                }
+                else if (Beacon.isArray(item) || Beacon.isObject(item)) {
+                    vals.push(mysql.escape(JSON.stringify(item)));
                 }
                 else {
                     item = String(item);
@@ -294,7 +315,7 @@ class Mysql {
     update(tbname, values, where, args) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.prefix) {
-                tbname = tbname.replace('@pf_', this.prefix);
+                tbname = tbname.replace(/@pf_/g, this.prefix);
             }
             if (!Beacon.isObject(values)) {
                 return null;
@@ -305,11 +326,20 @@ class Mysql {
                 if (Beacon.isObject(item) && item instanceof SqlBlock) {
                     sets.push('`' + key + '`=' + mysql.format(item.sql, item.args));
                 }
+                else if (Beacon.isDate(item)) {
+                    sets.push('`' + key + '`=' + mysql.escape(Beacon.datetime(item, 'yyyy-MM-dd HH:mm:ss')));
+                }
                 else if (Beacon.isBoolean(item)) {
                     sets.push('`' + key + '`=' + (item ? 1 : 0));
                 }
+                else if (Beacon.isNumber(item)) {
+                    sets.push('`' + key + '`=' + item);
+                }
                 else if (item === null) {
                     sets.push('`' + key + '`=' + 'NULL');
+                }
+                else if (Beacon.isArray(item) || Beacon.isObject(item)) {
+                    sets.push('`' + key + '`=' + mysql.escape(JSON.stringify(item)));
                 }
                 else {
                     item = String(item);
@@ -321,7 +351,7 @@ class Mysql {
             }
             let excsql = `UPDATE ${tbname} SET `;
             excsql += sets.join(',');
-            if (typeof where == 'number' && /^\d+$/.test(where) && args == void 0) {
+            if (typeof where == 'number' && /^\d+$/.test(String(where)) && args == void 0) {
                 args = where;
                 where = 'id=?';
             }
@@ -337,10 +367,10 @@ class Mysql {
     delete(tbname, where, args) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.prefix) {
-                tbname = tbname.replace('@pf_', this.prefix);
+                tbname = tbname.replace(/@pf_/g, this.prefix);
             }
             let excsql = `DELETE  FROM ${tbname}`;
-            if (typeof where == 'number' && /^\d+$/.test(where) && args == void 0) {
+            if (typeof where == 'number' && /^\d+$/.test(String(where)) && args == void 0) {
                 args = where;
                 where = 'id=?';
             }
@@ -356,7 +386,7 @@ class Mysql {
     getFields(tbname) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.prefix) {
-                tbname = tbname.replace('@pf_', this.prefix);
+                tbname = tbname.replace(/@pf_/g, this.prefix);
             }
             return yield this.query(`desc ${tbname};`);
         });
@@ -364,7 +394,7 @@ class Mysql {
     existsField(tbname, name) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.prefix) {
-                tbname = tbname.replace('@pf_', this.prefix);
+                tbname = tbname.replace(/@pf_/g, this.prefix);
             }
             let row = yield this.getRow(`describe ${tbname} \`${name}\`;`);
             return row !== null;
@@ -373,7 +403,7 @@ class Mysql {
     addField(tbname, name, options = {}) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.prefix) {
-                tbname = tbname.replace('@pf_', this.prefix);
+                tbname = tbname.replace(/@pf_/g, this.prefix);
             }
             options = Object.assign({
                 type: 'VARCHAR',
@@ -414,7 +444,7 @@ class Mysql {
     modifyField(tbname, name, options = {}) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.prefix) {
-                tbname = tbname.replace('@pf_', this.prefix);
+                tbname = tbname.replace(/@pf_/g, this.prefix);
             }
             if (!(yield this.existsField(tbname, name))) {
                 return yield this.addField(tbname, name, options);
@@ -458,7 +488,7 @@ class Mysql {
     updateField(tbname, oldname, newname, options = {}) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.prefix) {
-                tbname = tbname.replace('@pf_', this.prefix);
+                tbname = tbname.replace(/@pf_/g, this.prefix);
             }
             //一样的
             if (oldname == newname) {
@@ -511,7 +541,7 @@ class Mysql {
     dropField(tbname, name) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.prefix) {
-                tbname = tbname.replace('@pf_', this.prefix);
+                tbname = tbname.replace(/@pf_/g, this.prefix);
             }
             if (yield this.existsField(tbname, name)) {
                 let excSql = `ALTER TABLE ${tbname} DROP \`${name}\` ;`;
@@ -523,7 +553,7 @@ class Mysql {
     existsTable(tbname) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.prefix) {
-                tbname = tbname.replace('@pf_', this.prefix);
+                tbname = tbname.replace(/@pf_/g, this.prefix);
             }
             let row = yield this.getRow('SHOW TABLES LIKE ?;', tbname);
             return row != null;
@@ -532,7 +562,7 @@ class Mysql {
     dropTable(tbname) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.prefix) {
-                tbname = tbname.replace('@pf_', this.prefix);
+                tbname = tbname.replace(/@pf_/g, this.prefix);
             }
             let row = yield this.getRow('DROP TABLE IF EXISTS ?;', tbname);
             return row != null;
