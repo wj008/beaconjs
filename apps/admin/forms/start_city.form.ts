@@ -35,7 +35,6 @@ export class StartCityForm extends Form {
                     'type': 'integer',
                     'data_val': {r: true, int: true},
                     'data_val_msg': {r: '请输入排序值', int: '排序值必须是数值形式'},
-                    'var_type': 'i',
                     'tips': '越小越靠前',
                     'box_class': 'form-inp number',
                 }
