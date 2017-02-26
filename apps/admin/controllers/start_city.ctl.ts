@@ -1,10 +1,11 @@
 import {AdminController} from "./admin.ctl";
-import {PageList} from "../../libs/pagelist";
+import {Selector} from "../../libs/selector";
+import {StartCityForm} from "../forms/star_city.form";
 
 export class StartCity extends AdminController {
 
     public async indexAction() {
-        let plist = new PageList('select * from @pf_start_city order by sort asc');
+        let plist = new Selector('@pf_start_city').order('sort asc').getPageList();
         let {info, list} = await plist.getData(this);
         this.assign('list', list);
         this.assign('pdata', info);
@@ -13,34 +14,24 @@ export class StartCity extends AdminController {
     }
 
     public async addAction() {
+        let form = new StartCityForm(this, StartCityForm.ADD);
         if (this.isGet()) {
             let row = await this.db.getRow('select `sort` from @pf_start_city  order by `sort` desc limit 0,1');
             let sort = row ? row.sort + 10 : 10;
             this.assign('row', {sort: sort});
+            form.assignFormScript();
             this.display('startcity_add.form');
             return;
         }
         if (this.isPost()) {
-            let {name = '', address = ''}=this.post();
-            let sort = this.post('sort:i', 0);
-            if (name == '') {
-                this.fail('出发城市不可为空', {name: '出发城市不可为空'});
-            }
-            if (address == '') {
-                this.fail('详细地址不可为空', {address: '详细地址不可为空'});
-            }
-            let vals = {
-                name: name,
-                sort: sort,
-                address: address
-            }
-            await this.db.insert('@pf_start_city', vals);
+            await form.insert('@pf_start_city');
             this.success('添加出发城市成功');
             console.log(Date.now() - this.context.startTime);
         }
     }
 
     public async editAction() {
+        let form = new StartCityForm(this, StartCityForm.EDIT);
         let id = this.param('id:i', 0);
         if (!id) {
             this.fail('参数有误');
@@ -48,24 +39,12 @@ export class StartCity extends AdminController {
         if (this.isGet()) {
             let row = await this.db.getRow('select * from @pf_start_city where id=?', id);
             this.assign('row', row);
+            form.assignFormScript();
             this.display('startcity_edit.form');
             return;
         }
         if (this.isPost()) {
-            let {name = '', address = ''}=this.post();
-            let sort = this.post('sort:i', 0);
-            if (name == '') {
-                this.fail('出发城市不可为空', {name: '出发城市不可为空'});
-            }
-            if (address == '') {
-                this.fail('详细地址不可为空', {address: '详细地址不可为空'});
-            }
-            let vals = {
-                name: name,
-                sort: sort,
-                address: address
-            }
-            await this.db.update('@pf_start_city', vals, id);
+            await form.update('@pf_start_city', id);
             this.success('编辑出发城市成功');
         }
     }

@@ -338,7 +338,6 @@ export class Selector {
         return {sql: sqla.join(' '), args: args};
     }
 
-
     public async getCount(db: Mysql) {
         let {sql = '', args = null}=this.createSql(2);
         let count = await db.getOne(sql, args);
@@ -365,6 +364,7 @@ export class Selector {
             }
             that.limit(start, this.page_size);
             let {sql = '', args = null}=that.createSql(1);
+            //console.log(sql,args);
             let list = await ctl.db.getList(sql, this.args);
             return list;
         }
