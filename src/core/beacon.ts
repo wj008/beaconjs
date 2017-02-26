@@ -1,7 +1,7 @@
 import path =require('path');
 import {Beaconkit} from "./beacon_kit";
 import {HttpContext} from "./http_context";
-import {Controller} from "../controllers/controller";
+import {Controller} from "../common/controller";
 import {MemorySession} from "../adapter/session/memory";
 import {FileSession} from "../adapter/session/file";
 import {Sdopx} from "sdopx";
@@ -154,7 +154,7 @@ export class Beacon extends Beaconkit {
         sdopx.assign('message', error.message);
         sdopx.assign('status', status);
         sdopx.assign('error', error);
-        let content = sdopx.display('error');
+        let content = sdopx.display(Beacon.getConfig('error_tplname', 'error'));
         context.setStatus(status);
         context.end(content);
         if (status == 500) {

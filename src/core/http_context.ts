@@ -326,40 +326,22 @@ export class HttpContext {
 
     public iGet(name: string, def: number = 0) {
         let value = (this._get[name] === void 0 ? '' : String(this._get[name])).trim();
-        if (/^[+-]?\d+(\.\d+)?$/.test(value)) {
-            let ivalue = parseInt(value);
-            return ivalue === NaN ? def : ivalue;
-        }
-        return def;
+        return Beacon.toInt(value, def);
     }
 
     public nGet(name: string, def: number = 0) {
         let value = (this._get[name] === void 0 ? '' : String(this._get[name])).trim();
-        if (/^[+-]?\d+(\.\d+)?$/.test(value)) {
-            let ivalue = Number(value);
-            return ivalue === NaN ? def : ivalue;
-        }
-        return def;
+        return Beacon.toNumber(value, def);
     }
 
     public bGet(name: string, def: boolean = false) {
         let value = (this._get[name] === void 0 ? '' : String(this._get[name])).trim();
-        if (value === '') {
-            return def;
-        }
-        if (value == '1' || value == 'true' || value == 'yes') {
-            return true;
-        }
-        return false;
+        return Beacon.toBool(value, def);
     }
 
     public dGet(name: string, def: Date = new Date()) {
         let value = (this._get[name] === void 0 ? '' : String(this._get[name])).trim();
-        let date = new Date(value);
-        if (date == null || date.toString() == 'Invalid Date' || isNaN(date.getTime())) {
-            return def;
-        }
-        return date;
+        return Beacon.toDate(value, def);
     }
 
     public aGet(name: string, def = []) {
@@ -376,40 +358,22 @@ export class HttpContext {
 
     public iPost(name: string, def: number = 0) {
         let value = (this._post[name] === void 0 ? '' : String(this._post[name])).trim();
-        if (/^[+-]?\d+(\.\d+)?$/.test(value)) {
-            let ivalue = parseInt(value);
-            return ivalue === NaN ? def : ivalue;
-        }
-        return def;
+        return Beacon.toInt(value, def);
     }
 
     public nPost(name: string, def: number = 0) {
         let value = (this._post[name] === void 0 ? '' : String(this._post[name])).trim();
-        if (/^[+-]?\d+(\.\d+)?$/.test(value)) {
-            let ivalue = Number(value);
-            return ivalue === NaN ? def : ivalue;
-        }
-        return def;
+        return Beacon.toNumber(value, def);
     }
 
     public bPost(name: string, def: boolean = false) {
         let value = (this._post[name] === void 0 ? '' : String(this._post[name])).trim();
-        if (value === '') {
-            return def;
-        }
-        if (value == '1' || value == 'true' || value == 'yes') {
-            return true;
-        }
-        return false;
+        return Beacon.toBool(value, def);
     }
 
     public dPost(name: string, def: Date = new Date()) {
         let value = (this._post[name] === void 0 ? '' : String(this._post[name])).trim();
-        let date = new Date(value);
-        if (date == null || date.toString() == 'Invalid Date' || isNaN(date.getTime())) {
-            return def;
-        }
-        return date;
+        return Beacon.toDate(value, def);
     }
 
     public aPost(name: string, def = []) {
@@ -641,7 +605,8 @@ export class HttpContext {
         if (this._session) {
             let p = this._session.flush();
             if (Beacon.isPromise(p)) {
-                p.then(function () {}).catch(function (e) {
+                p.then(function () {
+                }).catch(function (e) {
                     throw e;
                 });
             }

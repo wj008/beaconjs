@@ -364,4 +364,70 @@ export class Beaconkit {
             return null;
         }
     }
+
+    public static toInt(value, def = 0) {
+        if (value === null) {
+            return def;
+        }
+        if (typeof value === 'number') {
+            return value === NaN ? def : value;
+        }
+        value = String(value);
+        if (/^[+-]?\d+(\.\d+)?$/.test(value)) {
+            let ivalue = parseInt(value);
+            return ivalue === NaN ? def : ivalue;
+        }
+        return def;
+    }
+
+    public static toNumber(value, def = 0) {
+        if (value === null) {
+            return def;
+        }
+        if (typeof value === 'number') {
+            return value === NaN ? def : value;
+        }
+        value = String(value);
+        if (/^[+-]?\d+(\.\d+)?$/.test(value)) {
+            let ivalue = Number(value);
+            return ivalue === NaN ? def : ivalue;
+        }
+        return def;
+    }
+
+    public static toBool(value, def = false) {
+        if (value === null) {
+            return def;
+        }
+        if (typeof value === 'boolean') {
+            return value;
+        }
+        value = String(value);
+        if (value === '') {
+            return def;
+        }
+        if (value == '1' || value == 'true' || value == 'yes') {
+            return true;
+        }
+        return false;
+    }
+
+    public static toDate(value, def = new Date()) {
+        if (value === null) {
+            return def;
+        }
+        if (value instanceof Date) {
+            if (value.toString() == 'Invalid Date' || isNaN(value.getTime())) {
+                return def;
+            }
+            return value;
+        }
+        let date = new Date(value);
+        if (date.toString() == 'Invalid Date' || isNaN(date.getTime())) {
+            return def;
+        }
+        return date;
+    }
+
+
 }
