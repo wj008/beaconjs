@@ -346,6 +346,11 @@ export class Field {
         if (this.value !== null && String(this.value).length > 0) {
             data['value'] = this.value;
         }
+        if (this._form.type == Form.ADD && (data['value'] === void 0 || data['value'] == null)) {
+            if (this.default !== null) {
+                data['value'] = this.default;
+            }
+        }
         return data;
     }
 
@@ -359,6 +364,7 @@ export class Form {
     static boxInstance: {[key: string]: BoxBase} = {};
 
     public title = '';
+    public action = '';
     public caption = '';
     public back_uri = '';
     public ctl: Controller = null;
@@ -389,6 +395,11 @@ export class Form {
         for (let name in fields) {
             this.addField(name, fields[name]);
         }
+        return this;
+    }
+
+    public setType(type) {
+        this.type = type;
         return this;
     }
 
