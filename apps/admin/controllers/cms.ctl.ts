@@ -8,13 +8,13 @@ import fs=require('fs');
 export class CmsController extends AdminController {
 
     public form = null;
-    public static picks = {};
+    private static _picks = {};
 
     public async init() {
         await super.init();
         let fname = Beacon.toUnder(this.route('ctl'));
-        if (CmsController.picks[fname]) {
-            let cls = CmsController.picks[fname] || null;
+        if (CmsController._picks[fname]) {
+            let cls = CmsController._picks[fname] || null;
             if (cls) {
                 this.form = new cls(this, Form.NONE);
                 return;
@@ -26,7 +26,7 @@ export class CmsController extends AdminController {
             let cname = Beacon.toCamel(fname) + 'Form';
             let cls = pick[cname] || null;
             if (cls) {
-                CmsController.picks[fname] = cls;
+                CmsController._picks[fname] = cls;
                 this.form = new cls(this, Form.NONE);
                 return;
             }
@@ -35,9 +35,10 @@ export class CmsController extends AdminController {
     }
 
     public async indexAction() {
-        let selector = new Selector(this.form.dbtable.name);
-        if (this.form.dbtable.orderby) {
-            selector.order(this.form.dbtable.orderby);
+        let form = await this.form;
+        let selector = new Selector(form.table);
+        if (this.form.orderby) {
+            selector.order(form.orderby);
         }
         let plist = selector.getPageList();
         let {info, list} = await plist.getData(this);
@@ -54,8 +55,8 @@ export class CmsController extends AdminController {
             return;
         }
         if (this.isPost()) {
-            await form.insert(form.dbtable.name);
-            this.success(form.action + form.title + '成功');
+            await form.insert(form.table);
+            this.success('添加' + form.title + '成功');
             console.log(Date.now() - this.context.startTime);
         }
     }
@@ -67,14 +68,14 @@ export class CmsController extends AdminController {
             this.fail('参数有误');
         }
         if (this.isGet()) {
-            let row = await this.db.getRow('select * from ' + form.dbtable.name + ' where id=?', id);
+            let row = await this.db.getRow('select * from ' + form.table + ' where id=?', id);
             await form.initValues(row);
             form.display();
             return;
         }
         if (this.isPost()) {
-            await form.update(form.dbtable.name, id);
-            this.success(form.action + form.title + '成功');
+            await form.update(form.table, id);
+            this.success('编辑' + form.title + '成功');
         }
     }
 
@@ -83,8 +84,8 @@ export class CmsController extends AdminController {
         if (!id) {
             this.fail('参数有误');
         }
-        await this.db.delete(this.form.dbtable.name, id);
-        this.success('删除出发城市成功');
+        await this.db.delete(this.form.table, id);
+        this.success('删除' + this.form.title + '成功');
     }
 
     public async sortAction() {
@@ -93,7 +94,7 @@ export class CmsController extends AdminController {
             this.fail('参数有误');
         }
         let sort = this.param('sort:i', 0);
-        await this.db.update(this.form.dbtable.name, {
+        await this.db.update(this.form.table, {
             sort: sort
         }, id);
         this.success('更新排序成功');
@@ -105,7 +106,7 @@ export class CmsController extends AdminController {
             this.fail('参数有误');
         }
         let name = this.param('name:s', '');
-        await this.db.update(this.form.dbtable.name, {
+        await this.db.update(this.form.table, {
             name: name
         }, id);
         this.success('更新名称成功');

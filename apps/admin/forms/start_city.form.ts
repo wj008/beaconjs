@@ -3,25 +3,17 @@ import {Form} from "../../../src/common/form";
 export class StartCityForm extends Form {
 
     public tpl_list = 'startcity';
-    public action = '';
-    public dbtable = {
-        'name': '@pf_start_city',
-        'orderby': 'sort asc',
-    };
+    public title = '出发地点';
+    public caption = '字典-出发地点';
+    public table = '@pf_start_city';
+    public orderby = 'sort asc'
+
+    public constructor(ctl: any, type: number = Form.NONE) {
+        super(ctl, type);
+        this.back_uri = ctl.url('~/start_city');
+    }
 
     public async load(fields: {[key: string]: any} = null) {
-
-        this.title = '出发地点';
-
-        if (this.type == Form.ADD) {
-            this.action = '添加';
-        } else if (this.type == Form.EDIT) {
-            this.action = '编辑';
-        }
-
-        this.caption = '字典-出发地点';
-        this.back_uri = this.ctl.url('~/start_city');
-
         if (this.type != Form.NONE) {
             this._load = {
                 name: {
@@ -54,6 +46,7 @@ export class StartCityForm extends Form {
             let sort = row ? row.sort + 10 : 10;
             this._load['sort']['default'] = sort;
         }
+
         return await super.load(fields);
     }
 
