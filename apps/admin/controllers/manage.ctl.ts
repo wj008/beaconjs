@@ -1,6 +1,6 @@
 import {AdminController} from "./admin.ctl";
 import {Beacon} from "../../../src/core/beacon";
-import {PageList} from "../../libs/pagelist";
+import {PageList} from "../../../src/common/pagelist";
 export class Manage extends AdminController {
 
     public async indexAction() {

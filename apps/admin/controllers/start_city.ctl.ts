@@ -1,5 +1,5 @@
 import {AdminController} from "./admin.ctl";
-import {Selector} from "../../libs/selector";
+import {Selector} from "../../../src/common/selector";
 import {StartCityForm} from "../forms/star_city.form";
 
 export class StartCity extends AdminController {

@@ -1,5 +1,5 @@
 import {AdminController} from "./admin.ctl";
-import {PageList} from "../../libs/pagelist";
+import {PageList} from "../../../src/common/pagelist";
 
 export class Destination extends AdminController {
 
