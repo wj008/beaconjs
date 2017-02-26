@@ -50,19 +50,8 @@
 </form>
 {/block}
 
-{block name="foot"}{literal}
+{block name="foot"}
 <script>
-    $('#name').data({
-        'val': {r: true},
-        'val-msg': {r: '请输入出发地点名称'},
-    });
-    $('#address').data({
-        'val': {r: true},
-        'val-msg': {r: '请输入聚集详细地址'},
-    });
-    $('#sort').data({
-        'val': {r: true, int: true},
-        'val-msg': {r: '请输入排序值', int: '排序值必须是数值形式'},
-    });
+{$form.getScript()|raw}
 </script>
-{/literal}{/block}
+{/block}
