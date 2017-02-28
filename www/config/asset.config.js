@@ -19,6 +19,7 @@ module.exports = {
         'yee-xheditor': 'yee.xheditor',
         'yee-date': 'yee.date',
         'yee-datetime': 'yee.datetime',
+        'yee-upfile': 'yee.upfile-1.1.0',
     },
     depends: {
         'jquery-ui': ['../jquery-ui/custom.css', 'jquery'],
