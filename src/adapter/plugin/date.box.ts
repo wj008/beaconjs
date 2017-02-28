@@ -2,12 +2,16 @@ import {BoxBase, Field} from "../../common/form";
 import {Helper} from "./helper";
 declare var Beacon: any;
 
-export class TextBox implements BoxBase {
+export class DateBox implements BoxBase {
 
     public code(field: Field, args: {[key: string]: any}, out: {echo: Function, raw: Function}, sdopx: any) {
+        if (sdopx.context) {
+            sdopx.context.addAsset('yee-date');
+        }
         let attr: any = Object.assign(field.getBoxAttr(), args);
         let box_attr = [];
         attr.type = 'text';
+        attr['yee-module'] = 'date';
         let data = field.getBoxData();
         Helper.explodeAttr(box_attr, attr);
         Helper.explodeData(box_attr, data);
@@ -28,6 +32,8 @@ export class TextBox implements BoxBase {
 
     public init(field: Field, vals: {[key: string]: any;}) {
         field.value = vals[field.name] || null;
+        if (field.value != null && String(field.value).length > 0) {
+            field.value = Beacon.datetime(field.value);
+        }
     }
-
 }

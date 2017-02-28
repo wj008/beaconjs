@@ -3,7 +3,7 @@ import {Controller} from "../common/controller";
 import path=require('path');
 import fs=require('fs');
 export interface BoxBase {
-    code (field: Field, attr: {[key: string]: any}, out: {echo: Function, raw: Function}, sdopx: any);
+    code (field: Field, args: {[key: string]: any}, out: {echo: Function, raw: Function}, sdopx: any);
     assign (field: Field, params: {[key: string]: any});
     fill(field: Field, vals: {[key: string]: any});
     init(field: Field, vals: {[key: string]: any});

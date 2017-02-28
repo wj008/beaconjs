@@ -145,6 +145,7 @@ export class MysqlSession implements SessionBase {
     public async flush() {
         let cookie = this._cookie;
         let row = this._row;
+        //console.log(row,this._data);
         //如果为空删除
         if (this._data == null) {
             if (row == null) {

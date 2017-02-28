@@ -376,18 +376,38 @@ export class Mysql {
         return await this.query(excsql);
     }
 
+    public async getMax(tbname: string, field: string, where?: any, args?: any) {
+        let excsql = 'SELECT MAX(`' + field + '`) FROM `' + tbname + '`'
+        if (!where) {
+            excsql += '';
+        } else {
+            excsql += ' WHERE ' + mysql.format(where, args);
+        }
+        return await this.getOne(excsql);
+    }
+
+    public async getMin(tbname: string, field: string, where?: any, args?: any) {
+        let excsql = 'SELECT MIN(`' + field + '`) FROM `' + tbname + '`'
+        if (!where) {
+            excsql += '';
+        } else {
+            excsql += ' WHERE ' + mysql.format(where, args);
+        }
+        return await this.getOne(excsql);
+    }
+
     public async getFields(tbname: string): Promise<any> {
         if (this.prefix) {
             tbname = tbname.replace(/@pf_/g, this.prefix);
         }
-        return await this.query(`desc ${tbname};`);
+        return await this.query(`DESC ${tbname};`);
     }
 
     public async existsField(tbname: string, name: string) {
         if (this.prefix) {
             tbname = tbname.replace(/@pf_/g, this.prefix);
         }
-        let row = await this.getRow(`describe ${tbname} \`${name}\`;`);
+        let row = await this.getRow(`DESCRIBE ${tbname} \`${name}\`;`);
         return row !== null;
     }
 

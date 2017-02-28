@@ -2,12 +2,13 @@ import {BoxBase, Field} from "../../common/form";
 import {Helper} from "./helper";
 declare var Beacon: any;
 
-export class TextBox implements BoxBase {
+export class PasswordBox implements BoxBase {
 
     public code(field: Field, args: {[key: string]: any}, out: {echo: Function, raw: Function}, sdopx: any) {
         let attr: any = Object.assign(field.getBoxAttr(), args);
+        attr.value = null;
         let box_attr = [];
-        attr.type = 'text';
+        attr.type = 'password';
         let data = field.getBoxData();
         Helper.explodeAttr(box_attr, attr);
         Helper.explodeData(box_attr, data);
@@ -23,6 +24,17 @@ export class TextBox implements BoxBase {
     }
 
     public fill(field: Field, vals: {[key: string]: any;}) {
+        if (field.value == null) {
+            return;
+        }
+        if (typeof field['encodeFunc'] == 'string' && field['encodeFunc'] == 'md5') {
+            vals[field.name] = Beacon.md5(field.value);
+            return;
+        }
+        if (typeof field['encodeFunc'] == 'function') {
+            vals[field.name] = field['encodeFunc'](field.value);
+            return;
+        }
         vals[field.name] = field.value;
     }
 

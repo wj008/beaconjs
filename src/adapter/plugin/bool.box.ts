@@ -1,13 +1,16 @@
-import {BoxBase, Field} from "../../common/form";
+import {Field, BoxBase} from "../../common/form";
 import {Helper} from "./helper";
 declare var Beacon: any;
-
-export class TextBox implements BoxBase {
+export class BoolBox implements BoxBase {
 
     public code(field: Field, args: {[key: string]: any}, out: {echo: Function, raw: Function}, sdopx: any) {
         let attr: any = Object.assign(field.getBoxAttr(), args);
         let box_attr = [];
-        attr.type = 'text';
+        if (attr['value'] && String(attr['value']) == '1') {
+            attr['checked'] = 'checked';
+        }
+        attr.type = 'checkbox';
+        attr['value'] = 1;
         let data = field.getBoxData();
         Helper.explodeAttr(box_attr, attr);
         Helper.explodeData(box_attr, data);
@@ -16,18 +19,20 @@ export class TextBox implements BoxBase {
 
     public assign(field: Field, params: {[key: string]: any;}) {
         field.value = params[field.boxName] || field.default;
-        field.value = field.value == null ? '' : String(field.value);
-        if (field.default !== null && field.value == '') {
-            field.value = field.default;
-        }
+        let ivalue = field.value == null ? '' : String(field.value);
+        field.value = Beacon.toBool(ivalue.trim(), field.default);
     }
 
     public fill(field: Field, vals: {[key: string]: any;}) {
-        vals[field.name] = field.value;
+        vals[field.name] = field.value ? 1 : 0;
     }
 
     public init(field: Field, vals: {[key: string]: any;}) {
-        field.value = vals[field.name] || null;
+        if (vals[field.name] === void 0 || vals[field.name] == null) {
+            field.value = null;
+            return;
+        }
+        field.value = vals[field.name] == 1 ? true : false;
     }
 
 }

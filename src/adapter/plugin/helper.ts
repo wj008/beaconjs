@@ -1,19 +1,23 @@
 import utils=require('sdopx/lib/utils');
 declare var Beacon: any;
 export class Helper {
-    public static explodeAttr(box_attr, temp) {
-        for (let key in temp) {
-            let val = temp[key];
-            if (val !== '') {
-                box_attr.push(key + '="' + utils.escapeXml(val) + '"');
+    public static explodeAttr(box_attr, attr) {
+        for (let key in attr) {
+            let val = attr[key];
+            if (val === null || val === '') {
+                continue;
             }
+            box_attr.push(key + '="' + utils.escapeXml(val) + '"');
         }
     }
 
-    public static explodeData(box_attr, temp) {
-        if (!Beacon.isEmpty(temp)) {
-            for (let key in temp) {
-                let val = temp[key];
+    public static explodeData(box_attr, data) {
+        if (!Beacon.isEmpty(data)) {
+            for (let key in data) {
+                let val = data[key];
+                if (val === null || val === '') {
+                    continue;
+                }
                 if (Beacon.isObject(val)) {
                     box_attr.push('data-' + key + '="' + utils.escapeXml(JSON.stringify(val)) + '"');
                 } else {
@@ -24,5 +28,14 @@ export class Helper {
                 }
             }
         }
+    }
+
+    public static has(array, find) {
+        for (let item of array) {
+            if (item == find) {
+                return true;
+            }
+        }
+        return false;
     }
 }

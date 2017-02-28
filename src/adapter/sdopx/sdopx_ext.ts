@@ -1,6 +1,6 @@
 import {Sdopx} from "sdopx";
 import {Beacon} from "../../core/beacon";
-import {Form} from "../../common/form";
+import {Form, Field} from "../../common/form";
 import impurl = require('url');
 //Sdopx.compile_check=false;
 //Sdopx.create_runfile=true;
@@ -229,6 +229,16 @@ Sdopx.registerPlugin('box', function (params, out, sdopx) {
     }
     if (field) {
         type = field.type || type;
+    } else {
+        let name = params.type || null;
+        if (name == null) {
+            sdopx.addError(`uri: missing 'name' parameter`);
+            return;
+        }
+        field = new Field(null, {
+            name: name,
+            type: type,
+        });
     }
     if (Form.hasPlugin(type)) {
         let box = Form.getPlugin(type);
@@ -238,20 +248,18 @@ Sdopx.registerPlugin('box', function (params, out, sdopx) {
         }
         delete params.field;
         delete params.type;
-        let attr = {};
+        let args = {};
         for (let key in params) {
             if (key[0] == '@') {
-                if (field) {
-                    let nkey = key.substring(1);
-                    nkey = Beacon.toCamel(nkey, true);
-                    field[nkey] = params[key];
-                    continue;
-                }
+                let nkey = key.substring(1);
+                nkey = Beacon.toCamel(nkey, true);
+                field[nkey] = params[key];
+                continue;
             }
             let nkey = Beacon.toUnder(key, true);
-            attr[nkey] = params[key];
+            args[nkey] = params[key];
         }
-        box.code(field, attr, out, sdopx);
+        box.code(field, args, out, sdopx);
     }
     else {
         sdopx.addError(`can not found ${type} plugin.`);

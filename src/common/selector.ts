@@ -41,10 +41,10 @@ class SqlItem {
 export class SqlCondition {
 
     private items = [];
-    public type = 'and';
+    public type = 'AND';
 
-    public constructor(type = 'and') {
-        this.type = type.toLocaleLowerCase();
+    public constructor(type = 'AND') {
+        this.type = type.toUpperCase();
     }
 
     public where(sql: any, args: any = null) {
@@ -160,15 +160,15 @@ export class SqlCondition {
             let [tempSql, tempArgs]=item;
             if (/^or\s+/i.test(tempSql)) {
                 if (sqla.length == 0) {
-                    tempSql = tempSql.replace(/^or\s+/i, '');
+                    tempSql = tempSql.replace(/^OR\s+/i, '');
                 }
-            } else if (/^and\s+/i.test(tempSql)) {
+            } else if (/^AND\s+/i.test(tempSql)) {
                 if (sqla.length == 0) {
-                    tempSql = tempSql.replace(/^and\s+/i, '');
+                    tempSql = tempSql.replace(/^AND\s+/i, '');
                 }
             } else {
                 if (sqla.length > 0) {
-                    tempSql = 'and ' + tempSql;
+                    tempSql = 'AND ' + tempSql;
                 }
             }
             sqla .push(tempSql);
@@ -218,8 +218,8 @@ export class Selector {
 
     public order(order, args: any = null) {
         order = order.trim();
-        if (!/^by\s+/i.test(order)) {
-            order = 'by ' + order;
+        if (!/^BY\s+/i.test(order)) {
+            order = 'BY ' + order;
         }
         if (this._order == null) {
             this._order = new SqlItem(order, args);
@@ -231,8 +231,8 @@ export class Selector {
 
     public group(group, args: any = null) {
         group = group.trim();
-        if (/^by\s+/i.test(group)) {
-            group = group.replace(/^by\s+/i, '');
+        if (/^BY\s+/i.test(group)) {
+            group = group.replace(/^BY\s+/i, '');
         }
         if (this._group == null) {
             this._group = new SqlItem(group, args);
@@ -247,9 +247,9 @@ export class Selector {
             return this;
         }
         if (len == 0) {
-            this._limit = 'limit ' + offset;
+            this._limit = 'LIMIT ' + offset;
         } else {
-            this._limit = 'limit ' + offset + ',' + len;
+            this._limit = 'LIMIT ' + offset + ',' + len;
         }
         return this;
     }
@@ -287,8 +287,8 @@ export class Selector {
         }
         let frame: any = this.condition.getFrame();
         if (frame.sql) {
-            if (/^(and|or)\s+/i.test(frame.sql)) {
-                sqla.push(frame.sql.replace(/^(and|or)\s+/i, ''));
+            if (/^(AND|OR)\s+/i.test(frame.sql)) {
+                sqla.push(frame.sql.replace(/^(AND|OR)\s+/i, ''));
             } else {
                 sqla.push(frame.sql);
             }
@@ -300,7 +300,7 @@ export class Selector {
             let groupText = this._group.text;
             let groupArgs = this._group.args;
             if (groupText) {
-                sqla.push('group by ' + groupText);
+                sqla.push('GROUP BY ' + groupText);
             }
             if (groupArgs) {
                 args = args.concat(groupArgs);
@@ -310,7 +310,7 @@ export class Selector {
             let orderText = this._order.text;
             let orderArgs = this._order.args;
             if (orderText) {
-                sqla.push('order ' + orderText);
+                sqla.push('ORDER ' + orderText);
             }
             if (orderArgs) {
                 args = args.concat(orderArgs);
@@ -320,15 +320,15 @@ export class Selector {
             sqla.push(this._limit);
         }
         if (type == 1) {
-            sqla.push(') B where A.id=B.id');
+            sqla.push(') B WHERE A.id=B.id');
             if (this._order) {
                 let orderText = this._order.text;
                 let orderArgs = this._order.args;
                 if (orderText) {
-                    orderText = orderText.replace(/by\s+(`?\w+`?)\s+(desc|asc)/ig, function ($0, $1, $2) {
-                        return 'by A.' + $1 + ' ' + $2;
+                    orderText = orderText.replace(/BY\s+(`?\w+`?)\s+(DESC|ASC)/ig, function ($0, $1, $2) {
+                        return 'BY A.' + $1 + ' ' + (String($2).toUpperCase());
                     });
-                    sqla.push('order ' + orderText);
+                    sqla.push('ORDER ' + orderText);
                 }
                 if (orderArgs) {
                     args = args.concat(orderArgs);

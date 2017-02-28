@@ -2,16 +2,23 @@ import {BoxBase, Field} from "../../common/form";
 import {Helper} from "./helper";
 declare var Beacon: any;
 
-export class TextBox implements BoxBase {
+export class XheditorBox implements BoxBase {
 
     public code(field: Field, args: {[key: string]: any}, out: {echo: Function, raw: Function}, sdopx: any) {
+        if (sdopx.context) {
+            sdopx.context.addAsset('yee-xheditor');
+        }
         let attr: any = Object.assign(field.getBoxAttr(), args);
         let box_attr = [];
-        attr.type = 'text';
+        delete attr['type'];
+        let value = (attr['value'] === null || attr['value'] === void 0) ? '' : attr['value'];
+        attr['yee-module'] = 'xheditor';
         let data = field.getBoxData();
         Helper.explodeAttr(box_attr, attr);
         Helper.explodeData(box_attr, data);
-        out.raw('<input ' + box_attr.join(' ') + ' />');
+        out.raw('<textarea ' + box_attr.join(' ') + ' >');
+        out.echo(value);
+        out.raw('</textarea>');
     }
 
     public assign(field: Field, params: {[key: string]: any;}) {
