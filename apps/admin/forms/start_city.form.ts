@@ -40,11 +40,11 @@ export class StartCityForm extends Form {
                 },
                 addtime: {
                     'label': '时间',
-                    'type': 'datetime',
+                    'type': 'upfile',
                     'data-val': {r: true, date: true},
                     'data-val-msg': {r: '时间不可为空', date: '请输入正确的时间格式'},
                     'tips': '越小越靠前',
-                    'box-class': 'form-inp datetime',
+                    'box-class': 'form-inp upfile',
                 },
                 test: {
                     'label': '测试',

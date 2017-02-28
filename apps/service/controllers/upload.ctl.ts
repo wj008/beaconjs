@@ -1,5 +1,5 @@
 import {Beacon} from "../../../src/core/beacon";
-import images = require("images");
+//import images = require("images");
 import path = require('path');
 import fs = require('fs');
 
