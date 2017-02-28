@@ -42,25 +42,5 @@
         };
     });
 
-    Yee.extend(':input', 'datetime', function (element) {
-        var qem = $(element);
-        var options = {
-            dateFormat: 'yy-mm-dd',
-            changeMonth: true,
-            changeYear: true,
-            yearRange: '1900:2050'
-        };
-        for (var key in options) {
-            var lkey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
-            var dval = qem.data(lkey);
-            if (typeof (dval) !== 'undefined' && dval !== null) {
-                options[key] = dval;
-            }
-        }
-        qem.datetimepicker(options);
-        this.destroy = function () {
-            qem.datetimepicker('destroy');
-        };
-    });
 
 })(jQuery, Yee);

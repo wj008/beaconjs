@@ -1,36 +1,33 @@
 {extends file='common/form_layout'}
 {block name="title"}{$form.title}{/block}
-{block name="caption"}<a href="{$form.back_uri}" class="s-back"><i class="icofont icofont-reply"></i></a> {$form.caption}{/block}
+{block name="caption"}<a href="{$form.backUri}" class="s-back"><i class="icofont icofont-reply"></i></a> {$form.caption}{/block}
 {block name="form"}
 {asset src="yee-ajaxform"}
 <form method="post" yee-module="validate ajaxform">
     <div class="form-panel">
         <div class="panel-title">
             <i class="icofont icofont-pencil-alt-3"></i>
-            <h3>{$form.title}</h3>
+            <h3>{$form.type|option:{1:'添加',2:'编辑'},''}{$form.title}</h3>
         </div>
         <div class="panel-content">
-{foreach from=$form.fields item=box}
+            {foreach from=$form.fields item=box}
             <div class="form-group">
                 <label class="form-label">{$box.label}：</label>
                 <div class="form-box">
-                    <span>{box field=$box}</span>
-                    <p class="field-tips">{$box.tips}</p>
+                    <span>{box field=$box dataMaxBox='ddd'}</span>
+                    {if $box.tips}<p class="field-tips">{$box.tips}</p>{/if}
                 </div>
             </div>
-{/foreach}
+            {/foreach}
         </div>
         <div class="form-submit">
             <label class="form-label"></label>
             <div class="form-box">
                 <input type="submit" class="btn submit" value="提交"/>
-                <input type="hidden" name="__BACK__" value="{$form.back_uri}"/>
-                <a href="{$form.back_uri}" class="btn back">返回</a>
+                <input type="hidden" name="__BACK__" value="{$form.backUri}"/>
+                <a href="{$form.backUri}" class="btn back">返回</a>
             </div>
         </div>
     </div>
 </form>
-{/block}
-{block name="foot"}
-{$form.getScript()|raw}
 {/block}

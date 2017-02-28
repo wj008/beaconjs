@@ -193,6 +193,37 @@ a:hover {
   &.textarea {
     width: 420px;
   }
+  &.xh-editor {
+    height: 280px;
+  }
+  &.datetime {
+    width: 160px;
+  }
+  &.date {
+    width: 140px;
+  }
+  &.date, &.datetime {
+    background-image: url(../images/sdopx.date.png);
+    background-position: e('right+5px') center;
+    background-repeat: no-repeat;
+  }
+}
+
+.form-inp-group {
+  label {
+    display: inline-block;
+    margin-right: 20px;
+    line-height: 36px;
+    input {
+      vertical-align: middle;
+    }
+    span {
+      margin-left: 5px;
+    }
+    em {
+      color: #999;
+    }
+  }
 }
 
 .field-error {

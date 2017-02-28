@@ -33,6 +33,14 @@ a:hover{color:#E84C3D}
 .form-inp.stext{width:160px}
 .form-inp.ltext{width:380px}
 .form-inp.textarea{width:420px}
+.form-inp.xh-editor{height:280px}
+.form-inp.datetime{width:160px}
+.form-inp.date{width:140px}
+.form-inp.date,.form-inp.datetime{background-image:url(../images/sdopx.date.png);background-position:right+5px center;background-repeat:no-repeat}
+.form-inp-group label{display:inline-block;margin-right:20px;line-height:36px}
+.form-inp-group label input{vertical-align:middle}
+.form-inp-group label span{margin-left:5px}
+.form-inp-group label em{color:#999}
 .field-error{line-height:20px;color:#ec5151}
 .field-error:before{font-family:IcoFont!important;content:'\efea';display:inline-block;margin-right:3px}
 .field-valid{line-height:20px;color:#2FBC5E}
