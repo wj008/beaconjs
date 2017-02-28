@@ -144,6 +144,7 @@ a:hover {
     float: left;
     margin-right: 15px;
   }
+
   .submit {
     border: 1px solid #ec5151;
     color: #fff;
@@ -206,6 +207,11 @@ a:hover {
     background-image: url(../images/sdopx.date.png);
     background-position: e('right+5px') center;
     background-repeat: no-repeat;
+  }
+  &.upfile {
+    width: 260px;
+    border-bottom-left-radius: 0px;
+    border-top-left-radius: 0px;
   }
 }
 
@@ -421,4 +427,35 @@ input.input-valid {
 
 .ifont {
   font-family: 'IcoFont' !important;
+}
+
+.yee-upfile-btn {
+  border: 1px solid #e1e1e1;
+  border-right: 0;
+  height: 28px;
+  line-height: 28px;
+  font-size: 14px;
+  padding: 0 10px;
+  border-radius: 3px;
+  -moz-border-radius-topright: 0px;
+  -moz-border-radius-bottomright: 0px;
+  -webkit-border-radius-topright: 0px;
+  -webkit-border-radius-bottomright: 0px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  cursor: pointer;
+  margin-right: 0px;
+  display: inline-block;
+  &:hover {
+    background: #f1f1f1;
+  }
+  &:before {
+    color: #a0a0a0;
+    font-family: 'IcoFont' !important;
+    content: '\f0ff';
+    width: 15px;
+    display: inline-block;
+    margin-right:3px;
+    margin-left:-5px;
+  }
 }

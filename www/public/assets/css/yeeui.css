@@ -37,6 +37,7 @@ a:hover{color:#E84C3D}
 .form-inp.datetime{width:160px}
 .form-inp.date{width:140px}
 .form-inp.date,.form-inp.datetime{background-image:url(../images/sdopx.date.png);background-position:right+5px center;background-repeat:no-repeat}
+.form-inp.upfile{width:260px;border-bottom-left-radius:0;border-top-left-radius:0}
 .form-inp-group label{display:inline-block;margin-right:20px;line-height:36px}
 .form-inp-group label input{vertical-align:middle}
 .form-inp-group label span{margin-left:5px}
@@ -76,3 +77,6 @@ input.input-valid:focus{border:1px dashed #2FBC5E}
 .yeeui-pagebar .pagebar b{border:1px solid #e1e1e1;background:0 0;background-color:#e1e1e1;color:#FFF}
 .yeeui-pagebar .pagebar_info{float:right;line-height:22px}
 .ifont{font-family:IcoFont!important}
+.yee-upfile-btn{border:1px solid #e1e1e1;border-right:0;height:28px;line-height:28px;font-size:14px;padding:0 10px;border-radius:3px;-moz-border-radius-topright:0;-moz-border-radius-bottomright:0;-webkit-border-radius-topright:0;-webkit-border-radius-bottomright:0;border-top-right-radius:0;border-bottom-right-radius:0;cursor:pointer;margin-right:0;display:inline-block}
+.yee-upfile-btn:hover{background:#f1f1f1}
+.yee-upfile-btn:before{color:#a0a0a0;font-family:IcoFont!important;content:'\f0ff';width:15px;display:inline-block;margin-right:3px;margin-left:-5px}
