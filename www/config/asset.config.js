@@ -20,6 +20,7 @@ module.exports = {
         'yee-date': 'yee.date',
         'yee-datetime': 'yee.datetime',
         'yee-upfile': 'yee.upfile-1.1.0',
+        'yee-imgshower': 'yee.imgshower',
     },
     depends: {
         'jquery-ui': ['../jquery-ui/custom.css', 'jquery'],
