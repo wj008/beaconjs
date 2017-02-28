@@ -6,7 +6,7 @@ export class StartCityForm extends Form {
     public title = '出发地点';
     public caption = '字典-出发地点';
     public table = '@pf_start_city';
-    public orderby = 'sort asc'
+    public orderby = 'sort ASC'
 
     public constructor(ctl: any, type: number = Form.NONE) {
         super(ctl, type);
@@ -37,13 +37,38 @@ export class StartCityForm extends Form {
                     'data-val-msg': {r: '请输入排序值', int: '排序值必须是数值形式'},
                     'tips': '越小越靠前',
                     'box-class': 'form-inp number',
+                },
+                addtime: {
+                    'label': '时间',
+                    'type': 'datetime',
+                    'data-val': {r: true, date: true},
+                    'data-val-msg': {r: '时间不可为空', date: '请输入正确的时间格式'},
+                    'tips': '越小越靠前',
+                    'box-class': 'form-inp datetime',
+                },
+                test: {
+                    'label': '测试',
+                    'options': [
+                        {
+                            group: [
+                                {value: 1, text: '选项1'},
+                                {value: 2, text: '选项2'},
+                            ], text: '选择组1'
+                        },
+                        {value: 4, text: '选项3'},
+                        {value: 8, text: '选项4'}
+                    ],
+                    'names': ['a', 'b', 'c', 'd'],
+                    'type': 'xheditor',
+                    'box-class': 'form-inp xh-editor',
+                    // 'tips': '请选择1个选项',
                 }
             };
         }
+
         if (this.type == Form.ADD) {
-            let row = await this.ctl.db.getRow('select `sort` from @pf_start_city  order by `sort` desc limit 0,1');
-            let sort = row ? row.sort + 10 : 10;
-            this._load['sort']['default'] = sort;
+            let sort = await this.ctl.db.getMax('@pf_start_city', 'sort');
+            this._load['sort']['default'] = sort ? sort + 10 : 10;
         }
 
         return await super.load(fields);
