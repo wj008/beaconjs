@@ -40,7 +40,7 @@ export class StartCityForm extends Form {
                 },
                 addtime: {
                     'label': '时间',
-                    'type': 'upfile',
+                    'type': 'upimages',
                     'data-val': {r: true, date: true},
                     'data-val-msg': {r: '时间不可为空', date: '请输入正确的时间格式'},
                     'tips': '越小越靠前',
