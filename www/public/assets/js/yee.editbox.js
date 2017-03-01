@@ -1,26 +1,5 @@
 (function ($, Yee, layer) {
 
-    function parseURL(url) {
-        var query = url.replace(/&+$/, '');
-        var path = query;
-        var prams = {};
-        var idx = query.search(/\?/);
-        if (idx >= 0) {
-            path = query.substring(0, idx);
-            var pstr = query.substring(idx);
-            var m = pstr.match(/(\w+)(=([^&]*))?/g);
-            if (m) {
-                $(m).each(function () {
-                    var ma = this.match(/^(\w+)(?:=([^&]*))?$/);
-                    if (ma) {
-                        prams[ma[1]] = decodeURIComponent(ma[2] || '');
-                    }
-                });
-            }
-        }
-        return {path: path, prams: prams};
-    }
-
     //分页插件
     Yee.extend('input,textarea', 'editbox', function (elem) {
         var qem = $(elem);
@@ -32,7 +11,7 @@
                 href: '',
             }, qem.data() || {});
             var val = qem.val();
-            var args = parseURL(option.href);
+            var args = Yee.parseURL(option.href);
             for (var key in args.prams) {
                 if (args.prams[key] == '#value#') {
                     args.prams[key] = val;

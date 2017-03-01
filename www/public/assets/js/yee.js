@@ -219,6 +219,27 @@
         }
     }
 
+    Yee.parseURL = function (url) {
+        var query = url.replace(/&+$/, '');
+        var path = query;
+        var prams = {};
+        var idx = query.search(/\?/);
+        if (idx >= 0) {
+            path = query.substring(0, idx);
+            var pstr = query.substring(idx);
+            var m = pstr.match(/(\w+)(=([^&]*))?/g);
+            if (m) {
+                $(m).each(function () {
+                    var ma = this.match(/^(\w+)(?:=([^&]*))?$/);
+                    if (ma) {
+                        prams[ma[1]] = decodeURIComponent(ma[2] || '');
+                    }
+                });
+            }
+        }
+        return {path: path, prams: prams};
+    }
+
     var isIE = navigator.userAgent.match(/MSIE\s*(\d+)/i);
     isIE = isIE ? (isIE[1] < 9) : false;
     if (isIE) {
