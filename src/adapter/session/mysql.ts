@@ -10,6 +10,7 @@ export class MysqlSession implements SessionBase {
     public static timeout = null;
     public static checkTime = 300;
     public static nextCheckTime = 0;
+    public static InitLong = false;
 
     public static init = false;
     public static store = {};
@@ -19,7 +20,6 @@ export class MysqlSession implements SessionBase {
     private _isUpdate = false;
     private _row = null;
 
-
     public constructor() {
         if (MysqlSession.timeout != null) {
             return;
@@ -27,6 +27,23 @@ export class MysqlSession implements SessionBase {
         let options = Beacon.getConfig('session:*');
         MysqlSession.timeout = options.timeout || 3600;
         MysqlSession.checkTime = options.checkTime || 300;
+    }
+
+    public async createLongTable() {
+        if (MysqlSession.InitLong) {
+            return;
+        }
+        let isInitLong = await Mysql.getDBInstance().existsTable('@pf_session_long');
+        if (!isInitLong) {
+            let pf = Mysql.getDBInstance().prefix;
+            await Mysql.getDBInstance().query(`CREATE TABLE \`${pf}session_long\` (
+              \`sid\` varchar(50) NOT NULL,
+              \`value\` text,
+              \`expire\` int(11) DEFAULT NULL,
+              PRIMARY KEY (\`sid\`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;`);
+        }
+        MysqlSession.InitLong = true;
     }
 
     public async init(cookie: string) {
@@ -47,15 +64,6 @@ export class MysqlSession implements SessionBase {
                 PRIMARY KEY (\`sid\`)
                 ) ENGINE=MEMORY DEFAULT CHARSET=utf8 MAX_ROWS=100000000;`);
             }
-            let isInitLong = await Mysql.getDBInstance().existsTable('@pf_session_long');
-            if (!isInitLong) {
-                await Mysql.getDBInstance().query(`CREATE TABLE \`${pf}session_long\` (
-              \`sid\` varchar(50) NOT NULL,
-              \`value\` text,
-              \`expire\` int(11) DEFAULT NULL,
-              PRIMARY KEY (\`sid\`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;`);
-            }
             MysqlSession.init = true;
         }
         let time = Math.round(Date.now() / 1000);
@@ -68,6 +76,7 @@ export class MysqlSession implements SessionBase {
         } else {
             this._row = row;
             if (row.longv == 1) {
+                await this.createLongTable();
                 row = await Mysql.getDBInstance().getRow('select value,expire from @pf_session_long where sid=? and expire>?', [cookie, time]);
                 if (row == null) {
                     this._data = {data: {}, expire: 0};
@@ -152,6 +161,7 @@ export class MysqlSession implements SessionBase {
                 return;
             }
             if (row.longv == 1) {
+                await this.createLongTable();
                 await Mysql.getDBInstance().delete('@pf_session_long', 'sid=?', cookie);
             }
             await Mysql.getDBInstance().delete('@pf_session', 'sid=?', cookie);
@@ -163,6 +173,7 @@ export class MysqlSession implements SessionBase {
             if (row != null && row.expire + 10 < this._data.expire) {
                 await Mysql.getDBInstance().update('@pf_session', {expire: this._data.expire}, 'sid=?', cookie);
                 if (row.longv == 1) {
+                    await this.createLongTable();
                     await Mysql.getDBInstance().update('@pf_session_long', {expire: this._data.expire}, 'sid=?', cookie);
                 }
             }
@@ -178,6 +189,7 @@ export class MysqlSession implements SessionBase {
                     expire: this._data.expire
                 }, 'sid=?', cookie);
                 if (row.longv == 1) {
+                    await this.createLongTable();
                     await Mysql.getDBInstance().delete('@pf_session_long', 'sid=?', cookie);
                 }
             } else {
@@ -188,12 +200,14 @@ export class MysqlSession implements SessionBase {
                 }, 'sid=?', cookie);
                 //如果没有长记录 就添加一条长记录
                 if (row.longv == 0) {
+                    await this.createLongTable();
                     await Mysql.getDBInstance().insert('@pf_session_long', {
                         sid: cookie,
                         value: text,
                         expire: this._data.expire
                     });
                 } else {
+                    await this.createLongTable();
                     await Mysql.getDBInstance().update('@pf_session_long', {
                         value: text,
                         expire: this._data.expire
@@ -211,6 +225,7 @@ export class MysqlSession implements SessionBase {
                 expire: this._data.expire
             });
         } else {
+            await this.createLongTable();
             await Mysql.getDBInstance().insert('@pf_session', {
                 sid: cookie,
                 value: '',
@@ -232,10 +247,11 @@ export class MysqlSession implements SessionBase {
             return;
         }
         MysqlSession.nextCheckTime = time + MysqlSession.checkTime;
-        Promise.all([
-            Mysql.getDBInstance().delete('@pf_session', 'expire<=?', time),
-            Mysql.getDBInstance().delete('@pf_session_long', 'expire<=?', time)
-        ]).catch(function (e) {
+        if (MysqlSession.InitLong) {
+            Mysql.getDBInstance().delete('@pf_session_long', 'expire<=?', time).catch(function (e) {
+            });
+        }
+        Mysql.getDBInstance().delete('@pf_session', 'expire<=?', time).catch(function (e) {
         });
     }
 }

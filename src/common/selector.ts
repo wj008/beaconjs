@@ -59,7 +59,7 @@ export class SqlCondition {
         if (sql.length == 0) {
             return this;
         }
-        if (args != null && args instanceof Array == false) {
+        if (args !== null && args instanceof Array == false) {
             switch (typeof(args)) {
                 case 'string':
                 case 'number':
@@ -288,9 +288,9 @@ export class Selector {
         let frame: any = this.condition.getFrame();
         if (frame.sql) {
             if (/^(AND|OR)\s+/i.test(frame.sql)) {
-                sqla.push(frame.sql.replace(/^(AND|OR)\s+/i, ''));
+                sqla.push('WHERE ' + frame.sql.replace(/^(AND|OR)\s+/i, ''));
             } else {
-                sqla.push(frame.sql);
+                sqla.push('WHERE ' + frame.sql);
             }
         }
         if (frame.args && frame.args instanceof Array) {
@@ -364,8 +364,7 @@ export class Selector {
             }
             that.limit(start, this.page_size);
             let {sql = '', args = null}=that.createSql(1);
-            //console.log(sql,args);
-            let list = await ctl.db.getList(sql, this.args);
+            let list = await ctl.db.getList(sql, args);
             return list;
         }
         return plist;

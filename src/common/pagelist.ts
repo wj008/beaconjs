@@ -41,7 +41,7 @@ export class PageList {
         }
         this.page = ctl.get(this.keyname + ':n', 1);
         let query = (function () {
-            let temps = ctl.get();
+            let temps = ctl.context.query;
             let items = [];
             for (let key in temps) {
                 items.push(key + '=' + encodeURIComponent(temps[key]));

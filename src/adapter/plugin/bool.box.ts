@@ -6,7 +6,7 @@ export class BoolBox implements BoxBase {
     public code(field: Field, args: {[key: string]: any}, out: {echo: Function, raw: Function}, sdopx: any) {
         let attr: any = Object.assign(field.getBoxAttr(), args);
         let box_attr = [];
-        if (attr['value'] && String(attr['value']) == '1') {
+        if (attr['value'] && Beacon.toBool(attr['value'])) {
             attr['checked'] = 'checked';
         }
         attr.type = 'checkbox';

@@ -119,6 +119,9 @@ Sdopx.registerPlugin('pagebar', function (params, out, sdopx) {
     let data = params.data;
     let pagelink = (function () {
         let link = config.link || data.query;
+        if (link.length > 0 && link[0] != '?') {
+            link = '?' + link;
+        }
         let items = [];
         let urlInfo = impurl.parse(link, true, true);
         urlInfo.query[config.keyname] = '#page#';
