@@ -16,6 +16,9 @@ Sdopx.registerFilter('pre', function (content: string, sdopx: Sdopx) {
 //替换资源
 Sdopx.registerFilter('output', function (content: string, sdopx: Sdopx) {
     if (sdopx.context) {
+        if (sdopx.context.isAjax()) {
+            return content;
+        }
         let html = [];
         let asset = sdopx.context.getAsset();
         asset.css.forEach(function (item) {
@@ -214,7 +217,7 @@ Sdopx.registerPlugin('pagebar', function (params, out, sdopx) {
         sdopx.context.addAsset('jquery');
         let id = Beacon.uuid(10);
         html.push(`<input id="${id}" type="text" class="inp" value="${page}"/><a class="gopage" data-url="${pagelink.replace('#page#', '#gopage#')}" href="javascript:;">GO</a>`);
-        html.push("<script>$('#" + id + "').on('keyup',function(e){if(e.keyCode==13){ var t=$(this).next().click();window.location.href=t.attr('href');}}).next()" +
+        html.push("<script>$('#" + id + "').on('keyup',function(e){if(e.keyCode==13){var t=$(this).next().click();$('<p>').hide().appendTo(t).trigger('click').remove();return 0;}}).next()" +
             ".on('click',function(){var t=$(this),v=t.prev().val()||1;t.attr('href',(t.data('url')||'').replace('#gopage#',/^\\d+$/.test(v)?v:1));return !0;});</script>");
     }
     let outhtml = `<div class="pagebar">${html.join("\n")}</div>` + ctext;
@@ -233,7 +236,7 @@ Sdopx.registerPlugin('box', function (params, out, sdopx) {
     if (field) {
         type = field.type || type;
     } else {
-        let name = params.type || null;
+        let name = params.name || null;
         if (name == null) {
             sdopx.addError(`uri: missing 'name' parameter`);
             return;

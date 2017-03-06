@@ -20,7 +20,7 @@ export class Controller {
     public sdopx: Sdopx = null;
     public template_dirs = null;
     public db: Mysql = null;
-    private _info: any = {};
+    private _assign: any = {};
     private _asset: any = null;
 
     public constructor(context: HttpContext) {
@@ -55,14 +55,17 @@ export class Controller {
 
     public assign(key, value = null) {
         if (typeof key == 'string') {
-            this._info[key] = value;
+            this._assign[key] = value;
             return;
         }
         if (Beacon.isObject(key)) {
-            this._info = Object.assign(this._info, key);
+            this._assign = Object.assign(this._assign, key);
         }
     }
 
+    public getAssign() {
+        return this._assign;
+    }
 
     public assignConfig(key, value = null) {
         this.initSdopx();
@@ -71,12 +74,15 @@ export class Controller {
 
     public display(tplname: string) {
         this.initSdopx();
-        this.sdopx._book = Object.assign(this.sdopx._book, this._info);
+        this.sdopx._book = Object.assign(this.sdopx._book, this._assign);
+        this.sdopx.assign('this',this);
         this.sdopx.display(tplname);
     }
 
     public fetch(tplname: string) {
         this.initSdopx();
+        this.sdopx._book = Object.assign(this.sdopx._book, this._assign);
+        this.sdopx.assign('this',this);
         return this.sdopx.fetch(tplname);
     }
 
@@ -169,22 +175,47 @@ export class Controller {
         return this.context.setCookie(name, value, options);
     }
 
+
+    /**
+     * 使用SESSION时必须先初始化
+     * @param type
+     */
     public async initSesion(type?: string) {
         return await this.context.initSesion(type);
     }
 
+    /**
+     * 获取session值
+     * @param name
+     */
     public getSession(name?: string) {
         return this.context.getSession(name);
     }
 
+    /**
+     * 设置session值
+     * @param name
+     * @param value
+     */
     public setSession(name: string, value: any) {
         return this.context.setSession(name, value);
     }
 
+    /**
+     * 删除对于键名的session 名称为空时 全删
+     * @param name
+     */
     public delSession(name?: string) {
         return this.context.delSession(name);
     }
 
+    /**
+     * 跳转路径
+     * @param uri  应用相对路径
+     * @param query 参数
+     * @param app 应用名称
+     * @param code  跳转http 状态码
+     */
     public redirect(uri, query?: any, app?: any, code?: number) {
         if (typeof query == 'number' && app === void 0 && code === void 0) {
             code = query;
@@ -208,15 +239,31 @@ export class Controller {
         this.context.redirect(uri, code);
     }
 
+
+    /**
+     * 设置有效时间
+     * @param time
+     */
     public setExpires(time) {
         this.context.setExpires(time);
         return this;
     }
 
+    /**
+     * 输出内容
+     * @param obj
+     * @param encoding
+     */
     public write(obj = null, encoding: string = null) {
         return this.context.write(obj, encoding);
     }
 
+    /**
+     * 根据 path 参数 构造路径URL
+     * @param pathname
+     * @param query
+     * @param app
+     */
     public execUrl(pathname: string = '', query?: any, app?: string) {
         if (typeof query == 'string' && app === void 0) {
             app = query;
@@ -230,6 +277,12 @@ export class Controller {
         return Beacon.Route.resolve(app, pathname, query);
     }
 
+    /**
+     * url 转换路径
+     * @param uri
+     * @param query
+     * @param app
+     */
     public url(uri, query?: any, app?: any) {
         if (typeof query == 'string' && app === void 0) {
             app = query;
@@ -255,6 +308,11 @@ export class Controller {
         return uri;
     }
 
+    /**
+     * 结束输出
+     * @param obj
+     * @param encoding
+     */
     public end(obj = null, encoding = null) {
         if (this.db) {
             this.db.release();
@@ -263,26 +321,51 @@ export class Controller {
         this.context.end(obj, encoding);
     }
 
+    /**
+     * 终止代码继续运行，并结束输出, finish() 仍然会继续执行。
+     */
     public exit() {
         throw new ControllerError('exit', 'CONTROLLER_EXIT');
     }
 
+    /**
+     * 获取内容类型
+     */
     public getContentType() {
         return this.context.getContentType();
     }
 
+    /**
+     * 文档类型 及默认编码
+     * @param ext
+     * @param encoding
+     */
     public setContentType(ext, encoding?) {
         return this.context.setContentType(ext, encoding);
     }
 
+    /**
+     * 发送时间
+     * @param name
+     */
     public sendTime(name) {
         return this.context.sendTime(name);
     }
 
+
+    /**
+     * 解析Payload 数据 一般情况下会自动调用，可重载这个函数制定自己的解析方式
+     * @param encoding
+     */
     public async parsePayload(encoding?) {
         return await this.context.parsePayload(encoding);
     }
 
+    /**
+     * 添加资源信息
+     * @param name
+     * @param depend
+     */
     public addAsset(name: any, depend?: any) {
         if (typeof name != 'string') {
             if (Beacon.isArray(name)) {
@@ -396,6 +479,10 @@ export class Controller {
         add_asset(name);
     }
 
+    /**
+     * 获取脚本样式等资源信息
+     * @param name
+     */
     public getAsset(name?: string) {
         let data = {js: [], css: []};
         let version = Beacon.getConfig('asset:version', '');
@@ -434,63 +521,83 @@ export class Controller {
         return data;
     }
 
-    public fail(message: any, error?: any, jump?: any, code?: any, timeout: number = 3) {
-        if (!Beacon.isObject(error)) {
-            timeout = code;
-            code = jump;
-            jump = error;
-            error = null;
+    /**
+     * 向浏览器输出错误提示信息，如AJAX访问将返回JSON数据
+     * @param errors object|string 错误信息，字符或者键值对象
+     * @param jump  跳转的路径
+     * @param code 错误附带代码
+     * @param timeout 跳转倒计时间
+     */
+    public fail(errors?: any, jump?: any, code?: any, timeout: number = 3) {
+        let ret: any = {};
+        ret.status = false;
+        if (code !== void 0) {
+            ret.code = code;
+        }
+        if (Beacon.isObject(errors)) {
+            ret.errors = errors;
+            let key = Object.keys(errors)[0] || null;
+            if (key) {
+                ret.error = errors[key];
+            } else {
+                ret.error = '错误';
+            }
+        } else {
+            ret.error = errors;
         }
         if (this.isAjax()) {
-            let ret: any = {};
-            ret.message = message;
-            ret.status = false;
-            if (error) {
-                ret.error = error;
-            }
-            if (code !== void 0) {
-                ret.code = code;
-            }
             this.returnJson(ret);
         }
-        if (jump === void 0) {
-            jump = this.getReferrer();
+        if (ret.jump === void 0) {
+            ret.jump = this.getReferrer();
         }
-        else if (jump == false) {
-            jump = 'javascript:history.go(-1);';
+        else if (ret.jump == false) {
+            ret.jump = 'javascript:history.go(-1);';
         }
-        this.assign('message', message);
-        this.assign('jump', jump);
-        this.assign('timeout', timeout);
-        this.assign('code', code);
+        ret.timeout = timeout;
+        this.assign('info', ret);
         this.display(this.getConfig('fail_tplname', 'fail'));
         this.exit();
     }
 
-    public success(message: any, jump?: any, code?: any, timeout: number = 1) {
-        if (jump === void 0) {
-            jump = this.param('__BACK__', this.getReferrer()) || null;
+    /**
+     * 向浏览器输出正确提示信息并跳转到相应的路径，如AJAX访问将返回JSON数据
+     * @param message 要提示的消息内容
+     * @param jump  跳转的路径 默认前一页
+     * @param info 正确附带信息
+     * @param timeout  超时时间
+     */
+    public success(message: any, info?: any, jump?: any, timeout: number = 1) {
+        let ret: any = {};
+        ret.message = message;
+        ret.status = true;
+        if (jump === void 0 && (typeof info == 'boolean' || typeof info == 'string')) {
+            jump = info;
+            info = null;
+        }
+        if (!(info === void 0 || info === null)) {
+            ret.data = info;
         }
         if (this.isAjax()) {
-            let ret: any = {};
-            ret.message = message;
-            ret.status = true;
-            if (code !== void 0) {
-                ret.code = code;
-            }
             this.returnJson(ret);
         }
-        if (jump == false) {
+        if (jump === void 0 || jump === null) {
+            jump = this.param('__BACK__', this.getReferrer()) || null;
+        }
+        if (jump === false) {
             jump = 'javascript:history.go(-1);';
         }
-        this.assign('message', message);
-        this.assign('jump', jump);
-        this.assign('timeout', timeout);
-        this.assign('code', code);
+        ret.jump = jump;
+        ret.timeout = timeout;
+        this.assign('info', ret);
         this.display(this.getConfig('success_tplname', 'success'));
         this.exit();
     }
 
+    /**
+     * 输出JSON格式
+     * @param data
+     */
     public returnJson(data) {
         this.setContentType('json');
         this.end(JSON.stringify(data));

@@ -2,12 +2,12 @@ import {BoxBase, Field} from "../../common/form";
 import {Helper} from "./helper";
 declare var Beacon: any;
 
-export class TextBox implements BoxBase {
+export class HiddenBox implements BoxBase {
 
     public code(field: Field, args: {[key: string]: any}, out: {echo: Function, raw: Function}, sdopx: any) {
         let attr: any = Object.assign(field.getBoxAttr(), args);
         let box_attr = [];
-        attr.type = 'text';
+        attr.type = 'hidden';
         let data = field.getBoxData();
         Helper.explodeAttr(box_attr, attr);
         Helper.explodeData(box_attr, data);

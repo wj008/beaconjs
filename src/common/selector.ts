@@ -197,6 +197,10 @@ export class Selector {
         this.condition = new SqlCondition();
     }
 
+    public createSqlCondition(type = 'AND'): SqlCondition {
+        return new SqlCondition(type);
+    }
+
     public where(sql: any, args: any = null) {
         this.condition.where(sql, args);
         return this;

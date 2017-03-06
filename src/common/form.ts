@@ -10,23 +10,7 @@ export interface BoxBase {
 }
 export class Validate {
 
-    //字符串格式化输出
-    static format(str, args) {
-        var args = args;
-        let valstr = String(str);
-        if (valstr.length == 0 || !args) {
-            return valstr;
-        }
-        if (args instanceof Array == false) {
-            args = [args];
-        }
-        return valstr.replace(/\{(\d+)\}/ig, function ($0, $1) {
-            var index = parseInt($1);
-            return args.length > index ? args[index] : '';
-        });
-    };
-
-    private static default_msgs = {
+    private static default_errors = {
         'required': '必选字段',
         'email': '请输入正确格式的电子邮件',
         'url': '请输入正确格式的网址',
@@ -61,11 +45,21 @@ export class Validate {
         'neq': 'notequal'
     };
 
-    private static remote_func = {};
-
-    public static regRemoute(name, func) {
-        Validate.remote_func[name] = func;
-    }
+    //字符串格式化输出
+    private static format(str, args) {
+        var args = args;
+        let valstr = String(str);
+        if (valstr.length == 0 || !args) {
+            return valstr;
+        }
+        if (args instanceof Array == false) {
+            args = [args];
+        }
+        return valstr.replace(/\{(\d+)\}/ig, function ($0, $1) {
+            var index = parseInt($1);
+            return args.length > index ? args[index] : '';
+        });
+    };
 
     public static getFunc(type) {
         let rtype = Validate.getRealType(type);
@@ -81,7 +75,7 @@ export class Validate {
             Validate.alias[type] = func;
             return;
         }
-        Validate.default_msgs[type] = error;
+        Validate.default_errors[type] = error;
         Validate['rule_' + type] = func;
     }
 
@@ -199,7 +193,23 @@ export class Validate {
         return String(val).length >= len1 && String(val).length <= len2;
     }
 
-    public static async checkField(field: Field) {
+    private remoteFunc: {[key: string]: Function} = {};
+    private func: {[key: string]: Function} = {};
+    private default_errors: {[key: string]: string} = {};
+
+    public regRemoute(name: string, func: Function) {
+        this.remoteFunc[name] = func;
+    }
+
+    public regFunc(type: string, func: Function, error: string = null) {
+        this.func[type] = func;
+        if (error) {
+            this.default_errors[type] = error;
+        }
+    }
+
+    public async checkField(field: Field) {
+        let name = field.name;
         if (field.error) {
             return false;
         }
@@ -227,8 +237,13 @@ export class Validate {
         rules = tempRules;
         let value = field.value;
         if (rules.required) {
-            if (!Validate.rule_required(value)) {
-                field.error = errors.required || Validate.default_msgs.required;
+            let func = this.func['required'] || Validate.rule_required;
+            let p = func(value);
+            if (Beacon.isPromise(p)) {
+                p = await p;
+            }
+            if (!p) {
+                field.error = errors.required || Validate.default_errors.required;
                 return false;
             }
             delete rules['required'];
@@ -242,16 +257,18 @@ export class Validate {
                 }
                 let xargs = args.slice(0);
                 args.unshift(value);
-                if (type == 'remote') {
-                    args.unshift(field.boxName);
-                }
                 if (type == 'equalto') {
                     let form = field.getForm();
                     if (form) {
                         args.push(form.ctl);
                     }
                 }
-                let func = Validate.getFunc(type);
+                let func = null;
+                if (type == 'remote') {
+                    func = field['remoteFunc'] || this.remoteFunc[name] || null;
+                } else {
+                    func = this.func[type] || Validate.getFunc(type);
+                }
                 if (func == null) {
                     continue;
                 }
@@ -263,7 +280,7 @@ export class Validate {
                     if (out) {
                         continue;
                     }
-                    field.error = Validate.format(errors[type] || Validate.default_msgs[type], xargs);
+                    field.error = Validate.format(errors[type] || this.default_errors[type] || Validate.default_errors[type], xargs);
                     return false;
                 }
                 if (Beacon.isObject(out) && typeof out.status == 'boolean' && out.status == false && typeof out.error == 'string') {
@@ -295,12 +312,13 @@ export class Field {
     public dataValOff: boolean = null;
     public dataVal: {[key: string]: any} = null;
     public dataValMsg: {[key: string]: string} = null;
+    public remoteFunc: Function = null;
 
     public constructor(form: Form, field: {[key: string]: any} = {}) {
         for (let key in field) {
             let val = field[key];
-            if (typeof val != 'function') {
-                let nkey = Beacon.toCamel(key, true);
+            let nkey = Beacon.toCamel(key, true);
+            if (typeof val != 'function' || nkey == 'remoteFunc') {
                 this[nkey] = val;
             }
         }
@@ -346,7 +364,7 @@ export class Field {
         if (this.value !== null && String(this.value).length > 0) {
             data['value'] = this.value;
         }
-        if (this._form.type == Form.ADD && (data['value'] === void 0 || data['value'] == null)) {
+        if ((!this._form || this._form.type == Form.ADD) && (data['value'] === void 0 || data['value'] == null)) {
             if (this.default !== null) {
                 data['value'] = this.default;
             }
@@ -374,9 +392,11 @@ export class Form {
     public tabSplit: boolean = false;
     public fields: {[key: string]: Field} = {};
 
+    private _validate: Validate = null;
     private _init = false;
     private _using_fields: {[key: string]: Field} = null;
     protected _load: {[key: string]: any} = {};
+    protected _hideBox: {[key: string]: any} = {};
 
     public constructor(ctl: Controller, type: number = Form.NONE) {
         this.ctl = ctl;
@@ -398,6 +418,18 @@ export class Form {
     public setType(type) {
         this.type = type;
         return this;
+    }
+
+    public isAdd() {
+        return this.type == Form.ADD;
+    }
+
+    public isEdit() {
+        return this.type == Form.EDIT;
+    }
+
+    public isNone() {
+        return this.type == Form.NONE;
     }
 
     public async load(fields: {[key: string]: any} = null) {
@@ -477,8 +509,9 @@ export class Form {
         let errors: {[key: string]: string} = {};
         let fields = this.getUsingFields();
         for (let name in fields) {
-            if (fields[name].error.length > 0) {
-                errors[name] = fields[name].error;
+            let field = fields[name];
+            if (field.error.length > 0) {
+                errors[field.boxName] = field.error;
             }
         }
         return errors;
@@ -499,6 +532,17 @@ export class Form {
             let field = this.fields[key];
             field.value = null;
         }
+    }
+
+    public addHideBox(name: string, value: any) {
+        this._hideBox[name] = value;
+    }
+
+    public getHideBox(name: string = null) {
+        if (name === null) {
+            return this._hideBox;
+        }
+        return this._hideBox[name];
     }
 
     /**
@@ -638,16 +682,34 @@ export class Form {
                 }
             }
         }
+        if (this['beforeValid'] && typeof this['beforeValid'] == 'function') {
+            let p = this['beforeValid']();
+            if (Beacon.isPromise(p)) {
+                await p;
+            }
+        }
         if (valid === true) {
             let result = await this.validation();
             if (!result) {
-                let firstError = this.getFirstError();
                 let errors = this.getAllErrors();
-                this.ctl.fail(firstError, errors);
+                this.ctl.fail(errors);
+            }
+        }
+        if (this['afterValid'] && typeof this['afterValid'] == 'function') {
+            let p = this['afterValid']();
+            if (Beacon.isPromise(p)) {
+                await p;
             }
         }
         let vals = await this.getValues();
         return vals;
+    }
+
+    public getValidate(): Validate {
+        if (this._validate == null) {
+            this._validate = new Validate();
+        }
+        return this._validate;
     }
 
     public async validation() {
@@ -665,7 +727,7 @@ export class Form {
             if (field.close) {
                 continue;
             }
-            let ret = await Validate.checkField(field);
+            let ret = await this.getValidate().checkField(field);
             if (!ret) {
                 result = false;
             }
@@ -686,6 +748,9 @@ export class Form {
     public display(tplname: string = 'common/form') {
         if (!this._init) {
             return;
+        }
+        if (!this.backUri) {
+            this.backUri = this.ctl.getReferrer();
         }
         this.ctl.assign('form', this);
         this.ctl.display(tplname);

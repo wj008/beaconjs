@@ -24,7 +24,8 @@ export class PasswordBox implements BoxBase {
     }
 
     public fill(field: Field, vals: {[key: string]: any;}) {
-        if (field.value == null) {
+        if (field.value === null || field.value === '') {
+            vals[field.name] = '';
             return;
         }
         if (typeof field['encodeFunc'] == 'string' && field['encodeFunc'] == 'md5') {

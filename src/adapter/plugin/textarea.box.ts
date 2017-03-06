@@ -9,6 +9,7 @@ export class TextareaBox implements BoxBase {
         let box_attr = [];
         delete attr['type'];
         let value = (attr['value'] === null || attr['value'] === void 0) ? '' : attr['value'];
+        delete attr['value'];
         let data = field.getBoxData();
         Helper.explodeAttr(box_attr, attr);
         Helper.explodeData(box_attr, data);

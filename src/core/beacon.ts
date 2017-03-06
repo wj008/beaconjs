@@ -1,7 +1,6 @@
 import path =require('path');
 import {Beaconkit} from "./beacon_kit";
 import {HttpContext} from "./http_context";
-import {Controller} from "../common/controller";
 import {MemorySession} from "../adapter/session/memory";
 import {FileSession} from "../adapter/session/file";
 import {Sdopx} from "sdopx";
@@ -30,8 +29,6 @@ export class Beacon extends Beaconkit {
     public static Config = null;
     //路由器
     public static Route = null;
-
-    public static Controller = Controller;
 
     private static _sessionType = {};
     private static _sessionUsed = {};
@@ -105,13 +102,14 @@ export class Beacon extends Beaconkit {
             }
             let act = Beacon.lowerFirst(Beacon.toCamel(args.act || 'index')) + 'Action';
             let isInit = false;
+            let code = null;
             if (ctlobj[act] && Beacon.isFunction(ctlobj[act])) {
                 try {
                     if (ctlobj.init && Beacon.isFunction(ctlobj.init)) {
                         await ctlobj.init();
                         isInit = true;
                     }
-                    await ctlobj[act]();
+                    code = await ctlobj[act]();
                 } catch (e) {
                     if (e.code && e.code == 'CONTROLLER_EXIT') {
                         return;
@@ -123,9 +121,17 @@ export class Beacon extends Beaconkit {
                         await ctlobj.finish();
                     }
                     if (ctlobj.end && Beacon.isFunction(ctlobj.end)) {
-                        ctlobj.end();
+                        if (typeof code == 'string') {
+                            ctlobj.end(code);
+                        } else {
+                            ctlobj.end();
+                        }
                     } else {
-                        context.end();
+                        if (typeof code == 'string') {
+                            context.end(code);
+                        } else {
+                            context.end();
+                        }
                     }
                 }
             } else {
