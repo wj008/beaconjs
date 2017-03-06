@@ -790,6 +790,8 @@
                     if (!elem.is(':input')) {
                         return;
                     }
+                    elem.off('mousedown', elem_mousedown);
+                    elem.on('mousedown', elem_mousedown);
                     setError(elem, msg, force);
                 });
             },
@@ -799,7 +801,7 @@
                     if (!elem.is(':input')) {
                         return;
                     }
-                    setError(elem, msg, force);
+                    setValid(elem, msg, force);
                 });
             },
             setDefault: function (selector, msg) {

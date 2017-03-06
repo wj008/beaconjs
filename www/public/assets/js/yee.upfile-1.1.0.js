@@ -439,8 +439,8 @@
                 if (r === false) {
                     return;
                 }
-                if (context.status === false && context.message !== '') {
-                    layer.alert(context.message);
+                if (context.status === false && context.error !== '') {
+                    layer.alert(context.error);
                     return;
                 }
                 if (context.status) {

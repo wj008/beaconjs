@@ -26,14 +26,19 @@
                 if (rt === false) {
                     return;
                 }
+                var method = (that.attr('method') || 'GET').toUpperCase();
+
                 var action = that.attr('action') || window.location.href;
+                if (method == 'GET') {
+                    var pathinfo = Yee.parseURL(action);
+                    action = pathinfo.path;
+                }
                 var back = that.data('back') || '';
                 if (back == '' && that.find(":input[name='__BACK__']").length > 0) {
                     back = that.find(":input[name='__BACK__']").val() || '';
                 }
                 var alert = that.data('alert') || false;
                 var loading = that.data('loading') || false;
-                var method = (that.attr('method') || 'POST').toUpperCase();
                 var timeout = that.data('timeout') || 3000;//提交超时时间
                 var sendData = that.serialize();
                 var layerIndex = null;
@@ -75,16 +80,17 @@
                         }
                         //如果存在错误
                         if (ret.status === false) {
-                            if (ret.error && typeof (ret.error) === 'object' && that.data('yee-validate-init')) {
-                                that.showError(ret.error);
-                            }
-                            if (ret.message && typeof (ret.message) === 'string') {
-                                if (alert) {
-                                    layer.alert(ret.message, {icon: 7}, function (idx) {
-                                        layer.close(idx);
-                                    });
-                                } else {
-                                    layer.msg(ret.message, {icon: 0, time: 2000});
+                            if (ret.errors && typeof (ret.errors) === 'object' && that.data('yee-validate-init')) {
+                                that.showError(ret.errors);
+                            } else {
+                                if (ret.error && typeof (ret.error) === 'string') {
+                                    if (alert) {
+                                        layer.alert(ret.error, {icon: 7}, function (idx) {
+                                            layer.close(idx);
+                                        });
+                                    } else {
+                                        layer.msg(ret.error, {icon: 0, time: 2000});
+                                    }
                                 }
                             }
                         }

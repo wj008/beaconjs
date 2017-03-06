@@ -2,30 +2,8 @@
 
     var fromTimeout = true;
 
-    function parseURL(url) {
-        var query = url.replace(/&+$/, '');
-        var path = query;
-        var prams = {};
-        var idx = query.search(/\?/);
-        if (idx >= 0) {
-            path = query.substring(0, idx);
-            var pstr = query.substring(idx);
-            var m = pstr.match(/(\w+)(=([^&]*))?/g);
-            if (m) {
-                $(m).each(function () {
-                    var ma = this.match(/^(\w+)(?:=([^&]*))?$/);
-                    if (ma) {
-                        prams[ma[1]] = decodeURIComponent(ma[2] || '');
-                    }
-                });
-            }
-        }
-        return {path: path, prams: prams};
-    }
-
     //AJAX提交连接
     Yee.extend('a', 'ajaxlink', function (elem) {
-
         var qem = $(elem);
         var send = function (url) {
             //防止误触双击
@@ -36,8 +14,8 @@
             setTimeout(function () {
                 fromTimeout = true;
             }, 1000);
-
-            var args = parseURL(url);
+            var args = Yee.parseURL(url);
+            args.path = args.path || window.location.pathname;
             var rt = qem.triggerHandler('before', [url]);
             if (rt === false) {
                 return;
@@ -45,6 +23,7 @@
             var option = $.extend({
                 method: 'get',
             }, qem.data() || {});
+
             $.ajax({
                 type: option.method,
                 url: args.path,
@@ -64,8 +43,8 @@
                     }
                     //拉取数据错误
                     if (ret.status === false) {
-                        if (ret.message && typeof (ret.message) === 'string') {
-                            layer.msg(ret.message, {icon: 0, time: 2000});
+                        if (ret.error && typeof (ret.error) === 'string') {
+                            layer.msg(ret.error, {icon: 0, time: 2000});
                         }
                         return;
                     }

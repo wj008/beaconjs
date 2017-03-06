@@ -47,7 +47,6 @@ abbr,acronym{border:0}
 .cl{clear:left}
 .cr{clear:right}
 .clearfix:after{content:'.';display:block;height:0;clear:both;visibility:hidden}
-.clearfix{display:inline-block}
 *html .clearfix{height:1%}
 .vm{vertical-align:center}
 .pr{position:relative}

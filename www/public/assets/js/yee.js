@@ -240,6 +240,22 @@
         return {path: path, prams: prams};
     }
 
+    Yee.toUrl = function (info) {
+        if (info === void 0 || info == null) {
+            info = {};
+        }
+        var path = info.path || window.location.pathname;
+        var prams = info.prams || {};
+        var qurey = [];
+        for (var key in prams) {
+            qurey.push(key + '=' + encodeURIComponent(prams[key]));
+        }
+        if (qurey.length == 0) {
+            return path;
+        }
+        return path + '?' + qurey.join('&');
+    }
+
     var isIE = navigator.userAgent.match(/MSIE\s*(\d+)/i);
     isIE = isIE ? (isIE[1] < 9) : false;
     if (isIE) {

@@ -27,6 +27,8 @@ a:hover{color:#E84C3D}
 .form-inp{border:1px solid #dbdbdb;border-radius:2px;line-height:18px;padding:5px 10px;-o-transition:all .2s;-moz-transition:all .2s;-webkit-transition:all .2s;-ms-transition:all .2s;margin-right:10px}
 .form-inp:focus{border:1px solid #62b3ff}
 .form-inp.small{line-height:14px;padding:3px 5px}
+.form-inp.hide{line-height:16px;padding:3px 5px;border:1px solid #FFF;background-color:inherit}
+.form-inp.hide:focus{border:1px solid #62b3ff;background-color:#FFF}
 .form-inp.snumber{width:60px}
 .form-inp.number{width:100px}
 .form-inp.text{width:240px}
@@ -51,12 +53,15 @@ input.input-error:focus{border:1px dashed #E84C3D}
 input.input-valid{background:#F0FCF0;border:1px dashed #2FBC5E;border-radius:3px}
 input.input-valid:focus{border:1px dashed #2FBC5E}
 .field-default{color:#909090}
-.yeeui-list-optbtns{line-height:30px;padding:0 0 8px 0}
+.yeeui-list-optbtns{line-height:30px;padding:0 0 8px 0;color:#777}
+.yeeui-list-optbtns:after{content:'.';display:block;height:0;clear:both;visibility:hidden}
 .yeeui-list{margin-bottom:15px;padding:0;color:#606060}
 .yeeui-list-table{-webkit-box-shadow:0 0 2px rgba(0,0,0,.05);-moz-box-shadow:0 0 2px rgba(0,0,0,.05);box-shadow:0 0 2px rgba(0,0,0,.05);background:#FFF}
 .yeeui-list-table th{border-top:2px solid #dbdbdb;background:#f9f9f9;line-height:18px;padding:10px 5px;font-weight:700;border-bottom:1px solid #eaeaea;color:#333}
 .yeeui-list-table td{padding:5px;line-height:20px;border-bottom:1px solid #eaeaea;word-break:keep-all}
 .yeeui-list-table tr.toggle:hover td{background:#f5faff}
+.yeeui-list-table tr.toggle:hover td input.hide{border:1px solid #f5faff}
+.yeeui-list-table tr.toggle:hover td input.hide:focus{border:1px solid #62b3ff}
 .yee-btn{font-size:12px;line-height:20px;height:20px;display:inline-block;padding:2px 7px;border:solid 1px #e1e1e1;border-radius:4px;margin:0;background-color:#FFF;color:#777}
 .yee-btn i{margin:0 2px 0 0;text-align:center}
 .yee-btn.add{color:#ec5051;border:solid 1px #ec5051;background-color:#FFF}
@@ -67,6 +72,11 @@ input.input-valid:focus{border:1px dashed #2FBC5E}
 .yee-btn.small:hover.show{border:solid 1px #29c25f;color:#29c25f}
 .yee-btn.small:hover.del{border:solid 1px #ec5051;color:#ec5051}
 .yee-btn.small:hover.edit{border:solid 1px #31b4e1;color:#31b4e1}
+.yee-refresh{height:22px;line-height:22px;padding:2px 7px;color:#777;display:inline-block;border-radius:4px;position:relative;padding-left:20px}
+.yee-refresh i{margin:0;text-align:center;position:absolute;left:4px;top:7px;transition:transform .8s linear 0s;-o-transition:-o-transform .8s linear 0s;-webkit-transition:-webkit-transform .8s linear 0s}
+.yee-refresh:hover{color:#000;background-color:#e1e1e1}
+input.secrch-inp{border:1px solid #dbdbdb;border-radius:0;float:left;margin-right:0;vertical-align:middle}
+button.search-btn,input.search-btn{vertical-align:middle;width:30px;height:30px;border:1px solid #dbdbdb;background:#f1f1f1 url(../images/admin-icon.png) no-repeat;background-position:-116px -325px;float:left;border-left:0;padding:0;cursor:pointer}
 .yeeui-pagebar{transition:all .15s ease-in;width:100%;padding:10px 0;height:24px}
 .yeeui-pagebar .pagebar{float:left}
 .yeeui-pagebar .pagebar .break,.yeeui-pagebar .pagebar a,.yeeui-pagebar .pagebar b{text-decoration:none;color:#666;display:inline-block;height:20px;line-height:20px;float:left;margin-right:3px;padding:2px 7px;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;text-shadow:0 1px 1px rgba(255,255,255,.75);cursor:pointer}
