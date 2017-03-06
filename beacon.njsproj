@@ -15,7 +15,7 @@
     <EnableTypeScript>true</EnableTypeScript>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <NodeExeArguments>--harmony-async-await --expose_debug_as=v8debug</NodeExeArguments>
+    <NodeExeArguments>--harmony --expose_debug_as=v8debug</NodeExeArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
@@ -23,8 +23,36 @@
     <Content Include="apps\admin\controllers\admin.ctl.ts" />
     <Content Include="tsconfig.json" />
     <Content Include="README.md" />
-    <Content Include="www\views\admin\error.opx" />
+    <Content Include="www\views\admin\camp_type.opx" />
+    <Content Include="www\views\admin\camp_type_add.form.opx" />
+    <Content Include="www\views\admin\camp_type_edit.form.opx" />
+    <Content Include="www\views\admin\common\fail.opx" />
+    <Content Include="www\views\admin\common\form.opx" />
+    <Content Include="www\views\admin\common\form_layout.opx" />
+    <Content Include="www\views\admin\common\list_layout.opx" />
+    <Content Include="www\views\admin\common\success.opx" />
+    <Content Include="www\views\admin\destination.opx" />
+    <Content Include="www\views\admin\destination_add.form.opx" />
+    <Content Include="www\views\admin\destination_edit.form.opx" />
+    <Content Include="www\views\admin\index.opx" />
+    <Content Include="www\views\admin\left.opx" />
     <Content Include="www\views\admin\login.opx" />
+    <Content Include="www\views\admin\manage.opx" />
+    <Content Include="www\views\admin\manage_add.form.opx" />
+    <Content Include="www\views\admin\manage_edit.form.opx" />
+    <Content Include="www\views\admin\member.opx" />
+    <Content Include="www\views\admin\member_edit.form.opx" />
+    <Content Include="www\views\admin\modify_pass.form.opx" />
+    <Content Include="www\views\admin\area.opx" />
+    <Content Include="www\views\admin\startcity.opx" />
+    <Content Include="www\views\admin\startcity_edit.form.opx" />
+    <Content Include="www\views\admin\sysmenu.opx" />
+    <Content Include="www\views\admin\sysmenu_add.form.opx" />
+    <Content Include="www\views\admin\sysmenu_edit.form.opx" />
+    <Content Include="www\views\admin\theme.opx" />
+    <Content Include="www\views\admin\theme_add.form.opx" />
+    <Content Include="www\views\admin\theme_edit.form.opx" />
+    <Content Include="www\views\admin\welcome.opx" />
     <Content Include="www\views\error.opx" />
     <Content Include="www\views\foot.opx" />
     <Content Include="www\views\index.opx" />
@@ -34,9 +62,41 @@
     <Content Include="www\config\redis.hjson" />
     <Content Include="www\package.json" />
     <Compile Include="www\app.js" />
+    <TypeScriptCompile Include="apps\admin\controllers\area.ctl.ts" />
+    <TypeScriptCompile Include="apps\admin\controllers\camp_type.ctl.ts" />
+    <TypeScriptCompile Include="apps\admin\controllers\cms.ctl.ts" />
+    <TypeScriptCompile Include="apps\admin\controllers\destination.ctl.ts" />
     <TypeScriptCompile Include="apps\admin\controllers\index.ctl.ts" />
+    <TypeScriptCompile Include="apps\admin\controllers\manage.ctl.ts" />
+    <TypeScriptCompile Include="apps\admin\controllers\member.ctl.ts" />
+    <TypeScriptCompile Include="apps\admin\controllers\start_city.ctl.ts" />
+    <TypeScriptCompile Include="apps\admin\controllers\sysmenu.ctl.ts" />
+    <TypeScriptCompile Include="apps\admin\controllers\theme.ctl.ts" />
+    <TypeScriptCompile Include="apps\admin\forms\area.from.ts" />
+    <TypeScriptCompile Include="apps\admin\forms\start_city.form.ts" />
     <TypeScriptCompile Include="apps\home\controllers\index.ctl.ts" />
-    <TypeScriptCompile Include="src\controllers\controller.ts" />
+    <TypeScriptCompile Include="src\adapter\plugin\bool.box.ts" />
+    <TypeScriptCompile Include="src\adapter\plugin\check_group.box.ts" />
+    <TypeScriptCompile Include="src\adapter\plugin\date.box.ts" />
+    <TypeScriptCompile Include="src\adapter\plugin\datetime.box.ts" />
+    <TypeScriptCompile Include="src\adapter\plugin\helper.ts" />
+    <TypeScriptCompile Include="src\adapter\plugin\hidden.box.ts" />
+    <TypeScriptCompile Include="src\adapter\plugin\integer.box.ts" />
+    <TypeScriptCompile Include="src\adapter\plugin\number.box.ts" />
+    <TypeScriptCompile Include="src\adapter\plugin\password.box.ts" />
+    <TypeScriptCompile Include="src\adapter\plugin\radio_group.box.ts" />
+    <TypeScriptCompile Include="src\adapter\plugin\select.box.ts" />
+    <TypeScriptCompile Include="src\adapter\plugin\text.box.ts" />
+    <TypeScriptCompile Include="src\adapter\plugin\textarea.box.ts" />
+    <TypeScriptCompile Include="src\adapter\plugin\upfile.box.ts" />
+    <TypeScriptCompile Include="src\adapter\plugin\upimages.box.ts" />
+    <TypeScriptCompile Include="src\adapter\plugin\xheditor.box.ts" />
+    <TypeScriptCompile Include="src\adapter\sdopx\sdopx_ext.ts" />
+    <TypeScriptCompile Include="src\adapter\session\mysql.ts" />
+    <TypeScriptCompile Include="src\common\controller.ts" />
+    <TypeScriptCompile Include="src\common\form.ts" />
+    <TypeScriptCompile Include="src\common\pagelist.ts" />
+    <TypeScriptCompile Include="src\common\selector.ts" />
     <TypeScriptCompile Include="src\core\beacon.ts" />
     <TypeScriptCompile Include="src\core\beacon_kit.ts" />
     <TypeScriptCompile Include="src\core\config.ts" />
@@ -56,53 +116,30 @@
     <Content Include="www\public\index2.html" />
     <Compile Include="www\route\admin.route.js" />
     <Compile Include="www\route\home.route.js" />
-    <Compile Include="www\apps\admin\controllers\index.ctl.js" />
-    <Compile Include="www\apps\home\controllers\index.ctl.js" />
-    <Compile Include="www\src\controllers\controller.js" />
-    <Compile Include="www\src\core\beacon.js" />
-    <Compile Include="www\src\core\beacon_kit.js" />
-    <Compile Include="www\src\core\config.js" />
-    <Compile Include="www\src\core\http_context.js" />
-    <Compile Include="www\src\core\route.js" />
-    <Compile Include="www\src\core\session_base.js" />
-    <Compile Include="www\src\util\cookie.js" />
-    <Compile Include="www\src\adapter\db\mysql.js" />
-    <Compile Include="www\src\adapter\db\redis.js" />
-    <Compile Include="www\src\adapter\session\file.js" />
-    <Compile Include="www\src\adapter\session\memory.js" />
-    <Compile Include="www\src\adapter\session\redis.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="apps" />
     <Folder Include="apps\admin" />
     <Folder Include="apps\admin\controllers" />
+    <Folder Include="apps\admin\forms\" />
     <Folder Include="apps\home" />
     <Folder Include="apps\home\controllers" />
     <Folder Include="src" />
     <Folder Include="src\adapter" />
     <Folder Include="src\adapter\db" />
+    <Folder Include="src\adapter\plugin\" />
+    <Folder Include="src\adapter\sdopx\" />
     <Folder Include="src\adapter\session" />
-    <Folder Include="src\controllers" />
+    <Folder Include="src\common\" />
     <Folder Include="src\core" />
     <Folder Include="src\util" />
     <Folder Include="www" />
-    <Folder Include="www\apps" />
-    <Folder Include="www\apps\admin" />
-    <Folder Include="www\apps\admin\controllers" />
-    <Folder Include="www\apps\home" />
-    <Folder Include="www\apps\home\controllers" />
     <Folder Include="www\config" />
     <Folder Include="www\public" />
     <Folder Include="www\route" />
-    <Folder Include="www\src" />
-    <Folder Include="www\src\adapter" />
-    <Folder Include="www\src\adapter\db" />
-    <Folder Include="www\src\adapter\session" />
-    <Folder Include="www\src\controllers" />
-    <Folder Include="www\src\core" />
-    <Folder Include="www\src\util" />
     <Folder Include="www\views" />
     <Folder Include="www\views\admin\" />
+    <Folder Include="www\views\admin\common\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <!--Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them.-->
