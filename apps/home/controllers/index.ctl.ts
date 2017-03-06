@@ -1,8 +1,8 @@
-import {Beacon} from "../../../src/core/beacon";
 import {Redis} from "../../../src/adapter/db/redis";
+import {Controller} from "../../../src/common/controller";
 import crypto=require('crypto');
 
-export class Index extends Beacon.Controller {
+export class Index extends Controller {
 
     public redis: Redis;
 

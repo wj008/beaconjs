@@ -1,14 +1,23 @@
 ﻿import {Beacon} from "../../../src/core/beacon";
+import {Controller} from "../../../src/common/controller";
 import path = require('path');
 
 
-export class AdminController extends Beacon.Controller {
+export class AdminController extends Controller {
     public adminId = 0;
     public adminName = '';
 
     public constructor(context) {
         super(context);
         this.template_dirs = path.join(Beacon.VIEW_PATH, 'admin') + '/';
+    }
+
+    public getReferrer() {
+        let back = this.get('__BACK__:s', '');
+        if (back != '') {
+            return back;
+        }
+        return super.getReferrer();
     }
 
     public async init() {

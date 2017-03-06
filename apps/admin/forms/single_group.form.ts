@@ -1,27 +1,22 @@
 import {Form} from "../../../src/common/form";
 
-export class AreaForm extends Form {
+export class SingleGroupForm extends Form {
 
-    public tplList = 'area';
-    public title = '城市区域';
-    public caption = '字典-城市区域';
-    public table = '@pf_area';
+    public tplList = 'singlegroup';
+    public title = '文章分组';
+    public caption = '字典-文章分组';
+    public table = '@pf_singlegroup';
     public orderby = 'sort ASC'
 
     public async load(fields: {[key: string]: any} = null) {
         if (this.type != Form.NONE) {
             this._load = {
                 name: {
-                    'label': '地理位置名称',
+                    'label': '分组名称',
                     'data-val': {r: true},
-                    'data-val-msg': {r: '请输入地理位置名称'},
-                    'tips': '请输入地理位置，可以添加多个，每行一个',
+                    'data-val-msg': {r: '请输入分组名称'},
+                    'tips': '请输入分组名称',
                     'box-class': 'form-inp text',
-                },
-                allow: {
-                    'label': '是否启用',
-                    'type': 'bool',
-                    'default': true,
                 },
                 sort: {
                     'label': '排序',
@@ -35,11 +30,9 @@ export class AreaForm extends Form {
         }
 
         if (this.type == Form.ADD) {
-            this._load['name']['type'] = 'textarea';
             let sort = await this.ctl.db.getMax(this.table, 'sort');
             this._load['sort']['default'] = sort ? sort + 10 : 10;
         }
-
         return await super.load(fields);
     }
 

@@ -2,25 +2,11 @@ import {Beacon} from "../../../src/core/beacon";
 import images = require("images");
 import path = require('path');
 import fs = require('fs');
+import {Controller} from "../../../src/common/controller";
 
 
-export class Upload extends Beacon.Controller {
-
-    public fail(message: any, jump?: any, code?: any) {
-        let ret: any = {};
-        ret.message = message;
-        ret.status = false;
-        if (jump !== void 0) {
-            ret.jump = jump;
-        }
-        if (code !== void 0) {
-            ret.code = code;
-        }
-        this.setContentType('json');
-        this.end(JSON.stringify(ret));
-        this.exit();
-    }
-
+export class Upload extends Controller {
+    
     public success(message: any, info?: any) {
         let ret: any = {};
         ret.message = message;

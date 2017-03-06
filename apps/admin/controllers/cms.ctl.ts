@@ -57,7 +57,6 @@ export class CmsController extends AdminController {
         if (this.isPost()) {
             await form.insert(form.table);
             this.success('添加' + form.title + '成功');
-            console.log(Date.now() - this.context.startTime);
         }
     }
 
@@ -110,6 +109,35 @@ export class CmsController extends AdminController {
             name: name
         }, id);
         this.success('更新名称成功');
+    }
+
+    public async titleAction() {
+        let id = this.param('id:i', 0);
+        if (!id) {
+            this.fail('参数有误');
+        }
+        let name = this.param('name:s', '');
+        await this.db.update(this.form.table, {
+            name: name
+        }, id);
+        this.success('更新名称成功');
+    }
+
+    public async allowAction() {
+        let id = this.param('id:i', 0);
+        if (!id) {
+            this.fail('参数有误');
+        }
+        let allow = await this.db.getOne('select allow from ' + this.form.table + ' where id=?', id);
+        allow = allow == 1 ? 0 : 1;
+        await this.db.update(this.form.table, {
+            allow: allow
+        }, id);
+        let ret: any = {};
+        ret.message = '操作成功';
+        ret.status = true;
+        ret.info = {allow: allow};
+        this.returnJson(ret);
     }
 
 }

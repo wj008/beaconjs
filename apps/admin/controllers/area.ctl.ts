@@ -17,6 +17,8 @@ export class Area extends AdminController {
         let form = await this.form;
         let selector = new Selector(form.table);
         selector.where('pid=?', pid);
+        let keyword = this.get('keyword:s', '').trim();
+        selector.search("`name` LIKE CONCAT('%',?,'%')", keyword);
         if (this.form.orderby) {
             selector.order(form.orderby);
         }
@@ -29,6 +31,12 @@ export class Area extends AdminController {
             prow = await this.db.getRow('select * from ' + form.table + ' where id=?', pid);
         }
         this.assign('prow', prow);
+        if (this.isAjax()) {
+            let data: any = {};
+            data.html = this.fetch('extends:common/list_ajax|' + this.form.tplList);
+            data.pdata = info;
+            this.success('获取数据成功', data);
+        }
         this.display(this.form.tplList);
         console.log(Date.now() - this.context.startTime);
     }

@@ -23,7 +23,7 @@ export class CampType extends AdminController {
             let {name = '', address = ''}=this.post();
             let sort = this.post('sort:i', 0);
             if (name == '') {
-                this.fail('活动类型不可为空', {name: '活动类型不可为空'});
+                this.fail({name: '活动类型不可为空'});
             }
             let vals = {
                 name: name,
@@ -49,7 +49,7 @@ export class CampType extends AdminController {
             let {name = '', address = ''}=this.post();
             let sort = this.post('sort:i', 0);
             if (name == '') {
-                this.fail('活动类型不可为空', {name: '活动类型不可为空'});
+                this.fail({name: '活动类型不可为空'});
             }
             let vals = {
                 name: name,

@@ -25,13 +25,13 @@ export class Member extends AdminController {
         if (this.isPost()) {
             let {email = '', mobile = ''}=this.post();
             if (email == '' && mobile == '') {
-                this.fail('电子邮箱及手机号码至少一个不可为空', {email: '电子邮箱及手机号码至少一个不可为空', mobile: '电子邮箱及手机号码至少一个不可为空'});
+                this.fail({email: '电子邮箱及手机号码至少一个不可为空', mobile: '电子邮箱及手机号码至少一个不可为空'});
             }
             if (email != '' && !/^([a-zA-Z0-9]+[-|_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[-|_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,8}([\.][a-zA-Z]{2,8})?$/.test(email)) {
-                this.fail('电子邮箱格式不正确', {email: '电子邮箱格式不正确'});
+                this.fail({email: '电子邮箱格式不正确'});
             }
             if (mobile != '' && !/^1[34578]\d{9}$/.test(mobile)) {
-                this.fail('手机号码格式不正确', {email: '手机号码格式不正确'});
+                this.fail({email: '手机号码格式不正确'});
             }
             let vals = {
                 email: email,

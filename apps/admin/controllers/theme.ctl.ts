@@ -1,10 +1,15 @@
 import {AdminController} from "./admin.ctl";
-import {PageList} from "../../../src/common/pagelist";
+import {Selector} from "../../../src/common/selector";
 
 export class Theme extends AdminController {
 
     public async indexAction() {
-        let plist = new PageList('select * from @pf_theme order by sort asc');
+
+        let selector = new Selector('@pf_theme');
+        let keyword = this.get('keyword:s', '').trim();
+        selector.search("`name` LIKE CONCAT('%',?,'%')", keyword);
+        selector.order('sort ASC');
+        let plist = selector.getPageList();
         let {info, list} = await plist.getData(this);
         this.assign('list', list);
         this.assign('pdata', info);
@@ -23,7 +28,7 @@ export class Theme extends AdminController {
             let {name = '', address = ''}=this.post();
             let sort = this.post('sort:i', 0);
             if (name == '') {
-                this.fail('活动主题不可为空', {name: '活动主题不可为空'});
+                this.fail({name: '活动主题不可为空'});
             }
             let vals = {
                 name: name,
@@ -49,7 +54,7 @@ export class Theme extends AdminController {
             let {name = '', address = ''}=this.post();
             let sort = this.post('sort:i', 0);
             if (name == '') {
-                this.fail('活动主题不可为空', {name: '活动主题不可为空'});
+                this.fail({name: '活动主题不可为空'});
             }
             let vals = {
                 name: name,

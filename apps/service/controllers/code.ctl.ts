@@ -2,9 +2,10 @@ import {Beacon} from "../../../src/core/beacon";
 
 import gm = require("gm");
 import path = require('path');
+import {Controller} from "../../../src/common/controller";
 
 
-export class Code extends Beacon.Controller {
+export class Code extends Controller {
 
 
     //使用gm库 需要安装 GraphicsMagick

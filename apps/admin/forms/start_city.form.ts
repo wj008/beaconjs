@@ -8,11 +8,6 @@ export class StartCityForm extends Form {
     public table = '@pf_start_city';
     public orderby = 'sort ASC'
 
-    public constructor(ctl: any, type: number = Form.NONE) {
-        super(ctl, type);
-        this.backUri = ctl.url('~/start_city');
-    }
-
     public async load(fields: {[key: string]: any} = null) {
         if (this.type != Form.NONE) {
             this._load = {
