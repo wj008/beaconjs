@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const http = require("http");
 const beacon_1 = require("./src/core/beacon");
 const redis_1 = require("./src/adapter/session/redis");
