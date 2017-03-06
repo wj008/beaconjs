@@ -1,0 +1,93 @@
+{extends file='common/list_layout'}
+{block name="title"}文章单页{/block}
+{block name="caption"} 文章-文章单页{/block}
+
+{block name='list_head'}
+<div class="yeeui-list-optbtns">
+    <div class="fl">
+        <a href="{uri act='add'}" class="yee-btn add"><i class="icofont icofont-ui-add"></i>添加文章</a>
+        <a href="javascript:window.location.reload()" title="刷新" class="yee-refresh"><i class="icofont icofont-refresh"></i>刷新</a><span> 共 {$pdata.records_count} 条记录</span>
+    </div>
+    <div class="search fr">
+        <form>
+            {box type='text' name='keyword' value=$this.get('keyword:s','') class='form-inp secrch-inp' placeholder='文章标题/标识' autocomplete='off'}
+            <button type="submit" class="search-btn"></button>
+        </form>
+    </div>
+</div>
+{/block}
+
+{block name=table_ths}
+<th width="40">ID</th>
+<th width="200" align="left">文章标题</th>
+<th width="80">标识</th>
+<th width="80">分组</th>
+<th width="80">排序</th>
+<th width="80">是否审核</th>
+<th width="80">类型</th>
+<th width="150">操作</th>
+{/block}
+
+{block name='table_tds'}
+{foreach from=$list item='rs'}
+<tr class="toggle">
+    <td align="center">{$rs.id}</td>
+    <td><input class="form-inp hide text" value="{$rs.title}" yee-module="editbox" data-href="{uri act='title' args={id:$rs.id,title:'#value#'}}"/></td>
+    <td align="center">{$rs.key}</td>
+    <td align="center">{$rs.groupName}</td>
+    <td align="center"><input class="form-inp hide tc snumber" value="{$rs.sort}" yee-module="editbox" data-href="{uri act='sort' args={id:$rs.id,sort:'#value#'}}"/></td>
+    <td align="center">
+        <span class='tg-list-item'>
+             <input class="allow tgl tgl-light" id='cb{$rs.id}' type="checkbox" value="1" {$rs.allow==1?'checked':''} data-href="{uri act='allow' args={id:$rs.id}}"/>
+             <label class='tgl-btn' for='cb{$rs.id}'></label>
+        </span>
+    </td>
+    <td align="center">{$rs.islink==1?'<span class="blue">连接</span>':'正常'|raw}</td>
+    <td align="right">
+        <a href="{uri act='edit' args={id:$rs.id}}" class="yee-btn small edit"><i class="icofont icofont-edit"></i>编辑</a>
+        <a href="{uri act='del' args={id:$rs.id}}" yee-module="confirm ajaxlink" data-confirm="确定要删除该文章了吗？" class="yee-btn small del"><i class="icofont icofont-bin"></i>删除</a>
+    </td>
+</tr>
+{/foreach}
+{/block}
+
+{block name='pagebar'}
+<div class="yeeui-pagebar">{pagebar data=$pdata}</div>
+{/block}
+
+{block name='foot'}
+{asset src=['yee-confirm','yee-editbox','yee-ajaxlink']}
+{literal}
+<script>
+    $('a.yee-btn.del').on('back', function (ev, ret) {
+        if (ret.status) {
+            window.location.reload();
+        }
+    });
+    $('.allow').on('click', function () {
+        var that = $(this);
+        var val = that.is(':checked') ? 1 : 0;
+        var href = that.data('href');
+        var args = Yee.parseURL(href);
+        $.post(args.path, args.prams, function (ret) {
+            //拉取数据成功
+            if (ret.status === true) {
+                if (ret.info.allow) {
+                    that.prop('checked', true);
+                } else {
+                    that.prop('checked', false);
+                }
+            }
+            //拉取数据错误
+            if (ret.status === false) {
+                if (ret.error && typeof ret.error === 'string') {
+                    layer.msg(ret.error, {icon: 0, time: 2000});
+                }
+                return;
+            }
+        }, 'json');
+        return false;
+    });
+</script>
+{/literal}
+{/block}

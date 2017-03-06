@@ -1,17 +1,16 @@
 {extends file='common/list_layout'}
-{block name="title"}出发地点{/block}
-{block name="caption"} 字典-出发地点{/block}
-
+{block name="title"}文章分组{/block}
+{block name="caption"} 文章-文章分组{/block}
 
 {block name='list_head'}
 <div class="yeeui-list-optbtns">
     <div class="fl">
-        <a href="{uri act='add'}" class="yee-btn add"><i class="icofont icofont-ui-add"></i>添加地点</a>
+        <a href="{uri act='add'}" class="yee-btn add"><i class="icofont icofont-ui-add"></i>添加分组</a>
         <a href="javascript:window.location.reload()" title="刷新" class="yee-refresh"><i class="icofont icofont-refresh"></i>刷新</a><span> 共 {$pdata.records_count} 条记录</span>
     </div>
     <div class="search fr">
         <form>
-            {box type='text' name='keyword' value=$this.get('keyword:s','') class='form-inp secrch-inp' placeholder='地点名称' autocomplete='off'}
+            {box type='text' name='keyword' value=$this.get('keyword:s','') class='form-inp secrch-inp' placeholder='分组名称' autocomplete='off'}
             <button type="submit" class="search-btn"></button>
         </form>
     </div>
@@ -20,10 +19,9 @@
 
 {block name=table_ths}
 <th width="40">ID</th>
-<th width="200" align="left">地点名称</th>
-<th align="left">详细地址</th>
+<th width="200" align="left">分组名称</th>
 <th width="80">排序</th>
-<th width="250">操作</th>
+<th width="150">操作</th>
 {/block}
 
 {block name='table_tds'}
@@ -31,11 +29,10 @@
 <tr class="toggle">
     <td align="center">{$rs.id}</td>
     <td><input class="form-inp hide text" value="{$rs.name}" yee-module="editbox" data-href="{uri act='name' args={id:$rs.id,name:'#value#'}}"/></td>
-    <td>{$rs.address}</td>
     <td align="center"><input class="form-inp hide tc snumber" value="{$rs.sort}" yee-module="editbox" data-href="{uri act='sort' args={id:$rs.id,sort:'#value#'}}"/></td>
     <td align="right">
         <a href="{uri act='edit' args={id:$rs.id}}" class="yee-btn small edit"><i class="icofont icofont-edit"></i>编辑</a>
-        <a href="{uri act='del' args={id:$rs.id}}" yee-module="confirm ajaxlink" data-confirm="确定要删除该地点了吗？" class="yee-btn small del"><i class="icofont icofont-bin"></i>删除</a>
+        <a href="{uri act='del' args={id:$rs.id}}" yee-module="confirm ajaxlink" data-confirm="确定要删除该分组了吗？" class="yee-btn small del"><i class="icofont icofont-bin"></i>删除</a>
     </td>
 </tr>
 {/foreach}

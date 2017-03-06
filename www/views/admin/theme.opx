@@ -4,8 +4,16 @@
 
 {block name='list_head'}
 <div class="yeeui-list-optbtns">
-    <a href="{uri act='add'}" class="yee-btn add"><i class="icofont icofont-ui-add"></i>添加主题</a>
-    <a href="javascript:window.location.reload()" title="刷新" class="yee-btn"><i class="icofont icofont-refresh"></i>刷新</a>
+    <div class="fl">
+        <a href="{uri act='add'}" class="yee-btn add"><i class="icofont icofont-ui-add"></i>添加主题</a>
+        <a href="javascript:window.location.reload()" title="刷新" class="yee-refresh"><i class="icofont icofont-refresh"></i>刷新</a><span> 共 {$pdata.records_count} 条记录</span>
+    </div>
+    <div class="search fr">
+        <form>
+            {box type='text' name='keyword' value=$this.get('keyword:s','') class='form-inp secrch-inp' placeholder='主题名称' autocomplete='off'}
+            <button type="submit" class="search-btn"></button>
+        </form>
+    </div>
 </div>
 {/block}
 
@@ -20,7 +28,7 @@
 {foreach from=$list item='rs'}
 <tr class="toggle">
     <td align="center">{$rs.id}</td>
-    <td><input class="form-inp small text" value="{$rs.name}" yee-module="editbox" data-href="{uri act='name' args={id:$rs.id,name:'#value#'}}"/></td>
+    <td><input class="form-inp hide text" value="{$rs.name}" yee-module="editbox" data-href="{uri act='name' args={id:$rs.id,name:'#value#'}}"/></td>
     <td align="center"><input class="form-inp small tc snumber" value="{$rs.sort}" yee-module="editbox" data-href="{uri act='sort' args={id:$rs.id,sort:'#value#'}}"/></td>
     <td align="right">
         <a href="{uri act='edit' args={id:$rs.id}}" class="yee-btn small edit"><i class="icofont icofont-edit"></i>编辑</a>

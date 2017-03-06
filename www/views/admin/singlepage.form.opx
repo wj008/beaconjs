@@ -11,10 +11,10 @@
         </div>
         <div class="panel-content">
             {foreach from=$form.fields item=box}
-            <div class="form-group">
+            <div class="form-group" id="row-{$box.boxId}">
                 <label class="form-label">{$box.label}：</label>
                 <div class="form-box">
-                    <span>{box field=$box}</span>
+                    <span>{box field=$box dataMaxBox='ddd'}</span>
                     {if $box.tips}<p class="field-tips">{$box.tips}</p>{/if}
                 </div>
             </div>
@@ -25,12 +25,29 @@
             <div class="form-box">
                 <input type="submit" class="btn submit" value="提交"/>
                 <input type="hidden" name="__BACK__" value="{$form.backUri}"/>
-                {foreach from=$form.getHideBox() item=value key=name}
-                <input type="hidden" name="{$name}" value="{$value}"/>
-                {/foreach}
                 <a href="{$form.backUri}" class="btn back">返回</a>
             </div>
         </div>
     </div>
 </form>
+
+{literal}
+<script>
+    $('#islink').on('click', function () {
+        if ($('#islink').is(':checked')) {
+            $('#row-link').show();
+            $('#row-content').hide();
+            $('#link').data('val-off', false);
+            $('#content').data('val-off', true);
+        } else {
+            $('#row-link').hide();
+            $('#row-content').show();
+            $('#link').data('val-off', true);
+            $('#content').data('val-off', false);
+        }
+    }).triggerHandler('click');
+</script>
+{/literal}
+
 {/block}
+

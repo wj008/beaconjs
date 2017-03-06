@@ -2,13 +2,24 @@
 {block name="title"}出发地点{/block}
 {block name="caption"} 字典-出发地点 {if $prow!==null} ----  {$prow.name}{/if}{/block}
 
+
 {block name='list_head'}
 <div class="yeeui-list-optbtns">
-    <a href="{uri act='add'}" class="yee-btn add"><i class="icofont icofont-ui-add"></i>添加地理位置</a>
-    <a href="javascript:window.location.reload()" title="刷新" class="yee-btn"><i class="icofont icofont-refresh"></i>刷新</a>
-    {if $prow!==null}<a href="{uri ctl='area' args={pid:$prow.pid}}" title="返回上级" class="yee-btn">返回上级</a>{/if}
+    <div class="fl">
+        <a id="add-btn" href="{uri act='add'}" class="yee-btn add"><i class="icofont icofont-ui-add"></i>添加类型</a>
+        {if $prow!==null}<a href="{uri ctl='area' args={pid:$prow.pid}}" title="返回上级" class="yee-btn">返回上级</a>{/if}
+        <a id="refresh-btn" href="javascript:window.location.reload()" title="刷新" class="yee-refresh"><i class="icofont icofont-refresh"></i>刷新</a><span> 共 <span id="records_count">{$pdata.records_count}</span> 条记录</span>
+    </div>
+    <div class="search fr">
+        <form id="search" yee-module="ajaxform" method="get">
+            {box type='text' name='keyword' value=$this.get('keyword:s','') class='form-inp secrch-inp' placeholder='出发地点' autocomplete='off'}
+            {if $prow!==null}{box type='hidden' name='pid' value=$prow.id}{/if}
+            <button type="submit" class="search-btn"></button>
+        </form>
+    </div>
 </div>
 {/block}
+
 
 {block name=table_ths}
 <th width="40">ID</th>
@@ -22,15 +33,15 @@
 {foreach from=$list item='rs'}
 <tr class="toggle">
     <td align="center">{$rs.id}</td>
-    <td><input class="form-inp small text" value="{$rs.name}" yee-module="editbox" data-href="{uri act='name' args={id:$rs.id,name:'#value#'}}"/></td>
-    <td align="center"><input class="form-inp small tc snumber" value="{$rs.sort}" yee-module="editbox" data-href="{uri act='sort' args={id:$rs.id,sort:'#value#'}}"/></td>
+    <td><input class="form-inp hide text" value="{$rs.name}" yee-module="editbox" data-href="{uri act='name' args={id:$rs.id,name:'#value#'}}"/></td>
+    <td align="center"><input class="form-inp hide tc snumber" value="{$rs.sort}" yee-module="editbox" data-href="{uri act='sort' args={id:$rs.id,sort:'#value#'}}"/></td>
     <td align="center">
          <span class='tg-list-item'>
              <input class="allow tgl tgl-light" id='cb{$rs.id}' type="checkbox" value="1" {$rs.allow==1?'checked':''} data-href="{uri act='allow' args={id:$rs.id}}"/>
              <label class='tgl-btn' for='cb{$rs.id}'></label>
         </span>
     </td>
-    <td align="right">
+    <td align="right" class="opt-btns">
         {if $rs.level<=1}
         <a href="{uri act='add' args={pid:$rs.id}}" class="yee-btn small add"><i class="icofont icofont-add"></i>添加下级</a>
         <a href="{uri ctl='area' args={pid:$rs.id}}" class="yee-btn small edit">查看下级</a>
@@ -43,42 +54,10 @@
 {/block}
 
 {block name='pagebar'}
-<div class="yeeui-pagebar">{pagebar data=$pdata}</div>
+<div id="pagebar" class="yeeui-pagebar">{pagebar data=$pdata}</div>
 {/block}
 
 {block name='foot'}
-{asset src=['yee-confirm','yee-editbox','yee-ajaxlink']}
-{literal}
-<script>
-    $('a.yee-btn.del').on('back', function (ev, ret) {
-        if (ret.status) {
-            window.location.reload();
-        }
-    });
-    $('.allow').on('click', function () {
-        var that = $(this);
-        var val = that.is(':checked') ? 1 : 0;
-        var href = that.data('href');
-        var args = Yee.parseURL(href);
-        $.post(args.path, args.prams, function (ret) {
-            //拉取数据成功
-            if (ret.status === true) {
-                if (ret.info.allow) {
-                    that.prop('checked', true);
-                } else {
-                    that.prop('checked', false);
-                }
-            }
-            //拉取数据错误
-            if (ret.status === false) {
-                if (ret.message && typeof (ret.message) === 'string') {
-                    layer.msg(ret.message, {icon: 0, time: 2000});
-                }
-                return;
-            }
-        }, 'json');
-        return false;
-    })
-</script>
-{/literal}
+{asset src=['yee-confirm','yee-editbox','yee-ajaxlink','yee-ajaxform']}
+<script type="text/javascript" src="/admin/js/list.js"></script>
 {/block}

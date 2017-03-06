@@ -4,7 +4,15 @@
 
 {block name='list_head'}
 <div class="yeeui-list-optbtns">
-    <a href="javascript:window.location.reload()" title="刷新" class="yee-btn"><i class="icofont icofont-refresh"></i>刷新</a>
+    <div class="fl">
+        <a href="javascript:window.location.reload()" title="刷新" class="yee-refresh"><i class="icofont icofont-refresh"></i>刷新</a><span> 共 {$pdata.records_count} 条记录</span>
+    </div>
+    <div class="search fr">
+        <form>
+            {box type='text' name='keyword' value=$this.get('keyword:s','') class='form-inp secrch-inp' placeholder='主题名称' autocomplete='off'}
+            <button type="submit" class="search-btn"></button>
+        </form>
+    </div>
 </div>
 {/block}
 

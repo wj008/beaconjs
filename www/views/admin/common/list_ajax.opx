@@ -1,0 +1,8 @@
+<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" class="yeeui-list-table">
+    <tr>
+        {block name=table_ths}{/block}
+    </tr>
+    {block name='table_tds'}{/block}
+    {block name='allopts'}{/block}
+</table>
+{block name='pagebar'}{/block}

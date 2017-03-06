@@ -45,10 +45,10 @@
 
 
 <div class="system-message">
-    <p class="error">{$message}</p>
+    <p class="error">{$info.message}</p>
     <p class="detail"></p>
     <p class="jump">
-        页面自动 <a id="href" href="{$jump}">跳转</a> 等待时间： <b id="wait">{$timeout}</b>
+        页面自动 <a id="href" href="{$info.jump}">跳转</a> 等待时间： <b id="wait">{$info.timeout}</b>
     </p>
 </div>
 

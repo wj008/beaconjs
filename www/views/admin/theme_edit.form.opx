@@ -1,6 +1,6 @@
 {extends file='common/form_layout'}
 {block name="title"}活动主题{/block}
-{block name="caption"}<a href="{uri ctl='theme'}" class="s-back"><i class="icofont icofont-reply"></i></a> 字典-活动主题{/block}
+{block name="caption"}<a href="{$this.getReferrer()}" class="s-back"><i class="icofont icofont-reply"></i></a> 字典-活动主题{/block}
 {block name="form"}
 {asset src="yee-ajaxform"}
 <form method="post" yee-module="validate ajaxform">
@@ -32,8 +32,8 @@
             <label class="form-label"></label>
             <div class="form-box">
                 <input type="submit" class="btn submit" value="提交"/>
-                <a href="{uri ctl='theme'}" class="btn back">返回</a>
-                <input type="hidden" name="__BACK__" value="{uri ctl='theme'}"/>
+                <a href="{$this.getReferrer()}" class="btn back">返回</a>
+                <input type="hidden" name="__BACK__" value="{$this.getReferrer()}"/>
                 <input type="hidden" name="id" value="{$row.id}"/>
             </div>
         </div>
